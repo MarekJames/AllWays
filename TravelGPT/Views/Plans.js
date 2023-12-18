@@ -382,7 +382,7 @@ export class MapsPlansScreen extends React.Component {
      
         )
     }
-  }
+}
 
 export class LoadingScreen extends React.Component{
   
@@ -554,81 +554,6 @@ export class DaysScreen extends React.Component {
     }
   }
 }
-
-const AccordionList = ({ listsPlan }) => {
-  const [expandedIds, setExpandedIds] = useState([]);
-
-  const toggleExpand = (day) => {
-    if (expandedIds.includes(day)) {
-      setExpandedIds(expandedIds.filter((id) => id !== day));
-    } else {
-      setExpandedIds([...expandedIds, day]);
-    }
-  };
-
-  const isExpanded = (day) => expandedIds.includes(day);
-
-  const [towerOfPisaImage, setTowerOfPisaImage] = useState([]);
-
-  useEffect(() => {
-    // Fetch image of the Leaning Tower of Pisa when the component mounts
-    fetchTowerOfPisaImage();
-  }, []);
-
-  const fetchTowerOfPisaImage = async () => {
-    try {
-      const accessKey = accessKey; // Replace with your actual Unsplash Access Key
-      const response = await axios.get('https://api.unsplash.com/photos/random', {
-        params: {
-          client_id: 'Q37z9gm8MYXdVPEDA6MFPe77A9jHWLdM9pLtqr060Xo',
-          query: 'Tower of Pisa Italy', // Search query for the Tower of Pisa in Italy
-          count: 5, // Number of images you want to fetch (in this case, just one)
-        },
-      });
-
-      // Store the image URL in state
-      const imagesOfPisa = response.data.map((photo) => photo.urls.regular);
-      setTowerOfPisaImage(imagesOfPisa);
-    } catch (error) {
-      console.error('Error fetching image:', error);
-    }
-  };
-  const renderItem = ({ item }) => {
-    return (
-      <View style={AccordionStyles.container}>
-        <TouchableOpacity
-          style={AccordionStyles.dayContainer}
-          onPress={() => toggleExpand(item.day)}
-        >
-          <Text style={AccordionStyles.dayText}>{item.day}</Text>
-        </TouchableOpacity>
-        {isExpanded(item.day) && towerOfPisaImage && (
-          <View style={AccordionStyles.activitiesContainer}>
-            {item.activities.map((activity, index) => (
-              <View style={AccordionStyles.activityItem} key={index}>
-                <Text style={AccordionStyles.activityName}>{'\u2022'} {activity.name}</Text>
-                <Text style={AccordionStyles.activityDescription}>{'\u25CF'} {activity.description}</Text>
-                <Image
-                  source={{ uri: towerOfPisaImage[index] }}
-                  style={AccordionStyles.activityImage}
-                  
-                />
-              </View>
-            ))}
-          </View>
-        )}
-      </View>
-    );
-  };
-
-  return (
-    <FlatList
-      data={listsPlan}
-      keyExtractor={(item) => item.day}
-      renderItem={renderItem}
-    />
-  );
-};
 
 async function getPlan(navigator) {
 
