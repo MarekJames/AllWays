@@ -15,21 +15,13 @@ Plans.js
 
 // Imports for the react components add buttons, images, text, etc
 import React, {useState, useEffect} from 'react';  
-import {Image, ActivityIndicator, StyleSheet, View, Text, Pressable, TextInput, Dimensions, TouchableOpacity, FlatList, ScrollView, BackHandler, Alert} from 'react-native';  
+import {Image, ActivityIndicator, StyleSheet, View, Text, Pressable, TextInput, Dimensions, TouchableOpacity, ScrollView, BackHandler, Alert} from 'react-native';  
 import "react-native-url-polyfill/auto"
 import axios from 'axios';
-import FastImage from 'react-native-fast-image';
-
-
-// Imports the location api's and components
 import {getCurrentPositionAsync, requestForegroundPermissionsAsync, reverseGeocodeAsync} from 'expo-location';
 import MapView , {Marker, Callout} from 'react-native-maps'
 import * as Font from 'expo-font';
-
-// Imports the openai components
 import { Configuration, OpenAIApi } from 'openai'
-
-// Imports images
 import SVGLogo from '../Images/RouteMasterLogo.svg'
 
 
@@ -38,8 +30,9 @@ import SVGLogo from '../Images/RouteMasterLogo.svg'
 var days          // Stores the amount of days the user intends to travel
 var destination   // Stores the destination that the user intends to travel to
 var listsPlan     // Stores the plan received from the chatgpt api
-const windowWidth = Dimensions.get('window').width;   // Get width of the user screen
-const windowHeight = Dimensions.get('window').height; // Get height of the user screen
+const width = Dimensions.get('window').width;   // Get width of the user screen
+const height = Dimensions.get('window').height; // Get height of the user screen
+
 
 listsPlan = [
   {"day": "Day 1", 
@@ -193,11 +186,9 @@ listsPlan = [
                           "description": "Sometimes"}
                           ]
           }
-]
+]  // Test route plan
 
-var routePlan = []
-
-/************** Open AI / Chat GPT configs ***************/
+var routePlan = []  // Stores the specific day to show the route plan
 
 // Configs the apiKey -> We may need to encrypt this key
 const config = new Configuration({
@@ -207,8 +198,10 @@ const config = new Configuration({
 // Configs the openai api
 const openai = new OpenAIApi(config)
 
-
+// Access key to the images API
 const accessKey = 'Q37z9gm8MYXdVPEDA6MFPe77A9jHWLdM9pLtqr060Xo'
+
+
 
 
 /*********************** Classes *************************/
@@ -258,26 +251,27 @@ export class PlansScreen extends React.Component {
       // Defines the screen components
       return (
 
-        <View style={{ backgroundColor: '#C68092',   flex: 1, alignItems: 'stretch', width:'100%', height:'100%',}}>  
-          <Text style = {styles.whereToText}>Where to?</Text>
-          <Text style = {styles.wellGiveText}>We'll give you the route for it</Text>
+        <View style={PlansScreenStyles.container}>
+          {/* Title and subtitle */}  
+          <Text style = {PlansScreenStyles.whereToText}>Where to?</Text>
+          <Text style = {PlansScreenStyles.wellGiveText}>We'll give you the route for it</Text>
           
-          <Text style = {styles.whereToGoText}>Where to go?</Text>
-          
-          <Pressable style = {styles.whereToGoButton} onPress = { () => {this.props.navigation.navigate("MapsPlans")}}>
+          {/* Destination Input */}
+          <Text style = {PlansScreenStyles.whereToGoText}>Where to go?</Text>
+          <Pressable style = {PlansScreenStyles.whereToGoButton} onPress = { () => {this.props.navigation.navigate("MapsPlans")}}>
             <TextInput
-            style = {styles.whereToGoInput}
+            style = {PlansScreenStyles.whereToGoInput}
             editable = {false}
             placeholder ="Click here"
             placeholderTextColor={'#000000'}
             />
           </Pressable>
 
-          <Text style = {styles.howManyDaysText}>How many days?</Text>
-          
-          <Pressable style = {styles.howManyDaysButton}>
+          {/* Number of days Input */}
+          <Text style = {PlansScreenStyles.howManyDaysText}>How many days?</Text>
+          <Pressable style = {PlansScreenStyles.howManyDaysButton}>
             <TextInput
-            style = {styles.whereToGoInput}
+            style = {PlansScreenStyles.whereToGoInput}
             placeholder ="Click here"
             placeholderTextColor={'#000000'}
             onChangeText={onChangeNumber}
@@ -285,11 +279,10 @@ export class PlansScreen extends React.Component {
             />
           </Pressable>
 
-          
-
-          <Pressable style = {styles.routeUpButton}  onPress = { () => {getPlan(this.props.navigation)}}>
+          {/* Route Up button */}
+          <Pressable style = {PlansScreenStyles.routeUpButton}  onPress = { () => {getPlan(this.props.navigation)}}>
             <TextInput
-            style = {styles.routeUpInput}
+            style = {PlansScreenStyles.routeUpInput}
             editable = {false}
             placeholder ="Route up!"
             placeholderTextColor={'#FFFFFF'}
@@ -310,40 +303,48 @@ export class PlansScreen extends React.Component {
      
 }
 
+/*
+
+  MapsPlansScreen class
+  Displayed when user selects to choose a destination
+  Allows the user to pin their destination in a google maps environment
+
+*/
 export class MapsPlansScreen extends React.Component { 
 
+    // Function that sets the location variable, and displays the maps screen
     mapsScreen = () => {
-      
+
+      // Define the location variable and the function that will update it
       const [location, setLocation] = useState(false);
-    
+
+      // Gets the coordinates from the pin and sets the location
       async function getLocation(){
   
         const {granted} = await requestForegroundPermissionsAsync()
-      
         if(granted){
-         
           const currentPosition = await getCurrentPositionAsync() 
           setLocation(currentPosition.coords)
-        
         }
         else{
           console.log("Didn't give permissions")
         }
       
       }
-  
-      useEffect(() => {
       
+      // Calls the getLocation function when the screen is loaded
+      useEffect(() => {
         getLocation()
       } , []);
-  
+      
+      // Displays the screen
       return (
         
-        <View style={styles.containerMap}> 
-  
+        <View style={MapsPlansScreenStyles.container}> 
+          {/* Shows the Google Maps */}
           {(location && 
           <MapView 
-            style = {{flex:1, width:'100%', height:'100%'}}
+            style = {MapsPlansScreenStyles.mapContainer}
             onPress= {e => setLocation(e.nativeEvent.coordinate)}
             initialRegion = {{
               latitude: location.latitude,
@@ -351,60 +352,81 @@ export class MapsPlansScreen extends React.Component {
               latitudeDelta: 0.05,
               longitudeDelta: 0.05
             }}
-            
           >
+            {/* Shows the marker on the map */}
             <Marker coordinate={{
               latitude: location.latitude,
               longitude: location.longitude
-  
             }}></Marker>
+
           </MapView>
           )} 
-  
+
+          {/* Done button */}
           <Callout>
-            <View style={styles.calloutView} >
-              <Pressable style={styles.calloutSearch} onPress = {() => closeMap(location, this.props.navigation)}>
+            <View style={MapsPlansScreenStyles.calloutView} >
+              <Pressable style={MapsPlansScreenStyles.calloutSearch} onPress = {() => {destination = location; this.props.navigation.navigate('Plans')}}>
                 <Text >
                   Done
                 </Text>
               </Pressable>
             </View>
           </Callout>
-  
+
         </View> 
       );
     }
-  
+    
+    // Renders the screen by calling the mapsScreen function
     render() { 
         return (
-         
           <this.mapsScreen/>
-     
         )
     }
 }
 
+/*
+
+  LoadingScreen class
+  Used when waiting for the AI response
+
+*/
 export class LoadingScreen extends React.Component{
   
+  // Renders the loading screen
   render(){
     return (
-      <View style = {styles.container}>
-         
+      <View style = {LoadingScreenStyle.container}>  
+        
+        {/* Show Logo */}
         <SVGLogo
-          style = {loadingScreenStyle.imageLogo}
+          style = {LoadingScreenStyle.imageLogo}
         />
-          
-        <Text style = {{fontSize:20}}> Generating your response</Text>
-        <Text style = {{fontSize:15}}> Wait a moment</Text>
+
+        {/* Title and subtitle */}
+        <Text style = {LoadingScreenStyle.titleText}> Generating your response</Text>
+        <Text style = {LoadingScreenStyle.subtitleText}> Wait a moment</Text>
+        
         <Text> {" "}</Text>
+
+        {/* Loading indicator */}
         <ActivityIndicator size="large"/>
+
       </View>
     )
   }
 }
 
+/*
+
+  DaysScreen class
+  Displayed when the user selects a day from the route plan
+  Shows the detailed route plan for the specific day
+
+*/
 export class DaysScreen extends React.Component {  
   
+  // Constructor
   constructor(props) {
     super(props);
     this.state = {
@@ -427,28 +449,37 @@ export class DaysScreen extends React.Component {
     this.loadFonts();
   }
 
+  // Function that displays the list of days
   lists = () => {
+    // Only show after the fonts are loaded
     if (this.state.fontsLoaded) {
       return listsPlan.map((item, index) => (
-        <TouchableOpacity key={item.day} style = {AccordionStyles.dayContainer} onPress={() => {routePlan= listsPlan[index]; this.setState({ showDayRoutePlan: true })}}>
-          <Text style = {AccordionStyles.dayText}>{item.day}</Text>
+        <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {routePlan= listsPlan[index]; this.setState({ showDayRoutePlan: true })}}>
+          <Text style = {DaysListStyles.dayText}>{item.day}</Text>
         </TouchableOpacity>
       ));
     }
   }
 
+  // Renders the screen
   render() {
 
+    // Const that gets the images for the specific activities
+    // Also defines what is shown in the specific day route plan screen
     const DayRoutePlan = () => {
 
+      // Define the image variable and the associated function
       const [towerOfPisaImage, setTowerOfPisaImage] = useState([]);
       
+      // Called when the screen is loaded
       useEffect(() => {
         // Fetch image of the Leaning Tower of Pisa when the component mounts
         fetchTowerOfPisaImage();
       }, []);
-    
+      
+      // Called when the user clicks to go back
       useEffect(() => {
+        // Const that alerts the user that he/she pressed the go back button
         const backAction = () => {
           Alert.alert('Hold on!', 'Are you sure you want to go back?', [
             {
@@ -469,6 +500,7 @@ export class DaysScreen extends React.Component {
         return () => backHandler.remove();
       }, []);
     
+      // Const that calls the Image API
       const fetchTowerOfPisaImage = async () => {
         try {
           const accessKey = accessKey; // Replace with your actual Unsplash Access Key
@@ -487,82 +519,113 @@ export class DaysScreen extends React.Component {
           console.error('Error fetching image:', error);
         }
       };
-    
+      
+      // Only show the screen after the images are loaded
       if (towerOfPisaImage) { 
         return routePlan.activities.map((item, index) => (   
           
-          <View style={styles.square} key={index}>
-        {/* Image at the top occupying 30% of the square */}
-        <Image
-          source={{ uri: towerOfPisaImage[index] }}
-          style={styles.image}
-        />
+          <View style={ActivitiesListStyles.square} key={index}>
 
-        {/* Title and description */}
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>Tower of Pisa</Text>
-          <Text style={styles.description}>
-            Description text goes here. Replace this with actual description.
-          </Text>
-        </View>
+            {/* Image at the top occupying 50% of the square */}
+            <Image
+              source={{ uri: towerOfPisaImage[index] }}
+              style={ActivitiesListStyles.image}
+            />
 
-        {/* Buttons at the bottom */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Maps</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>+Info</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-          // <View style={AccordionStyles.activityItem} key={index}>
-          //   <Text style={AccordionStyles.activityName}>{'\u2022'} {item.name}</Text>
-          //   <Text style={AccordionStyles.activityDescription}>{'\u25CF'} {item.description}</Text>
-          //   { <Image
-          //     source={{ uri: towerOfPisaImage[index] }}
-          //     style={AccordionStyles.activityImage} 
-          //   />}
-          // </View>
+            {/* Title and description */}
+            <View style={ActivitiesListStyles.textContainer}>
+              <Text style={ActivitiesListStyles.title}>Tower of Pisa</Text>
+              <Text style={ActivitiesListStyles.description}>
+                Description text goes here. Replace this with actual description.
+              </Text>
+            </View>
+
+            {/* Buttons at the bottom */}
+            <View style={ActivitiesListStyles.buttonContainer}>
+              <TouchableOpacity style={ActivitiesListStyles.button}>
+                <Text style={ActivitiesListStyles.buttonText}>Maps</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={ActivitiesListStyles.button}>
+                <Text style={ActivitiesListStyles.buttonText}>+Info</Text>
+              </TouchableOpacity>
+            </View>
+
+          </View>
         ))
       }
     }
 
+    // If fonts are loaded and showDayRoutePlan is 0 (Shows the list of days)
     if(this.state.fontsLoaded && !this.state.showDayRoutePlan){
       return (
 
         <View style={ParentStyles.container}>
+          
+          {/* Title and description */}
           <Text style={ParentStyles.listTitle}> Discover "City Name" </Text>
           <Text style={ParentStyles.listSubtitle}> Here is the perfect route for "Number" days </Text>
+          
+           {/* Scroll view with the list of days */}
           <ScrollView style={{flex:1}}>
             {this.lists()}
           </ScrollView>
+
         </View>
       );
     }
+    // If fonts are loaded and showDayRoutePlan is 1 (Shows the route plan for the specified day)
     else if(this.state.fontsLoaded && this.state.showDayRoutePlan){
       return (
         <View style={ParentStyles.container}>
+          
+          {/* Scroll view of the list of activities for the specified day */}
           <ScrollView style={{flex:1}}>
+
+            {/* Title and description */}
             <Text style={ParentStyles.listTitle}> Discover "City Name" </Text>
             <Text style={ParentStyles.listSubtitle}> Here is the perfect route for "Number" days </Text>
-            <Text style={AccordionStyles.dayText}> {routePlan.day} </Text>
-            <View style={{alignItems:'center'}}><DayRoutePlan/></View>
+
+            {/* Specified Day */}
+            <Text style={ParentStyles.dayText}> {routePlan.day} </Text>
+            
+            {/* List of activities, description and, maps and info buttons */}
+            <View style={{alignItems:'center'}}>
+              <DayRoutePlan/>
+            </View>
+
           </ScrollView>
+        
         </View>
       );
     }
   }
 }
 
-async function getPlan(navigator) {
 
+
+
+/********************** Functions ************************/
+
+/*
+
+  getPlan Function
+  Calls the OpenAI to get the route plan for the specified days and destination
+  Calls the LoadingScreen while waiting for the response
+  Calls the ListPlans after the response is received and verified
+
+*/
+async function getPlan(navigator) {
+  // Get city and contry via the location coordinates
   //const city = await reverseGeocodeAsync(destination)
 
+  // Prompt to submit to the OpenAI
   //var prompt = 'Can you give a JSON file with a plan for ' + days +' days in ' + city[0].city +', '+ city[0].country +' using this format as example [{"day": "day1", "activities" : ["activity1", "activity2", "activity3"]}] ? Give 5 activities for each day'
   var prompt = 'Can you give a JSON file with a plan for ' + days +' days in Rome, Italy using this format as example [{"day": "day1", "activities" : ["activity1", "activity2", "activity3"]}] ? Give 5 activities for each day'
   
-  
+  // Navigate to the LoadingScreen while waiting for the response
+  navigator.navigate("LoadingScreen")
+
+  // Call the OpenAI to get the route plan
   // const res = await openai.createCompletion({
   //   model: "text-davinci-003",
   //   prompt: prompt,
@@ -571,76 +634,34 @@ async function getPlan(navigator) {
 
   //console.log(res.data.choices[0].text)
   //console.log(JSON.parse(res.data.choices[0].text))
+
+  // Parse the OpenAI response to JSON
   //listsPlan = JSON.parse(res.data.choices[0].text)
-  navigator.navigate("LoadingScreen")
 
   // Waits 10 seconds for testing purposes
   // Only needed if chatgpt is commented
   const delay = ms => new Promise(async resolve => setTimeout(resolve, ms))
   await delay(1000)
 
-  console.log(listsPlan)
-
-  navigator.navigate("ListPlans")
+  // Navigate to the ListPlans to show the days
+  navigator.navigate("Days")
   
 }
 
-function closeMap(location, Navigator){
 
-  destination = location
-  Navigator.navigate('Plans')
 
-}
 
-const styles2 = StyleSheet.create({
+/********************* Stylesheets ***********************/
+
+// Used for the PlansScreen class
+const PlansScreenStyles = StyleSheet.create({
+
     container: {
-      flex: 1,
-      backgroundColor: 'ghostwhite',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-   
-    containerMap: {
-      flex: 1,
-      padding: 10,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    button:{
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingVertical: 12,
-      paddingHorizontal: 32,
-      borderRadius: 4,
-      elevation: 3,
-      backgroundColor: 'black',
-      width: 200,
-      height:50,
-      borderRadius:10
-    },
-  
-    text:{
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'ghostwhite',
-    },
-    calloutView: {
-      flex:0.3,
-      flexDirection: "row",
-      backgroundColor: "rgba(255, 255, 255, 0.9)",
-      borderRadius: 10,
-      top:300,
-      width: "100%",
-      height: "100%",
-      
-    },
-    calloutSearch: {
-      borderColor: "transparent",
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: 300,
-      height: 50,
-      borderWidth: 0.0  
+      backgroundColor: '#C68092',
+      flex: 1, 
+      alignItems: 'stretch',
+      width:'100%',
+      height:'100%'
     },
     routeUpButton: {
       position: 'absolute',
@@ -650,7 +671,7 @@ const styles2 = StyleSheet.create({
       right: '10%',
       top: '85%',
       bottom: '8%',
-      borderRadius: windowWidth * 0.1, // 10% of the screen width
+      borderRadius: width * 0.1, // 10% of the screen width
       backgroundColor: "#5F192A"
     },
     whereToText:{
@@ -687,7 +708,7 @@ const styles2 = StyleSheet.create({
       width: '70%',
       height: '8%',
       backgroundColor: 'rgba(255, 255, 255, 0.50)',
-      borderRadius: windowWidth * 0.1, // 10% of the screen width
+      borderRadius: width * 0.1, // 10% of the screen width
     },
     whereToGoInput:{
       top:'25%',
@@ -708,7 +729,7 @@ const styles2 = StyleSheet.create({
       width: '70%',
       height: '8%',
       backgroundColor: 'rgba(255, 255, 255, 0.50)',
-      borderRadius: windowWidth * 0.1, // 10% of the screen width
+      borderRadius: width * 0.1, // 10% of the screen width
     },
     routeUpInput:{
       fontFamily: 'SansationBold',
@@ -717,66 +738,59 @@ const styles2 = StyleSheet.create({
 
 });
 
-const styles = StyleSheet.create({
+// Used for the MapsPlansScreen class
+const MapsPlansScreenStyles = StyleSheet.create({
+  container:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mapContainer:{
+    width: '100%',
+    height: '100%'
+  },
+  calloutView: {
+    flex:0.3,
+    flexDirection: "row",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    borderRadius: 10,
+    top:300,
+    width: "100%",
+    height: "100%",
+  },
+  calloutSearch: {
+    borderColor: "transparent",
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 300,
+    height: 50,
+    borderWidth: 0.0  
+  }
+})
+
+// Used for the LoadingScreen class
+const LoadingScreenStyle = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  square: {
-    width: 280,
-    height: 300,
-    backgroundColor: 'lightgrey',
-    borderRadius: 10,
-    overflow: 'hidden',
-    elevation: 5, // Adds a shadow (Android)
-    shadowColor: '#000', // Adds a shadow (iOS)
-    shadowOffset: { width: 0, height: 2 }, // Adds a shadow (iOS)
-    shadowOpacity: 0.25, // Adds a shadow (iOS)
-    shadowRadius: 3.84, // Adds a shadow (iOS)
-    margin:10
-  },
-  image: {
-    width: '100%',
-    height: '40%',
-  },
-  textContainer: {
-    padding: 10,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  description: {
-    fontSize: 14,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 10,
-  },
-  button: {
-    backgroundColor: '#3498db',
-    borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius:10
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-});
-
-const loadingScreenStyle = StyleSheet.create({
   imageLogo:{
     top:'-5%',
     width:'50%',
     height:'30%',
-  }
+  },
+  titleText:{
+    fontSize: 20,
+    fontFamily:'SansationBold'
+  },
+  subtitleText:{
+    fontSize: 15,
+    fontFamily:'Sansation'
+  },
 })
 
+// The 3 styles below are used for the DaysScreen class
 const ParentStyles = StyleSheet.create({
   container: {
     flex: 1,
@@ -802,26 +816,15 @@ const ParentStyles = StyleSheet.create({
     fontFamily:'Sansation',
     textAlign: 'center',
     marginTop: 10, // Adjust margin top as needed to bring the list name down
-  }
+  },
+  dayText: {
+    fontSize: 30,
+    textAlign: 'center',
+    fontFamily:'Sansation'
+  },
 });
 
-const AccordionStyles = StyleSheet.create({
-  container: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-  },
-  container2: {
-   
-    alignItems:'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    margin: 10,
-  },
-
+const DaysListStyles = StyleSheet.create({
   dayContainer: {
     backgroundColor: '#AAAAAA',
     borderRadius: 15,
@@ -836,23 +839,56 @@ const AccordionStyles = StyleSheet.create({
     textAlign: 'center',
     fontFamily:'Sansation'
   },
-  activitiesContainer: {
-    marginLeft: 20,
+})
+
+const ActivitiesListStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  activityItem: {
-    marginBottom: 10,
+  square: {
+    width: width * 0.9, // 90% of the device width
+    height: height * 0.4,
+    backgroundColor: 'lightgrey',
+    borderRadius: 10,
+    overflow: 'hidden',
+    elevation: 5, // Adds a shadow (Android)
+    shadowColor: '#000', // Adds a shadow (iOS)
+    shadowOffset: { width: 0, height: 2 }, // Adds a shadow (iOS)
+    shadowOpacity: 0.25, // Adds a shadow (iOS)
+    shadowRadius: 3.84, // Adds a shadow (iOS)
+    margin: 10,
   },
-  activityName: {
+  image: {
+    width: '100%',
+    height: '50%', // Adjusted to 100% to fill the container
+  },
+  textContainer: {
+    padding: 10,
+    marginTop: 10, // Adjusted margin top for better spacing
+  },
+  title: {
+    fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 10,
-    marginTop:20
+    marginBottom: 5,
   },
-  activityDescription: {
-    marginLeft: 20,
+  description: {
+    fontSize: 14,
   },
-  activityImage: {
-    width: '50%',
-    height: 200,
-    marginBottom: 10,
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+  },
+  button: {
+    backgroundColor: '#3498db',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
