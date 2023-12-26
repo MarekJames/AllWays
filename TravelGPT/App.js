@@ -15,7 +15,7 @@ App.js - Master file
 
 // Imports for the react components add buttons, images, text, etc
 import React from 'react';  
-import {StyleSheet, View, Text, TouchableOpacity, ImageBackground, Dimensions} from 'react-native';  
+import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, Dimensions, Image} from 'react-native';  
 import { LinearGradient } from 'expo-linear-gradient';
 
 import {createAppContainer} from 'react-navigation'; 
@@ -92,7 +92,8 @@ class HomeScreen extends React.Component {
           {/* Logo */}
           <View style={stylesHomeScreen.containerLogo}>
             {/* Your Logo Component */}
-            <SVGLogo style = {stylesHomeScreen.imageLogo}/>
+            {/* <SVGLogo style = {stylesHomeScreen.imageLogo}/> */}
+            <Image source = {require('./Images/RouteMasterLogo.png')} style = {{top: 200, width:'70%', height:'25%', borderRadius:15}}/>
           </View>
   
           {/* Start Button */}
@@ -156,6 +157,7 @@ const AppNavigator = createStackNavigator(
 
     Creates the app
     Associates the app navigator
+    Set the light mode default
 
 */
 export const AppContainer = createAppContainer(AppNavigator);  

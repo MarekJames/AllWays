@@ -15,7 +15,7 @@ Plans.js
 
 // Imports for the react components add buttons, images, text, etc
 import React, {useState, useEffect} from 'react';  
-import {Image, ActivityIndicator, StyleSheet, View, Text, Pressable, TextInput, Dimensions, TouchableOpacity, ScrollView, BackHandler, Alert} from 'react-native';  
+import {Image, ActivityIndicator, StyleSheet, View, Text, Pressable, TextInput, Dimensions, TouchableOpacity, ScrollView, BackHandler, Alert, Linking} from 'react-native';  
 import "react-native-url-polyfill/auto"
 import axios from 'axios';
 import {getCurrentPositionAsync, requestForegroundPermissionsAsync, reverseGeocodeAsync} from 'expo-location';
@@ -23,6 +23,7 @@ import MapView , {Marker, Callout} from 'react-native-maps'
 import * as Font from 'expo-font';
 import { Configuration, OpenAIApi } from 'openai'
 import SVGLogo from '../Images/RouteMasterLogo.svg'
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 /******************* Global Variables ********************/
@@ -32,7 +33,8 @@ var destination   // Stores the destination that the user intends to travel to
 var listsPlan     // Stores the plan received from the chatgpt api
 const width = Dimensions.get('window').width;   // Get width of the user screen
 const height = Dimensions.get('window').height; // Get height of the user screen
-
+var city
+var country
 
 listsPlan = [
   {"day": "Day 1", 
@@ -252,42 +254,49 @@ export class PlansScreen extends React.Component {
       return (
 
         <View style={PlansScreenStyles.container}>
+
+          {/* Logo */}
+          <View style={PlansScreenStyles.containerLogo}>
+            {/* Your Logo Component */}
+            <SVGLogo style = {PlansScreenStyles.imageLogo}/>
+          </View>
+
           {/* Title and subtitle */}  
           <Text style = {PlansScreenStyles.whereToText}>Where to?</Text>
           <Text style = {PlansScreenStyles.wellGiveText}>We'll give you the route for it</Text>
           
           {/* Destination Input */}
-          <Text style = {PlansScreenStyles.whereToGoText}>Where to go?</Text>
           <Pressable style = {PlansScreenStyles.whereToGoButton} onPress = { () => {this.props.navigation.navigate("MapsPlans")}}>
             <TextInput
             style = {PlansScreenStyles.whereToGoInput}
             editable = {false}
-            placeholder ="Click here"
-            placeholderTextColor={'#000000'}
+            placeholder ="City"
+            placeholderTextColor={'#000'}
             />
           </Pressable>
 
           {/* Number of days Input */}
-          <Text style = {PlansScreenStyles.howManyDaysText}>How many days?</Text>
           <Pressable style = {PlansScreenStyles.howManyDaysButton}>
             <TextInput
             style = {PlansScreenStyles.whereToGoInput}
-            placeholder ="Click here"
-            placeholderTextColor={'#000000'}
+            placeholder ="Number of days"
+            placeholderTextColor={'#000'}
             onChangeText={onChangeNumber}
             value = {number}
             />
           </Pressable>
 
           {/* Route Up button */}
-          <Pressable style = {PlansScreenStyles.routeUpButton}  onPress = { () => {getPlan(this.props.navigation)}}>
-            <TextInput
-            style = {PlansScreenStyles.routeUpInput}
-            editable = {false}
-            placeholder ="Route up!"
-            placeholderTextColor={'#FFFFFF'}
-            />
-          </Pressable>
+          <TouchableOpacity style = {PlansScreenStyles.routeUpButton}  onPress = { () => {getPlan(this.props.navigation)}}>
+          <LinearGradient
+              colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={PlansScreenStyles.gradient}
+            >
+            <Text style = {PlansScreenStyles.routeUpText}> Route! </Text>
+            </LinearGradient>
+          </TouchableOpacity>
 
         </View>  
       ); 
@@ -297,8 +306,7 @@ export class PlansScreen extends React.Component {
     render() {  
       return (
         <this.pontosScreen></this.pontosScreen>
-      )
-        
+      )    
     }
      
 }
@@ -455,7 +463,14 @@ export class DaysScreen extends React.Component {
     if (this.state.fontsLoaded) {
       return listsPlan.map((item, index) => (
         <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {routePlan= listsPlan[index]; this.setState({ showDayRoutePlan: true })}}>
-          <Text style = {DaysListStyles.dayText}>{item.day}</Text>
+          <LinearGradient
+              colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={DaysListStyles.gradient}
+            >
+            <Text style = {DaysListStyles.dayText}>{item.day}</Text>
+          </LinearGradient>
         </TouchableOpacity>
       ));
     }
@@ -534,19 +549,32 @@ export class DaysScreen extends React.Component {
 
             {/* Title and description */}
             <View style={ActivitiesListStyles.textContainer}>
-              <Text style={ActivitiesListStyles.title}>Tower of Pisa</Text>
-              <Text style={ActivitiesListStyles.description}>
-                Description text goes here. Replace this with actual description.
-              </Text>
+              <Text style={ActivitiesListStyles.title}>{item.name}</Text>
+              <Text style={ActivitiesListStyles.description}>{item.description}</Text>
             </View>
 
             {/* Buttons at the bottom */}
             <View style={ActivitiesListStyles.buttonContainer}>
-              <TouchableOpacity style={ActivitiesListStyles.button}>
-                <Text style={ActivitiesListStyles.buttonText}>Maps</Text>
+              <TouchableOpacity  style={ActivitiesListStyles.button} onPress = { () => {openGoogleMaps(item.name)}}>
+                <LinearGradient
+                  colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={ActivitiesListStyles.gradient}
+                  
+                > 
+                  <Text style={ActivitiesListStyles.buttonText}>Maps</Text>
+                </LinearGradient>
               </TouchableOpacity>
-              <TouchableOpacity style={ActivitiesListStyles.button}>
-                <Text style={ActivitiesListStyles.buttonText}>+Info</Text>
+              <TouchableOpacity style={ActivitiesListStyles.button} onPress = { () => {openGoogle(item.name)}}>
+              <LinearGradient
+                  colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={ActivitiesListStyles.gradient}
+                > 
+                  <Text style={ActivitiesListStyles.buttonText}>+Info</Text>
+                </LinearGradient>
               </TouchableOpacity>
             </View>
 
@@ -555,15 +583,70 @@ export class DaysScreen extends React.Component {
       }
     }
 
+    const HeartIcon = () => {
+      const [isSaved, setIsSaved] = useState(false); // Initially, the content is not saved
+    
+      const toggleSave = () => {
+        setIsSaved(!isSaved);
+        // Add logic to handle saving content or updating the saved status
+      };
+    
+      return (
+        <TouchableOpacity onPress={toggleSave}>
+          <View>
+            <Image
+              source={isSaved ? require('../Images/fullHeart.png') : require('../Images/emptyHeart.png')}
+              style={{ width: 30, height: 30 }}
+            />
+          </View>
+        </TouchableOpacity>
+      );
+    };
+
+    const openGoogleMaps = (activity) => {
+      const mapUrl = `https://www.google.com/maps/search/?api=1&query=${activity}`;
+  
+      Linking.openURL(mapUrl)
+        .catch(err => console.error('An error occurred', err));
+    };
+
+    const openGoogle = (activity) => {
+        // Wikipedia URL for a specific page (example: React_Native)
+        const googlePageURL = `https://www.google.com/search?q=${activity}`;
+    
+        Linking.openURL(googlePageURL)
+          .then((supported) => {
+            if (!supported) {
+              console.error("Can't open Wikipedia page.");
+            }
+          })
+          .catch((err) => console.error('An error occurred: ', err));
+    };
+
     // If fonts are loaded and showDayRoutePlan is 0 (Shows the list of days)
     if(this.state.fontsLoaded && !this.state.showDayRoutePlan){
       return (
 
         <View style={ParentStyles.container}>
           
+          <View style={ParentStyles.containerLogoHeart}>
+            {/* SVGLogo component */}
+            <View style={ParentStyles.containerLogo}>
+              <Image
+                source={require('../Images/RouteMasterLogo.png')}
+                style={ParentStyles.logo}
+              />
+            </View>
+
+            {/* HeartIcon component */}
+            <View style = {ParentStyles.iconContainer}>
+              <HeartIcon />
+            </View>
+          </View>
+
           {/* Title and description */}
-          <Text style={ParentStyles.listTitle}> Discover "City Name" </Text>
-          <Text style={ParentStyles.listSubtitle}> Here is the perfect route for "Number" days </Text>
+          <Text style={ParentStyles.listTitle}> Discover {city}, {country} </Text>
+          <Text style={ParentStyles.listSubtitle}> Here is the perfect route for {days} days </Text>
           
            {/* Scroll view with the list of days */}
           <ScrollView style={{flex:1}}>
@@ -578,12 +661,18 @@ export class DaysScreen extends React.Component {
       return (
         <View style={ParentStyles.container}>
           
+          {/* Logo */}
+          <View style = {{alignSelf:'center', padding:10}}>
+            {/* Your Logo Component */}
+            <SVGLogo style = {ParentStyles.imageLogo}/>
+          </View>
+
           {/* Scroll view of the list of activities for the specified day */}
           <ScrollView style={{flex:1}}>
 
             {/* Title and description */}
-            <Text style={ParentStyles.listTitle}> Discover "City Name" </Text>
-            <Text style={ParentStyles.listSubtitle}> Here is the perfect route for "Number" days </Text>
+            <Text style={ParentStyles.listTitle}> Discover {city}, {country} </Text>
+            <Text style={ParentStyles.listSubtitle}> Here is the perfect route for {days} days </Text>
 
             {/* Specified Day */}
             <Text style={ParentStyles.dayText}> {routePlan.day} </Text>
@@ -616,12 +705,36 @@ export class DaysScreen extends React.Component {
 */
 async function getPlan(navigator) {
   // Get city and contry via the location coordinates
-  //const city = await reverseGeocodeAsync(destination)
+  // const dest = await reverseGeocodeAsync(destination);
+  // city = dest[0].city;
+  // country = dest[0].country;
 
   // Prompt to submit to the OpenAI
   //var prompt = 'Can you give a JSON file with a plan for ' + days +' days in ' + city[0].city +', '+ city[0].country +' using this format as example [{"day": "day1", "activities" : ["activity1", "activity2", "activity3"]}] ? Give 5 activities for each day'
-  var prompt = 'Can you give a JSON file with a plan for ' + days +' days in Rome, Italy using this format as example [{"day": "day1", "activities" : ["activity1", "activity2", "activity3"]}] ? Give 5 activities for each day'
   
+  // var prompt = 'Give me a JSON format only response for the following prompt: ' +
+  // `Generate a route plan for ${days} days ` +
+  // `in ${dest[0].city}, ${dest[0].country} with 5 activities for each day with a name and description. Give a specific name for the activity and a single line description` + 
+  // `Use the following json format mandatorily: ` +
+  // ` [{  "day": "day1", ` + 
+  // `     "activities" : [{` + 
+  // `       "name": "activity name 1",
+  //         "description": "activity description"},
+
+  //       { "name": "activity name 2",
+  //         "description": "activity description"},
+
+  //       { "name": "activity name 3",
+  //         "description": "activity description"},
+
+  //       { "name": "activity name 4",
+  //         "description": "activity description"},
+
+  //       { "name": "activity name 5",
+  //         "description": "activity description"}
+  //     ]}}] `
+
+
   // Navigate to the LoadingScreen while waiting for the response
   navigator.navigate("LoadingScreen")
 
@@ -633,15 +746,15 @@ async function getPlan(navigator) {
   // })
 
   //console.log(res.data.choices[0].text)
-  //console.log(JSON.parse(res.data.choices[0].text))
+  // console.log(JSON.parse(res.data.choices[0].text))
 
-  // Parse the OpenAI response to JSON
-  //listsPlan = JSON.parse(res.data.choices[0].text)
+  // // Parse the OpenAI response to JSON
+  // listsPlan = JSON.parse(res.data.choices[0].text)
 
   // Waits 10 seconds for testing purposes
   // Only needed if chatgpt is commented
-  const delay = ms => new Promise(async resolve => setTimeout(resolve, ms))
-  await delay(1000)
+  // const delay = ms => new Promise(async resolve => setTimeout(resolve, ms))
+  // await delay(1000)
 
   // Navigate to the ListPlans to show the days
   navigator.navigate("Days")
@@ -657,84 +770,82 @@ async function getPlan(navigator) {
 const PlansScreenStyles = StyleSheet.create({
 
     container: {
-      backgroundColor: '#C68092',
+      backgroundColor: '#FFFFFF',
       flex: 1, 
-      alignItems: 'stretch',
+      alignItems:'center',
       width:'100%',
       height:'100%'
+    },
+    containerLogo:{
+      alignItems:'center',
+      margin:100
+    },
+    imageLogo:{
+      width:'100%',
+      height:'30%',
     },
     routeUpButton: {
       position: 'absolute',
       justifyContent:'center',
       alignItems:'center',
-      left: '10%',
-      right: '10%',
-      top: '85%',
-      bottom: '8%',
-      borderRadius: width * 0.1, // 10% of the screen width
-      backgroundColor: "#5F192A"
+      top:'80%'
     },
     whereToText:{
-      top:'13%',
-      left: '29%',
       fontFamily: 'SansationBold',
       fontSize: 36,
-      alignItems: 'center',
-      justifyContent: 'center',
-      color:'#FFFFFF'
+      color:'#000000',
     },
     wellGiveText:{
-      top:'13.2%',
-      left: '22%',
       fontFamily: 'Sansation',
       fontSize: 18,
-      alignItems: 'center',
-      justifyContent: 'center',
-      color:'#FFFFFF'
+      color:'#000000',
     },
     whereToGoText:{
-      top: '25%',
-      left: '15%',
       fontFamily: 'SansationBold',
       fontStyle: 'normal',
-      fontSize: 16,
+      fontSize: 20,
       alignItems: 'center',
       justifyContent: 'center',
-      color:'#FFFFFF'
+      color:'#fff'
     },
     whereToGoButton:{
-      top: '26%',
-      left: '15%',
-      width: '70%',
-      height: '8%',
-      backgroundColor: 'rgba(255, 255, 255, 0.50)',
-      borderRadius: width * 0.1, // 10% of the screen width
+      backgroundColor: '#DDD',
+      borderRadius: 20, // 10% of the screen width
+      width:'80%',
+      height:'7%',
+      margin:10,
+      justifyContent:'center'
     },
     whereToGoInput:{
-      top:'25%',
-      left:'10%',
+      fontFamily:'Sansation',
+      fontSize:20,
+      padding:15
     },
     howManyDaysText:{
-      top: '31%',
-      left: '15%',
       fontFamily: 'SansationBold',
-      fontSize: 16,
+      fontSize: 20,
       alignItems: 'center',
       justifyContent: 'center',
       color:'#FFFFFF'
     },
     howManyDaysButton:{
-      top: '32%',
-      left: '15%',
-      width: '70%',
-      height: '8%',
-      backgroundColor: 'rgba(255, 255, 255, 0.50)',
-      borderRadius: width * 0.1, // 10% of the screen width
+      backgroundColor: '#DDD',
+      borderRadius: 20, // 10% of the screen width
+      width:'80%',
+      height:'7%',
+      margin:10,
+      justifyContent:'center'
     },
-    routeUpInput:{
+    routeUpText:{
       fontFamily: 'SansationBold',
-      fontSize: 14
-    }
+      fontSize: 20,
+      color:'#FFFFFF'
+    },
+    gradient: {
+      borderRadius: 30,
+      paddingVertical: 20,
+      paddingHorizontal: 100,
+    },
 
 });
 
@@ -793,11 +904,10 @@ const LoadingScreenStyle = StyleSheet.create({
 // The 3 styles below are used for the DaysScreen class
 const ParentStyles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex:1,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: 0,
     paddingTop: 40,
-    alignItems:'center',
+    
   },
   header: {
     borderBottomWidth: 1,
@@ -805,39 +915,76 @@ const ParentStyles = StyleSheet.create({
     paddingBottom: 10,
     marginBottom: 20,
   },
+  containerLogoHeart: {
+    flexDirection: 'row', // Arrange children horizontally
+    alignItems: 'center', // Align items vertically
+    justifyContent: 'space-between', // Space evenly between children
+    padding: 20,
+    height:'20%',
+    width:'100%'
+  },
+  containerLogo: {
+    flex: 1, // Occupy available space
+    marginRight: 10, // Adjust margin as needed
+  },
+  logo: {
+    width: '100%', // Adjust logo width as needed
+    height: '100%', // Adjust logo height as needed
+    resizeMode: 'contain', // Ensure the logo fits its container
+  },
+  iconContainer: {
+    // Style heart icon container if needed
+    paddingRight:10
+  },
   listTitle: {
     fontSize: 30,
     fontFamily:'SansationBold',
     textAlign: 'center',
-    marginTop: 10, // Adjust margin top as needed to bring the list name down
   },
   listSubtitle: {
     fontSize: 20,
     fontFamily:'Sansation',
     textAlign: 'center',
     marginTop: 10, // Adjust margin top as needed to bring the list name down
+    marginBottom:20
   },
   dayText: {
     fontSize: 30,
     textAlign: 'center',
     fontFamily:'Sansation'
   },
+  saveRouteButtom:{
+    borderColor:'#000',
+    borderWidth:1,
+    borderRadius: 30,
+    paddingVertical: 20,
+    paddingHorizontal: 60,
+    margin:10,
+    alignSelf:'center',
+  },
+  saveRouteText:{
+    fontFamily:'SansationBold',
+    fontSize: 30,
+    color:'#000'
+  }
 });
 
 const DaysListStyles = StyleSheet.create({
   dayContainer: {
-    backgroundColor: '#AAAAAA',
-    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    height: 70,
-    width: 250,
-    margin:5
   },
   dayText: {
     fontSize: 30,
     textAlign: 'center',
-    fontFamily:'Sansation'
+    fontFamily:'SansationBold',
+    color:'#fff'
+  },
+  gradient: {
+    borderRadius: 30,
+    paddingVertical: 20,
+    paddingHorizontal: 100,
+    margin:10
   },
 })
 
@@ -881,14 +1028,13 @@ const ActivitiesListStyles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: 10,
   },
-  button: {
-    backgroundColor: '#3498db',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 20,
-  },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  gradient: {
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal:50,
   },
 });
