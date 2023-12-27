@@ -15,26 +15,24 @@ Plans.js
 
 // Imports for the react components add buttons, images, text, etc
 import React, {useState, useEffect} from 'react';  
-import {Image, ActivityIndicator, StyleSheet, View, Text, Pressable, TextInput, Dimensions, TouchableOpacity, ScrollView, BackHandler, Alert, Linking} from 'react-native';  
+import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text,  TextInput, Dimensions, TouchableOpacity, ScrollView, BackHandler, Alert, Linking} from 'react-native';  
 import "react-native-url-polyfill/auto"
 import axios from 'axios';
-import {getCurrentPositionAsync, requestForegroundPermissionsAsync, reverseGeocodeAsync} from 'expo-location';
-import MapView , {Marker, Callout} from 'react-native-maps'
 import * as Font from 'expo-font';
 import { Configuration, OpenAIApi } from 'openai'
 import SVGLogo from '../Images/RouteMasterLogo.svg'
 import { LinearGradient } from 'expo-linear-gradient';
 
-
 /******************* Global Variables ********************/
 
-var days          // Stores the amount of days the user intends to travel
-var destination   // Stores the destination that the user intends to travel to
-var listsPlan     // Stores the plan received from the chatgpt api
+var days;                                       // Stores the number of days the user intends to travel
+var city;                                       // Stores the city the user intends to travel to  
+var country;                                    // Stores the country the user intends to travel to
+var listsPlan;                                  // Stores the plan received from the chatgpt api
+
 const width = Dimensions.get('window').width;   // Get width of the user screen
 const height = Dimensions.get('window').height; // Get height of the user screen
-var city
-var country
+
 
 listsPlan = [
   {"day": "Day 1", 
@@ -215,6 +213,7 @@ const accessKey = 'Q37z9gm8MYXdVPEDA6MFPe77A9jHWLdM9pLtqr060Xo'
   Allows the user to choose the amount of days he/she intends to travel and the desired destination
 
 */
+
 export class PlansScreen extends React.Component {  
     
     // Constructor
@@ -242,63 +241,145 @@ export class PlansScreen extends React.Component {
     // pontosScreen Function that configs what is displayed in this class
     pontosScreen = () => {
      
-      // Defines a constant to store the amount of days
-      const [number, onChangeNumber] = React.useState('');
+  
+      const [isOpenCountry, setIsOpenCountry] = useState(false);                                                      // Control if Country dropdown was selected
+      const [selectedCountry, setSelectedCountry] = useState(null);                                                   // Contains the value of the chosen country
+      const [selectedCity, setSelectedCity] = useState(null);                                                         // Contains the value of the chosen city
+      const [countries, setCountries] = useState([]);                                                                 // Contains all the countries received from the API
+      const [isOpen, setIsOpen] = useState(false);                                                                    // Controls if Days dropdown was selected
+      const [selectedNumber, setSelectedNumber] = useState(null);                                                     // Contains the value of the selected days
+      const numbers = Array.from({ length: 10 }, (_, index) => ({ label: `${index + 1}`, value: `${index + 1}` }));   // List from 1 to 10 to allow the user to choose
+     
+      // Handles what happens when Select Country is pressed
+      const handleCountrySelect = (item) => {
+        setSelectedCountry(item);
+        setSelectedCity(null); // Reset city selection when country changes
+        setIsOpenCountry(false);
+      };
 
-      // Equals the days global variable to the value of the number variable
+      // Handles what happens when Select City is pressed
+      const handleCitySelect = (item) => {
+        setSelectedCity(item);
+      };
+
+      // Handles what happens when Number of Days is pressed
+      const handleSelect = (item) => {
+        setSelectedNumber(item.value);
+        setIsOpen(false);
+      };
+
+      // Gets all countries from the API
+      const getCountriesURL = async () => {
+        try {
+          const response = await fetch('https://restcountries.com/v3.1/all');
+          if (!response.ok) {
+            throw new Error('Failed to fetch data');
+          }
+          const data = await response.json();
+          
+          const countries = data.map((country) => ({
+            countryId: country.cca3, // Using 'cca3' as the country ID, you can use other fields as needed
+            countryName: country.name.common,
+          }));
+
+          //console.log(countries); // Display the extracted city IDs and names
+          // Sort countries alphabetically by countryName
+          const sortedCountries = countries.sort((a, b) =>
+            a.countryName.localeCompare(b.countryName)
+          );
+          setCountries(sortedCountries);
+
+        } catch (error) {
+          console.error('Error fetching countries:', error);
+        }
+      };
+      
+      // Calls the GetCountriesUrl when screen is loaded
       useEffect(() => {
-        days = number
-      })
+        getCountriesURL();
+      }, []);
 
       // Defines the screen components
       return (
-
         <View style={PlansScreenStyles.container}>
 
-          {/* Logo */}
+          {/* Logo and Title */}
           <View style={PlansScreenStyles.containerLogo}>
             {/* Your Logo Component */}
-            <SVGLogo style = {PlansScreenStyles.imageLogo}/>
+            <SVGLogo style={PlansScreenStyles.imageLogo} />
+            {/* Title and subtitle */}
+            <Text style={PlansScreenStyles.whereToText}>Where to?</Text>
+            <Text style={PlansScreenStyles.wellGiveText}>We'll give you the route for it</Text>
+          </View>
+    
+          {/* Country Dropdown */}
+          <View style={PlansScreenStyles.dropdownContainer}>
+            <TouchableOpacity onPress={() => setIsOpenCountry(!isOpenCountry)} style={PlansScreenStyles.howManyDaysButton}>
+              <Text style={PlansScreenStyles.dropdownText}>{selectedCountry ? selectedCountry : 'Select Country'}</Text>
+            </TouchableOpacity>
+            {isOpenCountry && (
+              <View style={PlansScreenStyles.dropdownList}>
+                <FlatList
+                  data={countries}
+                  keyExtractor={(item) => item.countryId}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity onPress={() => handleCountrySelect(item.countryName)} style={PlansScreenStyles.dropdownItem}>
+                      <Text>{item.countryName}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            )}
+          </View>
+    
+          {/* City Dropdown */}
+          {selectedCountry && (
+            <View style={PlansScreenStyles.dropdownContainer}>
+              <TouchableOpacity style={PlansScreenStyles.howManyDaysButton}>
+                <TextInput 
+                  style={PlansScreenStyles.dropdownInput}
+                  placeholder = {selectedCity || 'Select City'}
+                  value = {selectedCity}
+                  onChangeText={handleCitySelect}
+                  placeholderTextColor={'#000'}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+    
+          {/* Number of Days Dropdown */}
+          <TouchableOpacity onPress={() => setIsOpen(!isOpen)} style={PlansScreenStyles.howManyDaysButton}>
+            <Text style={PlansScreenStyles.dropdownText}>{selectedNumber || 'Number of days'}</Text>
+          </TouchableOpacity>
+          {isOpen && (
+            <View style={PlansScreenStyles.howManyDaysDrop}>
+              <FlatList
+                data={numbers}
+                keyExtractor={(item) => item.value}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => handleSelect(item)} style={PlansScreenStyles.dropdownItem}>
+                    <Text>{item.label}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+          )}
+    
+          {/* Route Up button */}
+          <View style={PlansScreenStyles.dropdownContainer}>
+            <TouchableOpacity style={PlansScreenStyles.routeUpButton} onPress={() => { getPlan(this.props.navigation, selectedCity, selectedCountry, selectedNumber) }}>
+              <LinearGradient
+                colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={PlansScreenStyles.gradient}
+              >
+                <Text style={PlansScreenStyles.routeUpText}>Route!</Text>
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
 
-          {/* Title and subtitle */}  
-          <Text style = {PlansScreenStyles.whereToText}>Where to?</Text>
-          <Text style = {PlansScreenStyles.wellGiveText}>We'll give you the route for it</Text>
-          
-          {/* Destination Input */}
-          <Pressable style = {PlansScreenStyles.whereToGoButton} onPress = { () => {this.props.navigation.navigate("MapsPlans")}}>
-            <TextInput
-            style = {PlansScreenStyles.whereToGoInput}
-            editable = {false}
-            placeholder ="City"
-            placeholderTextColor={'#000'}
-            />
-          </Pressable>
-
-          {/* Number of days Input */}
-          <Pressable style = {PlansScreenStyles.howManyDaysButton}>
-            <TextInput
-            style = {PlansScreenStyles.whereToGoInput}
-            placeholder ="Number of days"
-            placeholderTextColor={'#000'}
-            onChangeText={onChangeNumber}
-            value = {number}
-            />
-          </Pressable>
-
-          {/* Route Up button */}
-          <TouchableOpacity style = {PlansScreenStyles.routeUpButton}  onPress = { () => {getPlan(this.props.navigation)}}>
-          <LinearGradient
-              colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={PlansScreenStyles.gradient}
-            >
-            <Text style = {PlansScreenStyles.routeUpText}> Route! </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-
-        </View>  
+        </View> 
       ); 
     }
 
@@ -309,88 +390,6 @@ export class PlansScreen extends React.Component {
       )    
     }
      
-}
-
-/*
-
-  MapsPlansScreen class
-  Displayed when user selects to choose a destination
-  Allows the user to pin their destination in a google maps environment
-
-*/
-export class MapsPlansScreen extends React.Component { 
-
-    // Function that sets the location variable, and displays the maps screen
-    mapsScreen = () => {
-
-      // Define the location variable and the function that will update it
-      const [location, setLocation] = useState(false);
-
-      // Gets the coordinates from the pin and sets the location
-      async function getLocation(){
-  
-        const {granted} = await requestForegroundPermissionsAsync()
-        if(granted){
-          const currentPosition = await getCurrentPositionAsync() 
-          setLocation(currentPosition.coords)
-        }
-        else{
-          console.log("Didn't give permissions")
-        }
-      
-      }
-      
-      // Calls the getLocation function when the screen is loaded
-      useEffect(() => {
-        getLocation()
-      } , []);
-      
-      // Displays the screen
-      return (
-        
-        <View style={MapsPlansScreenStyles.container}> 
-          {/* Shows the Google Maps */}
-          {(location && 
-          <MapView 
-            style = {MapsPlansScreenStyles.mapContainer}
-            onPress= {e => setLocation(e.nativeEvent.coordinate)}
-            initialRegion = {{
-              latitude: location.latitude,
-              longitude:location.longitude,
-              latitudeDelta: 0.05,
-              longitudeDelta: 0.05
-            }}
-          >
-            {/* Shows the marker on the map */}
-            <Marker coordinate={{
-              latitude: location.latitude,
-              longitude: location.longitude
-            }}></Marker>
-
-          </MapView>
-          )} 
-
-          {/* Done button */}
-          <Callout>
-            <View style={MapsPlansScreenStyles.calloutView} >
-              <Pressable style={MapsPlansScreenStyles.calloutSearch} onPress = {() => {destination = location; this.props.navigation.navigate('Plans')}}>
-                <Text >
-                  Done
-                </Text>
-              </Pressable>
-            </View>
-          </Callout>
-
-        </View> 
-      );
-    }
-    
-    // Renders the screen by calling the mapsScreen function
-    render() { 
-        return (
-          <this.mapsScreen/>
-        )
-    }
 }
 
 /*
@@ -703,36 +702,36 @@ export class DaysScreen extends React.Component {
   Calls the ListPlans after the response is received and verified
 
 */
-async function getPlan(navigator) {
+async function getPlan(navigator, cityName, countryName, daysNumber) {
   // Get city and contry via the location coordinates
-  // const dest = await reverseGeocodeAsync(destination);
-  // city = dest[0].city;
-  // country = dest[0].country;
-
+  city = cityName;
+  country = countryName;
+  days = daysNumber;
+  
   // Prompt to submit to the OpenAI
   //var prompt = 'Can you give a JSON file with a plan for ' + days +' days in ' + city[0].city +', '+ city[0].country +' using this format as example [{"day": "day1", "activities" : ["activity1", "activity2", "activity3"]}] ? Give 5 activities for each day'
   
-  // var prompt = 'Give me a JSON format only response for the following prompt: ' +
-  // `Generate a route plan for ${days} days ` +
-  // `in ${dest[0].city}, ${dest[0].country} with 5 activities for each day with a name and description. Give a specific name for the activity and a single line description` + 
-  // `Use the following json format mandatorily: ` +
-  // ` [{  "day": "day1", ` + 
-  // `     "activities" : [{` + 
-  // `       "name": "activity name 1",
-  //         "description": "activity description"},
+  var prompt = 'Give me a JSON format only response for the following prompt: ' +
+  `Generate a route plan for ${days} days ` +
+  `in ${city}, ${country} with 5 activities for each day with a name and description. Give a specific name for the activity and a single line description` + 
+  `Use the following json format mandatorily: ` +
+  ` [{  "day": "day1", ` + 
+  `     "activities" : [{` + 
+  `       "name": "activity name 1",
+          "description": "activity description"},
 
-  //       { "name": "activity name 2",
-  //         "description": "activity description"},
+        { "name": "activity name 2",
+          "description": "activity description"},
 
-  //       { "name": "activity name 3",
-  //         "description": "activity description"},
+        { "name": "activity name 3",
+          "description": "activity description"},
 
-  //       { "name": "activity name 4",
-  //         "description": "activity description"},
+        { "name": "activity name 4",
+          "description": "activity description"},
 
-  //       { "name": "activity name 5",
-  //         "description": "activity description"}
-  //     ]}}] `
+        { "name": "activity name 5",
+          "description": "activity description"}
+      ]}}] `
 
 
   // Navigate to the LoadingScreen while waiting for the response
@@ -748,8 +747,8 @@ async function getPlan(navigator) {
   //console.log(res.data.choices[0].text)
   // console.log(JSON.parse(res.data.choices[0].text))
 
-  // // Parse the OpenAI response to JSON
-  // listsPlan = JSON.parse(res.data.choices[0].text)
+  // Parse the OpenAI response to JSON
+  //listsPlan = JSON.parse(res.data.choices[0].text)
 
   // Waits 10 seconds for testing purposes
   // Only needed if chatgpt is commented
@@ -768,116 +767,112 @@ async function getPlan(navigator) {
 
 // Used for the PlansScreen class
 const PlansScreenStyles = StyleSheet.create({
-
-    container: {
-      backgroundColor: '#FFFFFF',
-      flex: 1, 
-      alignItems:'center',
-      width:'100%',
-      height:'100%'
-    },
-    containerLogo:{
-      alignItems:'center',
-      margin:100
-    },
-    imageLogo:{
-      width:'100%',
-      height:'30%',
-    },
-    routeUpButton: {
-      position: 'absolute',
-      justifyContent:'center',
-      alignItems:'center',
-      top:'80%'
-    },
-    whereToText:{
-      fontFamily: 'SansationBold',
-      fontSize: 36,
-      color:'#000000',
-    },
-    wellGiveText:{
-      fontFamily: 'Sansation',
-      fontSize: 18,
-      color:'#000000',
-    },
-    whereToGoText:{
-      fontFamily: 'SansationBold',
-      fontStyle: 'normal',
-      fontSize: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-      color:'#fff'
-    },
-    whereToGoButton:{
-      backgroundColor: '#DDD',
-      borderRadius: 20, // 10% of the screen width
-      width:'80%',
-      height:'7%',
-      margin:10,
-      justifyContent:'center'
-    },
-    whereToGoInput:{
-      fontFamily:'Sansation',
-      fontSize:20,
-      padding:15
-    },
-    howManyDaysText:{
-      fontFamily: 'SansationBold',
-      fontSize: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-      color:'#FFFFFF'
-    },
-    howManyDaysButton:{
-      backgroundColor: '#DDD',
-      borderRadius: 20, // 10% of the screen width
-      width:'80%',
-      height:'7%',
-      margin:10,
-      justifyContent:'center'
-    },
-    routeUpText:{
-      fontFamily: 'SansationBold',
-      fontSize: 20,
-      color:'#FFFFFF'
-    },
-    gradient: {
-      borderRadius: 30,
-      paddingVertical: 20,
-      paddingHorizontal: 100,
-    },
-
-});
-
-// Used for the MapsPlansScreen class
-const MapsPlansScreenStyles = StyleSheet.create({
-  container:{
+  container: {
+    backgroundColor: '#FFFFFF',
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 20,
   },
-  mapContainer:{
+  containerLogo: {
+    alignItems: 'center',
+    marginTop: 40,
+    marginBottom: 20,
+  },
+  containerSelects: {
+    alignItems: 'center',
     width: '100%',
-    height: '100%'
   },
-  calloutView: {
-    flex:0.3,
-    flexDirection: "row",
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
+  containerRouteUp: {
+    marginBottom: 30,
+    width: '100%',
+    alignItems: 'center',
+  },
+  imageLogo: {
+    width: '80%',
+    height: 150,
+    margin:10
+  },
+  whereToText: {
+    fontFamily: 'SansationBold',
+    fontSize: 36,
+    color: '#000000',
+    marginTop: 10,
+  },
+  wellGiveText: {
+    fontFamily: 'Sansation',
+    fontSize: 18,
+    color: '#000000',
+    marginTop: 5,
+  },
+  dropdownContainer: {
+  
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginVertical: 10,
+  },
+  dropdown: {
+    borderWidth: 1,
+    padding: 10,
+    width: '40%',
+    marginHorizontal: 5,
+    alignItems: 'center',
+  },
+  dropdownText: {
+    fontFamily: 'Sansation',
+    fontSize: 16,
+  },
+  dropdownInput: {
+    width:'100%',
+    textAlign:'center',
+    fontFamily: 'Sansation',
+    fontSize: 16,
+  },
+  dropdownList: {
+    borderWidth: 1,
+    width: '40%',
+    maxHeight: 150,
+    backgroundColor: '#DDD',
     borderRadius: 10,
-    top:300,
-    width: "100%",
-    height: "100%",
   },
-  calloutSearch: {
-    borderColor: "transparent",
+  dropdownItem: {
+    fontFamily:'Sansation',
+    fontSize:16,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+  },
+  howManyDaysButton: {
+    backgroundColor: '#DDD',
+    borderRadius: 20,
+    width: '80%',
+    height: 50,
+    marginVertical: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 300,
-    height: 50,
-    borderWidth: 0.0  
-  }
-})
+  },
+  howManyDaysDrop: {
+    backgroundColor: '#DDD',
+    borderRadius: 20,
+    height: 150,
+    width: '80%',
+  },
+  routeUpButton: {
+    justifyContent:'center',
+    alignItems:'center',
+  },
+  routeUpText: {
+    fontFamily: 'SansationBold',
+    fontSize: 20,
+    color: '#FFFFFF',
+  },
+  gradient: {
+    borderRadius: 30,
+    paddingVertical: '5%',
+    paddingHorizontal: '30%',
+  },
+});
 
 // Used for the LoadingScreen class
 const LoadingScreenStyle = StyleSheet.create({

@@ -24,7 +24,7 @@ import {createStackNavigator} from 'react-navigation-stack';
 // Imports to get the screens of other javascript files, necessary for the app navigator ( navigate through screens )
 import {TripsScreen, ListsScreen, RegionsScreen, TripsFilterScreen, MapsTripsScreen, LinksScreen } from './Views/Trips.js'
 import PointsScreen, { ListsPointsScreen, LoadingPointsScreen, MapsPointsScreen } from './Views/Points.js'
-import {PlansScreen, MapsPlansScreen, DayRoutePlanScreen, LoadingScreen, DaysScreen} from './Views/Plans.js'
+import {PlansScreen, LoadingScreen, DaysScreen} from './Views/Plans.js'
 
 
 // Imports to get text fonts, images, videos, etc
@@ -136,7 +136,6 @@ const AppNavigator = createStackNavigator(
         Plans: PlansScreen,
         Regions: RegionsScreen,
         TripsFilter: TripsFilterScreen,
-        MapsPlans: MapsPlansScreen,
         MapsTrips: MapsTripsScreen,
         Links: LinksScreen,
         MapsPoints: MapsPointsScreen,
