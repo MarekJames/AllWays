@@ -15,23 +15,25 @@ Plans.js
 
 // Imports for the react components add buttons, images, text, etc
 import React, {useState, useEffect} from 'react';  
-import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text,  TextInput, Dimensions, TouchableOpacity, ScrollView, BackHandler, Alert, Linking} from 'react-native';  
-import "react-native-url-polyfill/auto"
+import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text,  TextInput, Dimensions, TouchableOpacity, ScrollView, BackHandler, Alert, Linking} from 'react-native'; 
 import axios from 'axios';
 import * as Font from 'expo-font';
 import { Configuration, OpenAIApi } from 'openai'
-import SVGLogo from '../Images/RouteMasterLogo.svg'
 import { LinearGradient } from 'expo-linear-gradient';
+import SVGLogo from '../Images/RouteMasterLogo.svg'
+
+
+
 
 /******************* Global Variables ********************/
 
-var days;                                       // Stores the number of days the user intends to travel
-var city;                                       // Stores the city the user intends to travel to  
-var country;                                    // Stores the country the user intends to travel to
-var listsPlan;                                  // Stores the plan received from the chatgpt api
+var days                                       // Stores the number of days the user intends to travel
+var city                                       // Stores the city the user intends to travel to  
+var country                                    // Stores the country the user intends to travel to
+var listsPlan                                  // Stores the plan received from the chatgpt api
 
-const width = Dimensions.get('window').width;   // Get width of the user screen
-const height = Dimensions.get('window').height; // Get height of the user screen
+const width = Dimensions.get('window').width   // Get width of the user screen
+const height = Dimensions.get('window').height // Get height of the user screen
 
 
 listsPlan = [
@@ -216,181 +218,182 @@ const accessKey = 'Q37z9gm8MYXdVPEDA6MFPe77A9jHWLdM9pLtqr060Xo'
 
 export class PlansScreen extends React.Component {  
     
-    // Constructor
-    constructor(props) {
-      super(props);
-      this.state = {
-          fontsLoaded: false
-      }
+  // Constructor
+  constructor(props) {
+    super(props);
+    this.state = {
+        fontsLoaded: false
     }
+  }
 
-    // Load text fonts function
-    async loadFonts() {
-      await Font.loadAsync({
-        'Sansation': require('../assets/fonts/Sansation_Regular.ttf'),
-        'SansationBold': require('../assets/fonts/Sansation_Bold.ttf'),
-      });
-      this.setState({ fontsLoaded: true });
-    }
+  // Load text fonts function
+  async loadFonts() {
+    await Font.loadAsync({
+      'Sansation': require('../assets/fonts/Sansation_Regular.ttf'),
+      'SansationBold': require('../assets/fonts/Sansation_Bold.ttf'),
+    });
+    this.setState({ fontsLoaded: true });
+  }
 
-    // Call load fonts function after component mounted
-    componentDidMount() {
-      this.loadFonts();
-    }
+  // Call load fonts function after component mounted
+  componentDidMount() {
+    this.loadFonts();
+  }
 
-    // pontosScreen Function that configs what is displayed in this class
-    pontosScreen = () => {
-     
-  
-      const [isOpenCountry, setIsOpenCountry] = useState(false);                                                      // Control if Country dropdown was selected
-      const [selectedCountry, setSelectedCountry] = useState(null);                                                   // Contains the value of the chosen country
-      const [selectedCity, setSelectedCity] = useState(null);                                                         // Contains the value of the chosen city
-      const [countries, setCountries] = useState([]);                                                                 // Contains all the countries received from the API
-      const [isOpen, setIsOpen] = useState(false);                                                                    // Controls if Days dropdown was selected
-      const [selectedNumber, setSelectedNumber] = useState(null);                                                     // Contains the value of the selected days
-      const numbers = Array.from({ length: 10 }, (_, index) => ({ label: `${index + 1}`, value: `${index + 1}` }));   // List from 1 to 10 to allow the user to choose
-     
-      // Handles what happens when Select Country is pressed
-      const handleCountrySelect = (item) => {
-        setSelectedCountry(item);
-        setSelectedCity(null); // Reset city selection when country changes
-        setIsOpenCountry(false);
-      };
+  // pontosScreen Function that configs what is displayed in this class
+  pontosScreen = () => {
+   
 
-      // Handles what happens when Select City is pressed
-      const handleCitySelect = (item) => {
-        setSelectedCity(item);
-      };
+    const [isOpenCountry, setIsOpenCountry] = useState(false);                                                      // Control if Country dropdown was selected
+    const [selectedCountry, setSelectedCountry] = useState(null);                                                   // Contains the value of the chosen country
+    const [selectedCity, setSelectedCity] = useState(null);                                                         // Contains the value of the chosen city
+    const [countries, setCountries] = useState([]);                                                                 // Contains all the countries received from the API
+    const [isOpen, setIsOpen] = useState(false);                                                                    // Controls if Days dropdown was selected
+    const [selectedNumber, setSelectedNumber] = useState(null);                                                     // Contains the value of the selected days
+    const numbers = Array.from({ length: 10 }, (_, index) => ({ label: `${index + 1}`, value: `${index + 1}` }));   // List from 1 to 10 to allow the user to choose
+   
+    // Handles what happens when Select Country is pressed
+    const handleCountrySelect = (item) => {
+      setSelectedCountry(item);
+      setSelectedCity(null); // Reset city selection when country changes
+      setIsOpenCountry(false);
+    };
 
-      // Handles what happens when Number of Days is pressed
-      const handleSelect = (item) => {
-        setSelectedNumber(item.value);
-        setIsOpen(false);
-      };
+    // Handles what happens when Select City is pressed
+    const handleCitySelect = (item) => {
+      setSelectedCity(item);
+    };
 
-      // Gets all countries from the API
-      const getCountriesURL = async () => {
-        try {
-          const response = await fetch('https://restcountries.com/v3.1/all');
-          if (!response.ok) {
-            throw new Error('Failed to fetch data');
-          }
-          const data = await response.json();
-          
-          const countries = data.map((country) => ({
-            countryId: country.cca3, // Using 'cca3' as the country ID, you can use other fields as needed
-            countryName: country.name.common,
-          }));
+    // Handles what happens when Number of Days is pressed
+    const handleSelect = (item) => {
+      setSelectedNumber(item.value);
+      setIsOpen(false);
+    };
 
-          //console.log(countries); // Display the extracted city IDs and names
-          // Sort countries alphabetically by countryName
-          const sortedCountries = countries.sort((a, b) =>
-            a.countryName.localeCompare(b.countryName)
-          );
-          setCountries(sortedCountries);
-
-        } catch (error) {
-          console.error('Error fetching countries:', error);
+    // Gets all countries from the API
+    const getCountriesURL = async () => {
+      try {
+        const response = await fetch('https://restcountries.com/v3.1/all');
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
         }
-      };
-      
-      // Calls the GetCountriesUrl when screen is loaded
-      useEffect(() => {
-        getCountriesURL();
-      }, []);
+        const data = await response.json();
+        
+        const countries = data.map((country) => ({
+          countryId: country.cca3, // Using 'cca3' as the country ID, you can use other fields as needed
+          countryName: country.name.common,
+        }));
 
-      // Defines the screen components
-      return (
-        <View style={PlansScreenStyles.container}>
+        //console.log(countries); // Display the extracted city IDs and names
+        // Sort countries alphabetically by countryName
+        const sortedCountries = countries.sort((a, b) =>
+          a.countryName.localeCompare(b.countryName)
+        );
+        setCountries(sortedCountries);
 
-          {/* Logo and Title */}
-          <View style={PlansScreenStyles.containerLogo}>
-            {/* Your Logo Component */}
-            <SVGLogo style={PlansScreenStyles.imageLogo} />
-            {/* Title and subtitle */}
-            <Text style={PlansScreenStyles.whereToText}>Where to?</Text>
-            <Text style={PlansScreenStyles.wellGiveText}>We'll give you the route for it</Text>
-          </View>
+      } catch (error) {
+        console.error('Error fetching countries:', error);
+      }
+    };
     
-          {/* Country Dropdown */}
-          <View style={PlansScreenStyles.dropdownContainer}>
-            <TouchableOpacity onPress={() => setIsOpenCountry(!isOpenCountry)} style={PlansScreenStyles.howManyDaysButton}>
-              <Text style={PlansScreenStyles.dropdownText}>{selectedCountry ? selectedCountry : 'Select Country'}</Text>
-            </TouchableOpacity>
-            {isOpenCountry && (
-              <View style={PlansScreenStyles.dropdownList}>
-                <FlatList
-                  data={countries}
-                  keyExtractor={(item) => item.countryId}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => handleCountrySelect(item.countryName)} style={PlansScreenStyles.dropdownItem}>
-                      <Text>{item.countryName}</Text>
-                    </TouchableOpacity>
-                  )}
-                />
-              </View>
-            )}
-          </View>
-    
-          {/* City Dropdown */}
-          {selectedCountry && (
-            <View style={PlansScreenStyles.dropdownContainer}>
-              <TouchableOpacity style={PlansScreenStyles.howManyDaysButton}>
-                <TextInput 
-                  style={PlansScreenStyles.dropdownInput}
-                  placeholder = {selectedCity || 'Select City'}
-                  value = {selectedCity}
-                  onChangeText={handleCitySelect}
-                  placeholderTextColor={'#000'}
-                />
-              </TouchableOpacity>
-            </View>
-          )}
-    
-          {/* Number of Days Dropdown */}
-          <TouchableOpacity onPress={() => setIsOpen(!isOpen)} style={PlansScreenStyles.howManyDaysButton}>
-            <Text style={PlansScreenStyles.dropdownText}>{selectedNumber || 'Number of days'}</Text>
+    // Calls the GetCountriesUrl when screen is loaded
+    useEffect(() => {
+      getCountriesURL();
+    }, []);
+
+    // Defines the screen components
+    return (
+      <View style={PlansScreenStyles.container}>
+
+        {/* Logo and Title */}
+        <View style={PlansScreenStyles.containerLogo}>
+          {/* Your Logo Component */}
+          <SVGLogo style={PlansScreenStyles.imageLogo} />
+          {/* Title and subtitle */}
+          <Text style={PlansScreenStyles.whereToText}>Where to?</Text>
+          <Text style={PlansScreenStyles.wellGiveText}>We'll give you the route for it</Text>
+        </View>
+  
+        {/* Country Dropdown */}
+        <View style={PlansScreenStyles.dropdownContainer}>
+          <TouchableOpacity onPress={() => setIsOpenCountry(!isOpenCountry)} style={PlansScreenStyles.howManyDaysButton}>
+            <Text style={PlansScreenStyles.dropdownText}>{selectedCountry ? selectedCountry : 'Select Country'}</Text>
           </TouchableOpacity>
-          {isOpen && (
-            <View style={PlansScreenStyles.howManyDaysDrop}>
+          {isOpenCountry && (
+            <View style={PlansScreenStyles.dropdownList}>
               <FlatList
-                data={numbers}
-                keyExtractor={(item) => item.value}
+                data={countries}
+                keyExtractor={(item) => item.countryId}
                 renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => handleSelect(item)} style={PlansScreenStyles.dropdownItem}>
-                    <Text>{item.label}</Text>
+                  <TouchableOpacity onPress={() => handleCountrySelect(item.countryName)} style={PlansScreenStyles.dropdownItem}>
+                    <Text>{item.countryName}</Text>
                   </TouchableOpacity>
                 )}
               />
             </View>
           )}
-    
-          {/* Route Up button */}
+        </View>
+  
+        {/* City Dropdown */}
+        {selectedCountry && (
           <View style={PlansScreenStyles.dropdownContainer}>
-            <TouchableOpacity style={PlansScreenStyles.routeUpButton} onPress={() => { getPlan(this.props.navigation, selectedCity, selectedCountry, selectedNumber) }}>
-              <LinearGradient
-                colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={PlansScreenStyles.gradient}
-              >
-                <Text style={PlansScreenStyles.routeUpText}>Route!</Text>
-              </LinearGradient>
+            <TouchableOpacity style={PlansScreenStyles.howManyDaysButton}>
+              <TextInput 
+                style={PlansScreenStyles.dropdownInput}
+                placeholder = {selectedCity || 'Select City'}
+                value = {selectedCity}
+                onChangeText={handleCitySelect}
+                placeholderTextColor={'#000'}
+              />
             </TouchableOpacity>
           </View>
+        )}
+  
+        {/* Number of Days Dropdown */}
+        <TouchableOpacity onPress={() => setIsOpen(!isOpen)} style={PlansScreenStyles.howManyDaysButton}>
+          <Text style={PlansScreenStyles.dropdownText}>{selectedNumber || 'Number of days'}</Text>
+        </TouchableOpacity>
+        {isOpen && (
+          <View style={PlansScreenStyles.howManyDaysDrop}>
+            <FlatList
+              data={numbers}
+              keyExtractor={(item) => item.value}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => handleSelect(item)} style={PlansScreenStyles.dropdownItem}>
+                  <Text>{item.label}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        )}
+  
+        {/* Route Up button */}
+        <View style={PlansScreenStyles.dropdownContainer}>
+          <TouchableOpacity style={PlansScreenStyles.routeUpButton} onPress={() => { getPlan(this.props.navigation, selectedCity, selectedCountry, selectedNumber) }}>
+            <LinearGradient
+              colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={PlansScreenStyles.gradient}
+            >
+              <Text style={PlansScreenStyles.routeUpText}>Route!</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
 
-        </View> 
-      ); 
-    }
+      </View> 
+    ); 
+  }
 
-    // Renders the screen components defined in the pontosScreen function
-    render() {  
-      return (
-        <this.pontosScreen></this.pontosScreen>
-      )    
-    }
-     
+  // Renders the screen components defined in the pontosScreen function
+  render() {  
+    return (
+      <this.pontosScreen></this.pontosScreen>
+    )    
+  }
+   
 }
+
 
 /*
 
