@@ -14,8 +14,9 @@ App.js - Master file
 /******************** Imports Section ********************/ 
 
 // Imports for the react components add buttons, images, text, etc
-import React from 'react';  
-import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, Dimensions, Image} from 'react-native';  
+import React from 'react'; 
+import {useEffect} from 'react'; 
+import { Appearance, StyleSheet, View, Text, TouchableOpacity, ImageBackground, Dimensions, Image, Platform, BackHandler} from 'react-native';  
 import { LinearGradient } from 'expo-linear-gradient';
 
 import {createAppContainer} from 'react-navigation'; 
@@ -28,7 +29,10 @@ import {PlansScreen, LoadingScreen, DaysScreen} from './Views/Plans.js'
 // Imports to get text fonts, images, videos, etc
 import * as Font from 'expo-font';
 
-
+// Imports for the nav bar
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 
 
 
@@ -36,8 +40,6 @@ import * as Font from 'expo-font';
 
 const windowWidth = Dimensions.get('window').width;   // Get width of the user screen
 const windowHeight = Dimensions.get('window').height; // Get height of the user screen
-
-
 
 
 /*********************** Classes *************************/
@@ -95,7 +97,7 @@ class HomeScreen extends React.Component {
           </View>
   
           {/* Start Button */}
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('Plans')} style={stylesHomeScreen.startButton}>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('Tabs')} style={stylesHomeScreen.startButton}>
             <LinearGradient
               colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
               start={{ x: 0, y: 0 }}
@@ -120,6 +122,91 @@ class HomeScreen extends React.Component {
 
 /* 
 
+  Defines the navigation bar, the icons, the text, etc
+
+*/
+const Tab = createBottomTabNavigator();
+const BottomTabNavigator = () => {
+
+ 
+
+  useEffect(() => {
+   
+    if (Platform.OS === 'android') {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        // Prevent default back navigation action
+        return true;
+      });
+
+      return () => backHandler.remove();
+    }
+  }, []);
+
+  return (
+  <NavigationContainer>
+
+    <Tab.Navigator 
+      screenOptions={{
+        headerShown: false, // Hide the header for tab navigator
+        tabBarStyle: {
+          borderTopWidth: 0,
+          backgroundColor: 'transparent',
+          elevation: 0, // this solved the triangle type view problem in android
+        },
+        tabBarLabelStyle: {
+          fontSize: 14, // Adjust label font size
+          fontWeight: 'bold', // Make label text bold
+        },
+        gestureEnabled: Platform.OS === 'ios' ? false : true, // Disable gesture only for iOS
+      }}
+      
+    >
+
+      <Tab.Screen 
+        name="Plans" 
+        component={PlansScreen}
+        options={{
+          title: 'Search',
+          tabBarIcon: ({size,focused,color}) => {
+            return (
+             <Ionicons name={'search-outline'} size={size+3} color={color} />
+            )
+          },
+        }}
+      />
+      <Tab.Screen 
+        name="Days" 
+        component={DaysScreen}
+        options={{
+          title: 'Saved',
+          tabBarIcon: ({size,focused,color}) => {
+            return (
+             <Ionicons name={'heart-outline'} size={size+3} color={color} />
+            )
+          },
+        }} 
+      />
+
+      <Tab.Screen 
+        name="Home" 
+        component={HomeScreen} 
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({size,focused,color}) => {
+            return (
+             <Ionicons name={'settings-outline'} size={size+3} color={color} />
+            )
+          },
+        }} 
+      />
+
+    </Tab.Navigator>
+
+  </NavigationContainer>
+)};
+
+/* 
+
   Inserts screens into the navigator and associates a tag for each one
   First screen is defined in "initialRouteName"
   Header mode to none defines that the screens don't have an header that says the name of the screens
@@ -131,6 +218,7 @@ const AppNavigator = createStackNavigator(
         Plans: PlansScreen,
         LoadingScreen: LoadingScreen,
         Days: DaysScreen,
+        Tabs: { screen: BottomTabNavigator }
         //Test: MyComponent
     
     },  
@@ -148,6 +236,7 @@ const AppNavigator = createStackNavigator(
 
 */
 export const AppContainer = createAppContainer(AppNavigator);  
+
 export default class App extends React.Component {  
     render() {  
         return <AppContainer />;  
