@@ -302,87 +302,89 @@ export class PlansScreen extends React.Component {
     }, []);
 
     // Defines the screen components
-    return (
-      <View style={PlansScreenStyles.container}>
+    if (this.state.fontsLoaded) {
+      return (
+        <View style={PlansScreenStyles.container}>
 
-        {/* Logo and Title */}
-        <View style={PlansScreenStyles.containerLogo}>
-          {/* Your Logo Component */}
-          <SVGLogo style={PlansScreenStyles.imageLogo} />
-          {/* Title and subtitle */}
-          <Text style={PlansScreenStyles.whereToText}>Where to?</Text>
-          <Text style={PlansScreenStyles.wellGiveText}>We'll give you the route for it</Text>
-        </View>
-  
-        {/* Country Dropdown */}
-        <View style={PlansScreenStyles.dropdownContainer}>
-          <TouchableOpacity onPress={() => setIsOpenCountry(!isOpenCountry)} style={PlansScreenStyles.howManyDaysButton}>
-            <Text style={PlansScreenStyles.dropdownText}>{selectedCountry ? selectedCountry : 'Select Country'}</Text>
+          {/* Logo and Title */}
+          <View style={PlansScreenStyles.containerLogo}>
+            {/* Your Logo Component */}
+            <SVGLogo style={PlansScreenStyles.imageLogo} />
+            {/* Title and subtitle */}
+            <Text style={PlansScreenStyles.whereToText}>Where to?</Text>
+            <Text style={PlansScreenStyles.wellGiveText}>We'll give you the route for it</Text>
+          </View>
+    
+          {/* Country Dropdown */}
+          <View style={PlansScreenStyles.dropdownContainer}>
+            <TouchableOpacity onPress={() => setIsOpenCountry(!isOpenCountry)} style={PlansScreenStyles.howManyDaysButton}>
+              <Text style={PlansScreenStyles.dropdownText}>{selectedCountry ? selectedCountry : 'Select Country'}</Text>
+            </TouchableOpacity>
+            {isOpenCountry && (
+              <View style={PlansScreenStyles.dropdownList}>
+                <FlatList
+                  data={countries}
+                  keyExtractor={(item) => item.countryId}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity onPress={() => handleCountrySelect(item.countryName)} style={PlansScreenStyles.dropdownItem}>
+                      <Text>{item.countryName}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            )}
+          </View>
+    
+          {/* City Dropdown */}
+          {selectedCountry && (
+            <View style={PlansScreenStyles.dropdownContainer}>
+              <TouchableOpacity style={PlansScreenStyles.howManyDaysButton}>
+                <TextInput 
+                  style={PlansScreenStyles.dropdownInput}
+                  placeholder = {selectedCity || 'Select City'}
+                  value = {selectedCity}
+                  onChangeText={handleCitySelect}
+                  placeholderTextColor={'#000'}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+    
+          {/* Number of Days Dropdown */}
+          <TouchableOpacity onPress={() => setIsOpen(!isOpen)} style={PlansScreenStyles.howManyDaysButton}>
+            <Text style={PlansScreenStyles.dropdownText}>{selectedNumber || 'Number of days'}</Text>
           </TouchableOpacity>
-          {isOpenCountry && (
-            <View style={PlansScreenStyles.dropdownList}>
+          {isOpen && (
+            <View style={PlansScreenStyles.howManyDaysDrop}>
               <FlatList
-                data={countries}
-                keyExtractor={(item) => item.countryId}
+                data={numbers}
+                keyExtractor={(item) => item.value}
                 renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => handleCountrySelect(item.countryName)} style={PlansScreenStyles.dropdownItem}>
-                    <Text>{item.countryName}</Text>
+                  <TouchableOpacity onPress={() => handleSelect(item)} style={PlansScreenStyles.dropdownItem}>
+                    <Text>{item.label}</Text>
                   </TouchableOpacity>
                 )}
               />
             </View>
           )}
-        </View>
-  
-        {/* City Dropdown */}
-        {selectedCountry && (
+    
+          {/* Route Up button */}
           <View style={PlansScreenStyles.dropdownContainer}>
-            <TouchableOpacity style={PlansScreenStyles.howManyDaysButton}>
-              <TextInput 
-                style={PlansScreenStyles.dropdownInput}
-                placeholder = {selectedCity || 'Select City'}
-                value = {selectedCity}
-                onChangeText={handleCitySelect}
-                placeholderTextColor={'#000'}
-              />
+            <TouchableOpacity style={PlansScreenStyles.routeUpButton} onPress={() => { getPlan(this.props.navigation, selectedCity, selectedCountry, selectedNumber) }}>
+              <LinearGradient
+                colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={PlansScreenStyles.gradient}
+              >
+                <Text style={PlansScreenStyles.routeUpText}>Route!</Text>
+              </LinearGradient>
             </TouchableOpacity>
           </View>
-        )}
-  
-        {/* Number of Days Dropdown */}
-        <TouchableOpacity onPress={() => setIsOpen(!isOpen)} style={PlansScreenStyles.howManyDaysButton}>
-          <Text style={PlansScreenStyles.dropdownText}>{selectedNumber || 'Number of days'}</Text>
-        </TouchableOpacity>
-        {isOpen && (
-          <View style={PlansScreenStyles.howManyDaysDrop}>
-            <FlatList
-              data={numbers}
-              keyExtractor={(item) => item.value}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleSelect(item)} style={PlansScreenStyles.dropdownItem}>
-                  <Text>{item.label}</Text>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        )}
-  
-        {/* Route Up button */}
-        <View style={PlansScreenStyles.dropdownContainer}>
-          <TouchableOpacity style={PlansScreenStyles.routeUpButton} onPress={() => { getPlan(this.props.navigation, selectedCity, selectedCountry, selectedNumber) }}>
-            <LinearGradient
-              colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={PlansScreenStyles.gradient}
-            >
-              <Text style={PlansScreenStyles.routeUpText}>Route!</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
 
-      </View> 
-    ); 
+        </View> 
+      ); 
+    }
   }
 
   // Renders the screen components defined in the pontosScreen function

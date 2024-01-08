@@ -24,7 +24,7 @@ import {createStackNavigator} from 'react-navigation-stack';
 
 // Imports to get the screens of other javascript files, necessary for the app navigator ( navigate through screens )
 import {PlansScreen, LoadingScreen, DaysScreen} from './Views/Plans.js'
-
+import { LoginUserScreen, RegisterUserScreen } from './Views/User.js';
 
 // Imports to get text fonts, images, videos, etc
 import * as Font from 'expo-font';
@@ -218,12 +218,14 @@ const AppNavigator = createStackNavigator(
         Plans: PlansScreen,
         LoadingScreen: LoadingScreen,
         Days: DaysScreen,
+        Login: LoginUserScreen,
+        Register: RegisterUserScreen,
         Tabs: { screen: BottomTabNavigator }
         //Test: MyComponent
     
     },  
     {  
-        initialRouteName: "Home",
+        initialRouteName: "Login",
         headerMode: 'none'
     }  
 );  
