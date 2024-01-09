@@ -13,15 +13,16 @@ User.js
 /******************** Imports Section ********************/ 
 
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Pressable, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground } from 'react-native';
 
 import { initializeApp } from "firebase/app";
 import {getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithIdToken} from 'firebase/auth';
+import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
 import {firebaseConfig} from '../firebase-config';
 import { Ionicons } from '@expo/vector-icons';
+//import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 /******************* Global Variables ********************/
 
@@ -42,42 +43,119 @@ export class LoginUserScreen extends React.Component{
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     
+    const [invalidEmail, setInvalidEmail] = useState('');
+    const [invalidPassword, setInvalidPassword] = useState('');
+    
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app, {
       persistence: getReactNativePersistence(ReactNativeAsyncStorage)
     });
 
+    // const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+     const signInGoogle = async () => {
+    //   try {
+    //     await GoogleSignin.configure({
+    //       scopes: ['https://www.googleapis.com/auth/userinfo.email'],
+    //     });
+    //     const { idToken } = await GoogleSignin.signIn();
+    //     firebase.auth().signInWithIdToken(idToken);
+    //     setIsLoggedIn(true);
+    //   } catch (error) {
+    //     console.error('Google Sign-in error:', error);
+    //   }
+     };
+
     const handleSubmit = async () => {
-      await signInWithEmailAndPassword(auth,email,password)
-        .then(() => {
-          console.log('Signed In');
-          this.props.navigation.navigate('Plans');
-        })
-        .catch(error => {
-          console.log(error);
-        })
+      if(email && password){
+        await signInWithEmailAndPassword(auth,email,password)
+          .then(() => {
+            console.log('Signed In');
+          
+            this.props.navigation.push('Tabs');
+          })
+          .catch(error => {
+            if(error.code == 'auth/invalid-email'){
+              setInvalidEmail('Invalid email, try again');
+              setInvalidPassword('');
+            }
+            else if(error.code == 'auth/invalid-credential'){
+              setInvalidEmail('');
+              setInvalidPassword('Invalid password, try again');
+            }
+            else if(error.code == 'auth/too-many-requests'){
+              setInvalidEmail('');
+              setInvalidPassword('Too many atempts, wait a few minutes and try again');
+            }
+            else{
+              alert('Something went wrong, please try again')
+            }
+          })
+      }
+      else if(!email){
+        setInvalidEmail('Please input a valid email');
+        setInvalidPassword('');
+      }
+      else if(!password){
+        setInvalidPassword('Please input a password');
+        setInvalidEmail('');
+      }
+      else{
+        alert('Something went wrong, please try again');
+      }
     };
 
-    const signInGoogle = async () => {
-      
-    };
+    const handleFacebookLogin = async () => {
+     
+      // LoginManager.logInWithPermissions(["public_profile"]).then(
+      //   function(result) {
+      //     if (result.isCancelled) {
+      //       console.log("Login cancelled");
+      //     } else {
+      //       console.log(
+      //         "Login success with permissions: " +
+      //           result.grantedPermissions.toString()
+      //       );
+      //     }
+      //   },
+      //   function(error) {
+      //     console.log("Login fail with error: " + error);
+      //   }
+      // );
+    }
+
 
     return (
       <View style={LoginUserStyles.container}>
+
+        <ImageBackground
+          source={require('../Images/LoginBackground.png')} // Replace with your image path
+          style={RegisterUserStyles.imageBackground}
+          resizeMode="cover" // You can adjust the resizeMode property as needed
+        >
+
         <Text style={LoginUserStyles.title}>Login here</Text>
 
         <Text style={LoginUserStyles.subTitle}>Welcome back you've been missed!</Text>
-  
+
+        {invalidEmail !== null && ( // Checking if the variable is not null
+          <Text style = {{color:'red',fontSize:12,fontWeight:600, textAlign:'center'}}>{invalidEmail}</Text>
+        )}
         <TextInput
           style={LoginUserStyles.input}
           placeholder="Email"
+          placeholderTextColor={'grey'}
           value={email}
           onChangeText={setEmail}
         />
-  
+
+        {invalidPassword !== null && ( // Checking if the variable is not null
+          <Text style = {{color:'red',fontSize:12,fontWeight:600,textAlign:'center'}}>{invalidPassword}</Text>
+        )}
         <TextInput
           style={LoginUserStyles.input}
           placeholder="Password"
+          placeholderTextColor={'grey'}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -97,18 +175,18 @@ export class LoginUserScreen extends React.Component{
   
         <Text style = {LoginUserStyles.continueWith}>Or continue with</Text>
   
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', padding: 15 }}>
-          <TouchableOpacity style = {{padding:10}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
+          <TouchableOpacity style = {LoginUserStyles.icons} onPress = {signInGoogle}>
             <Text><Ionicons name={"logo-google"} size={30} color="black" /> {/* Replace 'ios-heart' with the desired Ionicons name */}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style = {{padding:10}}>
+          <TouchableOpacity onPress = {handleFacebookLogin} style = {LoginUserStyles.icons}>
             <Text><Ionicons name={"logo-facebook"} size={30} color="black" /> {/* Replace 'ios-star' with the desired Ionicons name */}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style = {{padding:10}}>
-            <Text><Ionicons name={"logo-apple"} size={30} color="black" /> {/* Replace 'ios-settings' with the desired Ionicons name */}</Text>
+          <TouchableOpacity style = {LoginUserStyles.icons} >
+            <Text><Ionicons name={"logo-instagram"} size={30} color="black" /> {/* Replace 'ios-settings' with the desired Ionicons name */}</Text>
           </TouchableOpacity>
         </View>
-
+      </ImageBackground>
       </View>
     );
   };
@@ -134,54 +212,135 @@ export class RegisterUserScreen extends React.Component{
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     
+    const [invalidEmail, setInvalidEmail] = useState ('');
+    const [invalidPassword, setInvalidPassword] = useState ('');
+    const [invalidName, setInvalidName] = useState ('');
+    const [invalidConfirmPassword, setInvalidConfirmPassword] = useState ('');
+
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app, {
       persistence: getReactNativePersistence(ReactNativeAsyncStorage)
     });
     
     const handleSubmit = async () => {
-      if(( email && password) && (password == confirmPassword)){
+      if(( name && email && password && confirmPassword) && (password == confirmPassword)){
        
           await createUserWithEmailAndPassword(auth,email,password)
           .then(() =>{
             console.log('Account Created!');
-            this.props.navigation.navigate('Login');
+            this.props.navigation.navigate('Tabs');
           })
-          .catch(error => { console.log(error)})
+          .catch(error => {
+            if(error.code == 'auth/invalid-email'){
+              setInvalidEmail('Invalid email, try again');
+              setInvalidPassword('');
+              setInvalidName('');
+              setInvalidConfirmPassword('');
+            }
+
+            else if(error.code == 'auth/weak-password'){
+              setInvalidPassword('Invalid password, should be at least 6 characters')
+              setInvalidEmail('');
+              setInvalidName('');
+              setInvalidConfirmPassword('');
+            }
+            else if(error.code == 'auth/email-already-in-use'){
+              setInvalidEmail('This email already exists')
+              setInvalidConfirmPassword('')
+              setInvalidName('');
+              setInvalidPassword('');
+            }
+            else alert(error);
+          })
       }
-    };
+      else if(!name){
+        setInvalidName('Please input your name');
+        setInvalidConfirmPassword('');
+        setInvalidEmail('');
+        setInvalidPassword('');
+      }
+      else if(!email){
+        setInvalidEmail('Please input your email')
+        setInvalidConfirmPassword('');
+        setInvalidName('');
+        setInvalidPassword('');
+      }
+      else if(!password){
+        setInvalidPassword('Please input your password')
+        setInvalidEmail('')
+        setInvalidConfirmPassword('');
+        setInvalidName('');
   
+      }
+      else if(!confirmPassword){
+        setInvalidConfirmPassword('Please input your password confirmation')
+        setInvalidEmail('')
+        setInvalidName('');
+        setInvalidPassword('');
+      }
+      else if(password!=confirmPassword){
+        setInvalidConfirmPassword('Your password and password confirmation are not the same')
+        setInvalidEmail('')
+        setInvalidName('');
+        setInvalidPassword('');
+      }
+    
+    };
+
+   
     return (
       <View style={RegisterUserStyles.container}>
+       <ImageBackground
+          source={require('../Images/LoginBackground.png')} // Replace with your image path
+          style={RegisterUserStyles.imageBackground}
+          resizeMode="cover" // You can adjust the resizeMode property as needed
+        >
         <Text style={RegisterUserStyles.title}>Create Account</Text>
   
         <Text style={RegisterUserStyles.subTitle}>Create an account so you can explore all the existing jobs</Text>
 
+        {invalidName !== null && ( // Checking if the variable is not null
+          <Text style = {{color:'red',fontSize:12,fontWeight:600}}>{invalidName}</Text>
+        )}
         <TextInput
           style={RegisterUserStyles.input}
+          placeholderTextColor={'grey'}
           placeholder="Name"
           value={name}
           onChangeText={setName}
         />
 
+        {invalidEmail !== null && ( // Checking if the variable is not null
+          <Text style = {{color:'red',fontSize:12,fontWeight:600}}>{invalidEmail}</Text>
+        )}
         <TextInput
           style={RegisterUserStyles.input}
           placeholder="Email"
+          placeholderTextColor={'grey'}
           value={email}
           onChangeText={setEmail}
         />
-  
+      
+        {invalidPassword !== null && ( // Checking if the variable is not null
+          <Text style = {{color:'red',fontSize:12,fontWeight:600}}>{invalidPassword}</Text>
+        )}
         <TextInput
           style={RegisterUserStyles.input}
           placeholder="Password"
+          placeholderTextColor={'grey'}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
         />
-  
+
+        {invalidConfirmPassword !== null && ( // Checking if the variable is not null
+          <Text style = {{color:'red',fontSize:12,fontWeight:600}}>{invalidConfirmPassword}</Text>
+        )}
         <TextInput
           style={RegisterUserStyles.input}
           placeholder="Confirm Password"
+          placeholderTextColor={'grey'}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry
@@ -200,18 +359,18 @@ export class RegisterUserScreen extends React.Component{
 
         <Text style = {RegisterUserStyles.continueWith}>Or continue with</Text>
   
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', padding: 15 }}>
-          <TouchableOpacity style = {{padding:10}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
+          <TouchableOpacity style = {RegisterUserStyles.icons}>
             <Text><Ionicons name={"logo-google"} size={30} color="black" /> {/* Replace 'ios-heart' with the desired Ionicons name */}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style = {{padding:10}}>
+          <TouchableOpacity style = {RegisterUserStyles.icons}>
             <Text><Ionicons name={"logo-facebook"} size={30} color="black" /> {/* Replace 'ios-star' with the desired Ionicons name */}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style = {{padding:10}}>
-            <Text><Ionicons name={"logo-apple"} size={30} color="black" /> {/* Replace 'ios-settings' with the desired Ionicons name */}</Text>
+          <TouchableOpacity style = {RegisterUserStyles.icons}>
+            <Text><Ionicons name={"logo-instagram"} size={30} color="black" /> {/* Replace 'ios-settings' with the desired Ionicons name */}</Text>
           </TouchableOpacity>
         </View>
-
+        </ImageBackground>
       </View>
     );
   };
@@ -232,13 +391,19 @@ const LoginUserStyles = StyleSheet.create ({
   container: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor:'white'
   },
+  imageBackground:{
+    width: '100%', // You can adjust width and height as needed
+    height: '100%',
+},
   title: {
     fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 20,
     marginTop:100,
-    color:'#1F41BB'
+    color:'#1F41BB',
+    alignSelf:'center'
   },
   subTitle:{
     fontSize: 20,
@@ -246,19 +411,20 @@ const LoginUserStyles = StyleSheet.create ({
     marginBottom: 70,
     color:'#000000',
     textAlign:'center',
-    width:'50%'
+    width:'50%',
+    alignSelf:'center'
   },
   input: {
     width: '80%',
     height: 50,
-    borderColor: '#1F41BB',
-    borderWidth: 1,
     padding: 10,
     marginBottom: 20,
-    borderRadius:10
+    borderRadius:10,
+    alignSelf:'center',
+    backgroundColor:'#F1F4FF'
   },
   forgotPassword: {
-    textAlign: 'right',
+    textAlign: 'center',
     marginBottom: 20,
     marginTop: 20,
     fontSize: 14,
@@ -287,21 +453,38 @@ const LoginUserStyles = StyleSheet.create ({
     backgroundColor:'#4E55FF',
     padding: 10,
     marginBottom: 20,
-    borderRadius:10
+    borderRadius:10,
+    alignSelf:'center'
   },
+  icons:{
+    alignItems:'center', 
+    justifyContent:'center', 
+    width:60, 
+    height:50, 
+    borderRadius: 10, 
+    backgroundColor:'#ECECEC',
+    marginHorizontal:10
+  }
 })
 
 const RegisterUserStyles = StyleSheet.create ({
   container: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor:'white'
+  },
+  imageBackground:{
+      flex: 1,
+      width: '100%', // You can adjust width and height as needed
+      height: '100%',
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 10,
     marginTop:100,
-    color:'#1F41BB'
+    color:'#1F41BB',
+    alignSelf:'center'
   },
   subTitle: {
     fontSize: 14,
@@ -312,11 +495,11 @@ const RegisterUserStyles = StyleSheet.create ({
   input: {
     width: '80%',
     height: 50,
-    borderColor: '#1F41BB',
-    borderWidth: 1,
     padding: 10,
     marginBottom: 20,
-    borderRadius:10
+    borderRadius:10,
+    alignSelf:'center',
+    backgroundColor:'#F1F4FF'
   },
   alreadyHaveAccount: {
     textAlign: 'center',
@@ -328,9 +511,11 @@ const RegisterUserStyles = StyleSheet.create ({
     width: '80%',
     height: 50,
     backgroundColor:'#4E55FF',
-    padding: 10,
+    marginTop:10,
     marginBottom: 20,
-    borderRadius:10
+    borderRadius:10,
+    alignSelf:'center',
+    justifyContent:'center'
   },
   continueWith:{
     textAlign:'center',
@@ -338,6 +523,15 @@ const RegisterUserStyles = StyleSheet.create ({
     color:'#1F41BB',
     fontWeight:600,
     marginTop:30
+  },
+  icons:{
+    alignItems:'center', 
+    justifyContent:'center', 
+    width:60, 
+    height:50, 
+    borderRadius: 10, 
+    backgroundColor:'#ECECEC',
+    marginHorizontal:10
   }
  
 })

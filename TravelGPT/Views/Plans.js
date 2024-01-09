@@ -22,6 +22,7 @@ import { Configuration, OpenAIApi } from 'openai'
 import { LinearGradient } from 'expo-linear-gradient';
 import SVGLogo from '../Images/RouteMasterLogo.svg'
 import "react-native-url-polyfill/auto"
+import { useNavigation } from '@react-navigation/native';
 
 
 
@@ -707,7 +708,7 @@ export class DaysScreen extends React.Component {
   Calls the ListPlans after the response is received and verified
 
 */
-async function getPlan(navigator, cityName, countryName, daysNumber) {
+async function getPlan(navigation, cityName, countryName, daysNumber) {
   // Get city and contry via the location coordinates
   city = cityName;
   country = countryName;
@@ -740,20 +741,23 @@ async function getPlan(navigator, cityName, countryName, daysNumber) {
 
 
   // Navigate to the LoadingScreen while waiting for the response
-  navigator.navigate("LoadingScreen")
+  
+  // Accessing the parent navigator (Stack Navigator)
+  
+  //navigation.navigate("Loading")
 
   // Call the OpenAI to get the route plan
-  const res = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt: prompt,
-    max_tokens: 2048
-  })
+  // const res = await openai.createCompletion({
+  //   model: "text-davinci-003",
+  //   prompt: prompt,
+  //   max_tokens: 2048
+  // })
 
   //console.log(res.data.choices[0].text)
-  console.log(JSON.parse(res.data.choices[0].text))
+  //console.log(JSON.parse(res.data.choices[0].text))
 
   // Parse the OpenAI response to JSON
-  listsPlan = JSON.parse(res.data.choices[0].text)
+  //listsPlan = JSON.parse(res.data.choices[0].text)
 
   // Waits 10 seconds for testing purposes
   // Only needed if chatgpt is commented
@@ -761,7 +765,7 @@ async function getPlan(navigator, cityName, countryName, daysNumber) {
   // await delay(1000)
 
   // Navigate to the ListPlans to show the days
-  navigator.navigate("Days")
+  //navigator.navigate("Days")
   
 }
 

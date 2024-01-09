@@ -15,7 +15,7 @@ App.js - Master file
 
 // Imports for the react components add buttons, images, text, etc
 import React from 'react'; 
-import {useEffect} from 'react'; 
+import {useEffect, useRef} from 'react'; 
 import { Appearance, StyleSheet, View, Text, TouchableOpacity, ImageBackground, Dimensions, Image, Platform, BackHandler} from 'react-native';  
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -25,6 +25,7 @@ import {createStackNavigator} from 'react-navigation-stack';
 // Imports to get the screens of other javascript files, necessary for the app navigator ( navigate through screens )
 import {PlansScreen, LoadingScreen, DaysScreen} from './Views/Plans.js'
 import { LoginUserScreen, RegisterUserScreen } from './Views/User.js';
+import {ProfileScreen} from './Views/Profile.js'
 
 // Imports to get text fonts, images, videos, etc
 import * as Font from 'expo-font';
@@ -126,40 +127,31 @@ class HomeScreen extends React.Component {
 
 */
 const Tab = createBottomTabNavigator();
+
 const BottomTabNavigator = () => {
-
- 
-
-  useEffect(() => {
-   
-    if (Platform.OS === 'android') {
-      const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-        // Prevent default back navigation action
-        return true;
-      });
-
-      return () => backHandler.remove();
-    }
-  }, []);
 
   return (
   <NavigationContainer>
 
     <Tab.Navigator 
+      
       screenOptions={{
         headerShown: false, // Hide the header for tab navigator
         tabBarStyle: {
           borderTopWidth: 0,
+          marginTop:3,
           backgroundColor: 'transparent',
           elevation: 0, // this solved the triangle type view problem in android
         },
         tabBarLabelStyle: {
           fontSize: 14, // Adjust label font size
           fontWeight: 'bold', // Make label text bold
+          marginBottom: 4
         },
-        gestureEnabled: Platform.OS === 'ios' ? false : true, // Disable gesture only for iOS
+        
       }}
-      
+      slideDisabled
+      backBehavior='none'
     >
 
       <Tab.Screen 
@@ -169,7 +161,7 @@ const BottomTabNavigator = () => {
           title: 'Search',
           tabBarIcon: ({size,focused,color}) => {
             return (
-             <Ionicons name={'search-outline'} size={size+3} color={color} />
+             <Ionicons name={'search-outline'} size={size} color={color} />
             )
           },
         }}
@@ -181,20 +173,21 @@ const BottomTabNavigator = () => {
           title: 'Saved',
           tabBarIcon: ({size,focused,color}) => {
             return (
-             <Ionicons name={'heart-outline'} size={size+3} color={color} />
+             <Ionicons name={'heart-outline'} size={size} color={color} />
             )
           },
-        }} 
+        }}
+
       />
 
       <Tab.Screen 
-        name="Home" 
-        component={HomeScreen} 
+        name="Profile" 
+        component={ProfileScreen} 
         options={{
-          title: 'Settings',
+          title: 'Profile',
           tabBarIcon: ({size,focused,color}) => {
             return (
-             <Ionicons name={'settings-outline'} size={size+3} color={color} />
+             <Ionicons name={'person-circle-outline'} size={size} color={color} />
             )
           },
         }} 
@@ -203,7 +196,8 @@ const BottomTabNavigator = () => {
     </Tab.Navigator>
 
   </NavigationContainer>
-)};
+  )
+};
 
 /* 
 
@@ -213,20 +207,17 @@ const BottomTabNavigator = () => {
 
 */
 const AppNavigator = createStackNavigator(  
-    {  
-        Home: HomeScreen,  
-        Plans: PlansScreen,
-        LoadingScreen: LoadingScreen,
-        Days: DaysScreen,
+    {        
+        Loading: LoadingScreen,
         Login: LoginUserScreen,
         Register: RegisterUserScreen,
-        Tabs: { screen: BottomTabNavigator }
+        Tabs: BottomTabNavigator 
         //Test: MyComponent
     
     },  
     {  
         initialRouteName: "Login",
-        headerMode: 'none'
+        headerMode: 'none',
     }  
 );  
   
