@@ -5,7 +5,7 @@ import { initializeApp } from "firebase/app";
 import {getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getAuth, signOut } from "firebase/auth";
-
+import {SettingsScreen} from './Settings.js'
 
 const options = [
     { name: 'Favorites', icon: require('../Images/Favorite.png') },
@@ -46,7 +46,9 @@ export class ProfileScreen extends React.Component{
               </View>
               <View style={styles.optionsContainer}>
                 {options.map((option, index) => (
-                  <TouchableOpacity onPress={()=> {handleLogout(option)}} style={styles.optionItem} key={index}>
+                  <TouchableOpacity onPress={()=> {
+                      if(option.name ==  'Settings'){this.props.navigation.navigate('Settings')}
+                    }} style={styles.optionItem} key={index}>
                     <Image source={option.icon} style={styles.optionIcon} />
                     <Text style={styles.optionName}>{option.name}</Text>
                   </TouchableOpacity>
@@ -63,6 +65,7 @@ export class ProfileScreen extends React.Component{
     }
     
 }
+
 const styles = StyleSheet.create({
     container: {
       flex: 1,

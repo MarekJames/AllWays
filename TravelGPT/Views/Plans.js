@@ -22,8 +22,6 @@ import { Configuration, OpenAIApi } from 'openai'
 import { LinearGradient } from 'expo-linear-gradient';
 import SVGLogo from '../Images/RouteMasterLogo.svg'
 import "react-native-url-polyfill/auto"
-import { useNavigation } from '@react-navigation/native';
-
 
 
 /******************* Global Variables ********************/
@@ -744,7 +742,7 @@ async function getPlan(navigation, cityName, countryName, daysNumber) {
   
   // Accessing the parent navigator (Stack Navigator)
   
-  //navigation.navigate("Loading")
+  navigation.navigate("Loading")
 
   // Call the OpenAI to get the route plan
   // const res = await openai.createCompletion({

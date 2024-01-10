@@ -20,12 +20,13 @@ import { Appearance, StyleSheet, View, Text, TouchableOpacity, ImageBackground, 
 import { LinearGradient } from 'expo-linear-gradient';
 
 import {createAppContainer} from 'react-navigation'; 
-import {createStackNavigator} from 'react-navigation-stack'; 
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // Imports to get the screens of other javascript files, necessary for the app navigator ( navigate through screens )
 import {PlansScreen, LoadingScreen, DaysScreen} from './Views/Plans.js'
 import { LoginUserScreen, RegisterUserScreen } from './Views/User.js';
 import {ProfileScreen} from './Views/Profile.js'
+import {SettingsScreen} from './Views/Settings.js'
 
 // Imports to get text fonts, images, videos, etc
 import * as Font from 'expo-font';
@@ -130,7 +131,6 @@ const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
 
   return (
-  <NavigationContainer>
 
     <Tab.Navigator   
       screenOptions={{
@@ -148,8 +148,6 @@ const BottomTabNavigator = () => {
         },
         
       }}
-      slideDisabled
-      backBehavior='none'
     >
 
       <Tab.Screen 
@@ -164,6 +162,7 @@ const BottomTabNavigator = () => {
           },
         }}
       />
+
       <Tab.Screen 
         name="Days" 
         component={DaysScreen}
@@ -171,11 +170,10 @@ const BottomTabNavigator = () => {
           title: 'Saved',
           tabBarIcon: ({size,focused,color}) => {
             return (
-             <Ionicons name={'heart-outline'} size={size} color={color} />
+              <Ionicons name={'heart-outline'} size={size} color={color} />
             )
           },
         }}
-
       />
 
       <Tab.Screen 
@@ -192,33 +190,32 @@ const BottomTabNavigator = () => {
       />
 
     </Tab.Navigator>
-
-  </NavigationContainer>
   )
 };
 
-/* 
+const Stack = createNativeStackNavigator();
 
-  Inserts screens into the navigator and associates a tag for each one
-  First screen is defined in "initialRouteName"
-  Header mode to none defines that the screens don't have an header that says the name of the screens
-
-*/
-const AppNavigator = createStackNavigator(  
-    {        
-        Home: HomeScreen,
-        Loading: LoadingScreen,
-        Login: LoginUserScreen,
-        Register: RegisterUserScreen,
-        Tabs: BottomTabNavigator 
-        //Test: MyComponent
-    
-    },  
-    {  
-        initialRouteName: "Home",
-        headerMode: 'none',
-    }  
-);  
+export const StackNavigator = () => {
+  return (
+   
+      <Stack.Navigator
+        initialRoute = {HomeScreen}
+        screenOptions={{
+          headerShown: false,
+          gestureEnabled: false,
+        }}
+      >
+        <Stack.Screen name="Home" component={HomeScreen}/>
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Login" component={LoginUserScreen} />
+        <Stack.Screen name="Register" component={RegisterUserScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="Loading" component={LoadingScreen} />
+        <Stack.Screen name="Tabs" component={BottomTabNavigator} />
+        
+      </Stack.Navigator>
+  );
+}; 
   
 /*
 
@@ -227,14 +224,14 @@ const AppNavigator = createStackNavigator(
     Set the light mode default
 
 */
-export const AppContainer = createAppContainer(AppNavigator);  
+/* export const AppContainer = createAppContainer(AppNavigator);  
 
 export default class App extends React.Component {  
     render() {  
         return <AppContainer />;  
     }  
 }  
-
+ */
 
 
 

@@ -71,7 +71,6 @@ export class LoginUserScreen extends React.Component{
         await signInWithEmailAndPassword(auth,email,password)
           .then(() => {
             console.log('Signed In');
-          
             this.props.navigation.push('Tabs');
           })
           .catch(error => {
