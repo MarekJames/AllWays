@@ -29,6 +29,7 @@ import {ProfileScreen} from './Views/Profile.js'
 
 // Imports to get text fonts, images, videos, etc
 import * as Font from 'expo-font';
+import SVGLogo from './Images/Logo.svg'
 
 // Imports for the nav bar
 import { NavigationContainer } from '@react-navigation/native';
@@ -86,27 +87,25 @@ class HomeScreen extends React.Component {
         <View style={stylesHomeScreen.container}>
         {/* Background Image */}
         <ImageBackground
-          source={require('./Images/BackgroundHomePage.png')} // Replace with your image path
+          source={require('./Images/HomeBackground.png')} // Replace with your image path
           style={stylesHomeScreen.imageBackground}
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >
           {/* Logo */}
-          <View style={stylesHomeScreen.containerLogo}>
-            {/* Your Logo Component */}
-            {/* <SVGLogo style = {stylesHomeScreen.imageLogo}/> */}
-            <Image source = {require('./Images/RouteMasterLogo.png')} style = {{top: 200, width:'70%', height:'25%', borderRadius:15}}/>
+          <View style ={stylesHomeScreen.containerLogo}>
+            <SVGLogo
+              style = {stylesHomeScreen.imageLogo}
+            />
           </View>
   
-          {/* Start Button */}
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('Tabs')} style={stylesHomeScreen.startButton}>
-            <LinearGradient
-              colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={stylesHomeScreen.gradient}
-            >
-              <Text style={stylesHomeScreen.startText}>Get Started</Text>
-            </LinearGradient>
+          {/* Login Button */}
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')} style={stylesHomeScreen.optionButton}>
+              <Text style={stylesHomeScreen.startText}>Login</Text>
+          </TouchableOpacity>
+
+          {/* Create Button */}
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')} style={stylesHomeScreen.optionButton}>
+              <Text style={stylesHomeScreen.startText}>Create Account</Text>
           </TouchableOpacity>
   
         </ImageBackground>
@@ -133,8 +132,7 @@ const BottomTabNavigator = () => {
   return (
   <NavigationContainer>
 
-    <Tab.Navigator 
-      
+    <Tab.Navigator   
       screenOptions={{
         headerShown: false, // Hide the header for tab navigator
         tabBarStyle: {
@@ -208,6 +206,7 @@ const BottomTabNavigator = () => {
 */
 const AppNavigator = createStackNavigator(  
     {        
+        Home: HomeScreen,
         Loading: LoadingScreen,
         Login: LoginUserScreen,
         Register: RegisterUserScreen,
@@ -216,7 +215,7 @@ const AppNavigator = createStackNavigator(
     
     },  
     {  
-        initialRouteName: "Login",
+        initialRouteName: "Home",
         headerMode: 'none',
     }  
 );  
@@ -251,31 +250,33 @@ const stylesHomeScreen = StyleSheet.create({
     color: '#FFFFFF',
   },
   imageBackground: {
-    flex: 1,
     width: '100%', // You can adjust width and height as needed
     height: '100%',
   },
   containerLogo:{
     flex:1,
-    alignItems:'center'
+    alignItems:'center',
+    resizeMode:'cover'
   },
   imageLogo:{
     width:'100%',
-    height:'30%',
+    height:'20%',
     top:'20%',
   },
   container: {
     flex: 1,
     alignItems: 'center',
   },
-  startButton: {
-    position: 'absolute',
-    bottom: 80, // Adjust the button position from the bottom as needed
+
+  optionButton: {
+    backgroundColor:'#4E80B5',
     alignSelf: 'center',
-  },
-  gradient: {
-    borderRadius: 30,
-    paddingVertical: 15,
-    paddingHorizontal: 40,
+    margin:10,
+    marginBottom:20,
+    height:'7%',
+    width:'80%',
+    borderRadius:30,
+    justifyContent:'center',
+    alignItems:'center'
   },
 });
