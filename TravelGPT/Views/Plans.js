@@ -15,9 +15,8 @@ Plans.js
 
 // Imports for the react components add buttons, images, text, etc
 import React, {useState, useEffect} from 'react';  
-import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text,  TextInput, Dimensions, TouchableOpacity, ScrollView, BackHandler, Alert, Linking} from 'react-native'; 
+import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text,  TextInput, Dimensions, TouchableOpacity, ScrollView, Linking} from 'react-native'; 
 import axios from 'axios';
-import * as Font from 'expo-font';
 import { Configuration, OpenAIApi } from 'openai'
 import { LinearGradient } from 'expo-linear-gradient';
 import SVGLogo from '../Images/RouteMasterLogo.svg'

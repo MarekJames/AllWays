@@ -15,13 +15,13 @@ User.js
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground } from 'react-native';
 
-import { initializeApp } from "firebase/app";
-import {getReactNativePersistence } from 'firebase/auth';
+import { initializeApp} from "firebase/app";
+import {getReactNativePersistence, initializeAuth} from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
-import {firebaseConfig} from '../firebase-config';
-import { Ionicons } from '@expo/vector-icons';
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
+import { getApp, getAuth } from '../firebase-config';
+import  Ionicons  from '@expo/vector-icons/Ionicons';
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 /******************* Global Variables ********************/
@@ -47,13 +47,8 @@ export class LoginUserScreen extends React.Component{
     const [invalidEmail, setInvalidEmail] = useState('');
     const [invalidPassword, setInvalidPassword] = useState('');
 
-    const app = initializeApp(firebaseConfig);
-    
-    const auth = getAuth(app, {
-      persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-    });
-
-
+  
+   
     // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     // Reset variables everytime the page mounts
@@ -73,7 +68,7 @@ export class LoginUserScreen extends React.Component{
 
     const handleSubmit = async () => {
       if(email && password){
-        await signInWithEmailAndPassword(auth,email,password)
+        await signInWithEmailAndPassword(getAuth(),email,password)
           .then(() => {
             console.log('Signed In');
             this.props.navigation.push('Tabs');
@@ -220,16 +215,10 @@ export class RegisterUserScreen extends React.Component{
     const [invalidName, setInvalidName] = useState ('');
     const [invalidConfirmPassword, setInvalidConfirmPassword] = useState ('');
 
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app, {
-      persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-    });
-    
     const handleSubmit = async () => {
       if(( name && email && password && confirmPassword) && (password == confirmPassword)){
        
-          await createUserWithEmailAndPassword(auth,email,password)
+          await createUserWithEmailAndPassword(getAuth(),email,password)
           .then(() =>{
             console.log('Account Created!');
             this.props.navigation.navigate('Tabs');
@@ -304,7 +293,7 @@ export class RegisterUserScreen extends React.Component{
         <Text style={RegisterUserStyles.subTitle}>Create an account so you can explore all the existing jobs</Text>
 
         {invalidName !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:600}}>{invalidName}</Text>
+          <Text style = {{color:'red',fontSize:12,fontWeight:600,textAlign:'center'}}>{invalidName}</Text>
         )}
         <TextInput
           style={RegisterUserStyles.input}
@@ -315,7 +304,7 @@ export class RegisterUserScreen extends React.Component{
         />
 
         {invalidEmail !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:600}}>{invalidEmail}</Text>
+          <Text style = {{color:'red',fontSize:12,fontWeight:600,textAlign:'center'}}>{invalidEmail}</Text>
         )}
         <TextInput
           style={RegisterUserStyles.input}
@@ -326,7 +315,7 @@ export class RegisterUserScreen extends React.Component{
         />
       
         {invalidPassword !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:600}}>{invalidPassword}</Text>
+          <Text style = {{color:'red',fontSize:12,fontWeight:600,textAlign:'center'}}>{invalidPassword}</Text>
         )}
         <TextInput
           style={RegisterUserStyles.input}
@@ -338,7 +327,7 @@ export class RegisterUserScreen extends React.Component{
         />
 
         {invalidConfirmPassword !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:600}}>{invalidConfirmPassword}</Text>
+          <Text style = {{color:'red',fontSize:12,fontWeight:600,textAlign:'center'}}>{invalidConfirmPassword}</Text>
         )}
         <TextInput
           style={RegisterUserStyles.input}
@@ -364,13 +353,13 @@ export class RegisterUserScreen extends React.Component{
   
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
           <TouchableOpacity style = {RegisterUserStyles.icons}>
-            <Text><Ionicons name={"logo-google"} size={30} color="black" /> {/* Replace 'ios-heart' with the desired Ionicons name */}</Text>
+            <Text><Ionicons name="logo-google" size={30} color="black" /> {/* Replace 'ios-heart' with the desired Ionicons name */}</Text>
           </TouchableOpacity>
           <TouchableOpacity style = {RegisterUserStyles.icons}>
-            <Text><Ionicons name={"logo-facebook"} size={30} color="black" /> {/* Replace 'ios-star' with the desired Ionicons name */}</Text>
+            <Text><Ionicons name="logo-facebook" size={30} color="black" /> {/* Replace 'ios-star' with the desired Ionicons name */}</Text>
           </TouchableOpacity>
           <TouchableOpacity style = {RegisterUserStyles.icons}>
-            <Text><Ionicons name={"logo-instagram"} size={30} color="black" /> {/* Replace 'ios-settings' with the desired Ionicons name */}</Text>
+            <Ionicons name="logo-instagram" size={30} color="black" />
           </TouchableOpacity>
         </View>
         </ImageBackground>
@@ -397,6 +386,7 @@ const LoginUserStyles = StyleSheet.create ({
     backgroundColor:'white'
   },
   imageBackground:{
+    flex:1,
     width: '100%', // You can adjust width and height as needed
     height: '100%',
 },

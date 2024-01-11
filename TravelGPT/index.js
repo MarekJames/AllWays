@@ -9,8 +9,7 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {StackNavigator} from './App.js'
-import {name as appName} from './app.json';
-import {AppRegistry} from 'react-native';
+import { registerRootComponent } from 'expo';
 
 const App = () => {
   return (
@@ -21,4 +20,4 @@ const App = () => {
   );
 };
 
-AppRegistry.registerComponent('main', () => App);
+registerRootComponent(App);
