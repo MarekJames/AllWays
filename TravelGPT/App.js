@@ -14,7 +14,7 @@ App.js - Master file
 /******************** Imports Section ********************/ 
 
 // Imports for the react components add buttons, images, text, etc
-import React from 'react'; 
+import React, {useEffect} from 'react'; 
 import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, Dimensions, Image, Platform, BackHandler} from 'react-native';  
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -141,6 +141,21 @@ const BottomTabNavigator = () => {
           marginBottom: 4
         },
       }}
+      screenListeners={({ navigation }) => ({
+        tabPress: (e) =>{
+        
+            console.log(navigation.getState().index)
+
+            //Checks if the last tab clicked is the same as at the moment, also checks if the index is the first tab, to route to the planscreen
+            if(e.target == navigation.getState().history[navigation.getState().history.length - 1].key && navigation.getState().index == 0 )
+            {
+              navigation.navigate('Plans')
+            }
+            //e.preventDefault();
+            
+            
+        } 
+    })}
     >
       <Tab.Screen 
         name="StackRoutePlanNavigator" 
