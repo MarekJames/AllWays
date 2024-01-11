@@ -217,27 +217,6 @@ const accessKey = 'Q37z9gm8MYXdVPEDA6MFPe77A9jHWLdM9pLtqr060Xo'
 
 export class PlansScreen extends React.Component {  
     
-  // Constructor
-  constructor(props) {
-    super(props);
-    this.state = {
-        fontsLoaded: false
-    }
-  }
-
-  // Load text fonts function
-  async loadFonts() {
-    await Font.loadAsync({
-      'Sansation': require('../assets/fonts/Sansation_Regular.ttf'),
-      'SansationBold': require('../assets/fonts/Sansation_Bold.ttf'),
-    });
-    this.setState({ fontsLoaded: true });
-  }
-
-  // Call load fonts function after component mounted
-  componentDidMount() {
-    this.loadFonts();
-  }
 
   // pontosScreen Function that configs what is displayed in this class
   pontosScreen = () => {
@@ -301,7 +280,7 @@ export class PlansScreen extends React.Component {
     }, []);
 
     // Defines the screen components
-    if (this.state.fontsLoaded) {
+   
       return (
         <View style={PlansScreenStyles.container}>
 
@@ -383,7 +362,7 @@ export class PlansScreen extends React.Component {
 
         </View> 
       ); 
-    }
+    
   }
 
   // Renders the screen components defined in the pontosScreen function
@@ -436,27 +415,6 @@ export class LoadingScreen extends React.Component{
 
 */
 export class ActivitiesScreen extends React.Component{
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      fontsLoaded: false,
-    };
-  }
-
-  // Load text fonts function
-  async loadFonts() {
-    await Font.loadAsync({
-      'Sansation': require('../assets/fonts/Sansation_Regular.ttf'),
-      'SansationBold': require('../assets/fonts/Sansation_Bold.ttf'),
-    });
-    this.setState({ fontsLoaded: true });
-  }
-
-  // Call load fonts function after component mounted
-  componentDidMount() {
-    this.loadFonts();
-  }
 
   activities = () => {
 
@@ -591,45 +549,23 @@ export class ActivitiesScreen extends React.Component{
 
 export class DaysScreen extends React.Component {  
   
-  // Constructor
-  constructor(props) {
-    super(props);
-    this.state = {
-      fontsLoaded: false,
-    };
-  }
-  
-  // Load text fonts function
-  async loadFonts() {
-    await Font.loadAsync({
-      'Sansation': require('../assets/fonts/Sansation_Regular.ttf'),
-      'SansationBold': require('../assets/fonts/Sansation_Bold.ttf'),
-    });
-    this.setState({ fontsLoaded: true });
-  }
-
-  // Call load fonts function after component mounted
-  componentDidMount() {
-    this.loadFonts();
-  }
-
   // Function that displays the list of days
   lists = () => {
     // Only show after the fonts are loaded
-    if (this.state.fontsLoaded) {
-      return listsPlan.map((item, index) => (
-        <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {routePlan= listsPlan[index]; this.props.navigation.navigate('Activities')}}>
-          <LinearGradient
-              colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={DaysListStyles.gradient}
-            >
-            <Text style = {DaysListStyles.dayText}>{item.day}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      ));
-    }
+    
+    return listsPlan.map((item, index) => (
+      <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {routePlan= listsPlan[index]; this.props.navigation.navigate('Activities')}}>
+        <LinearGradient
+            colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={DaysListStyles.gradient}
+          >
+          <Text style = {DaysListStyles.dayText}>{item.day}</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+    ));
+   
   }
 
   // Renders the screen
@@ -659,7 +595,7 @@ export class DaysScreen extends React.Component {
     };
 
     // If fonts are loaded and showDayRoutePlan is 0 (Shows the list of days)
-    if(this.state.fontsLoaded){
+
       return (
         <View style={ParentStyles.container}>
           
@@ -689,7 +625,6 @@ export class DaysScreen extends React.Component {
 
         </View>
       );
-    }
   }
 }
 
@@ -801,13 +736,11 @@ const PlansScreenStyles = StyleSheet.create({
     margin:10
   },
   whereToText: {
-    fontFamily: 'SansationBold',
     fontSize: 36,
     color: '#000000',
     marginTop: 10,
   },
   wellGiveText: {
-    fontFamily: 'Sansation',
     fontSize: 18,
     color: '#000000',
     marginTop: 5,
@@ -827,13 +760,12 @@ const PlansScreenStyles = StyleSheet.create({
     alignItems: 'center',
   },
   dropdownText: {
-    fontFamily: 'Sansation',
+   
     fontSize: 16,
   },
   dropdownInput: {
     width:'100%',
     textAlign:'center',
-    fontFamily: 'Sansation',
     fontSize: 16,
   },
   dropdownList: {
@@ -844,7 +776,6 @@ const PlansScreenStyles = StyleSheet.create({
     borderRadius: 10,
   },
   dropdownItem: {
-    fontFamily:'Sansation',
     fontSize:16,
     padding: 10,
     borderBottomWidth: 1,
@@ -870,7 +801,6 @@ const PlansScreenStyles = StyleSheet.create({
     alignItems:'center',
   },
   routeUpText: {
-    fontFamily: 'SansationBold',
     fontSize: 20,
     color: '#FFFFFF',
   },
@@ -895,11 +825,11 @@ const LoadingScreenStyle = StyleSheet.create({
   },
   titleText:{
     fontSize: 20,
-    fontFamily:'SansationBold'
+  
   },
   subtitleText:{
     fontSize: 15,
-    fontFamily:'Sansation'
+  
   },
 })
 
@@ -940,12 +870,12 @@ const ParentStyles = StyleSheet.create({
   },
   listTitle: {
     fontSize: 30,
-    fontFamily:'SansationBold',
+ 
     textAlign: 'center',
   },
   listSubtitle: {
     fontSize: 20,
-    fontFamily:'Sansation',
+   
     textAlign: 'center',
     marginTop: 10, // Adjust margin top as needed to bring the list name down
     marginBottom:20
@@ -953,7 +883,6 @@ const ParentStyles = StyleSheet.create({
   dayText: {
     fontSize: 30,
     textAlign: 'center',
-    fontFamily:'Sansation'
   },
   saveRouteButtom:{
     borderColor:'#000',
@@ -965,7 +894,7 @@ const ParentStyles = StyleSheet.create({
     alignSelf:'center',
   },
   saveRouteText:{
-    fontFamily:'SansationBold',
+   
     fontSize: 30,
     color:'#000'
   }
@@ -979,7 +908,6 @@ const DaysListStyles = StyleSheet.create({
   dayText: {
     fontSize: 30,
     textAlign: 'center',
-    fontFamily:'SansationBold',
     color:'#fff'
   },
   gradient: {

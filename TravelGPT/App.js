@@ -53,33 +53,11 @@ const windowHeight = Dimensions.get('window').height; // Get height of the user 
 */
 class HomeScreen extends React.Component {
 
-  // Constructor
-  constructor(props) {
-    super(props);
-    this.state = {
-        fontsLoaded: false
-    }
-  }
-
-  // Load text fonts function
-  async loadFonts() {
-    await Font.loadAsync({
-      'Sansation': require('./assets/fonts/Sansation_Regular.ttf'),
-      'SansationBold': require('./assets/fonts/Sansation_Bold.ttf'),
-    });
-    this.setState({ fontsLoaded: true });
-  }
-
-  // Call load fonts function after component mounted
-  componentDidMount() {
-    this.loadFonts();
-  }
-
   // Screen components
   render() { 
 
     // Load screen after the fonts are loaded
-    if (this.state.fontsLoaded) { 
+   
       return (  
         <View style={stylesHomeScreen.container}>
         {/* Background Image */}
@@ -108,7 +86,6 @@ class HomeScreen extends React.Component {
         </ImageBackground>
       </View>
       );      
-    }
   }  
 }
 
@@ -253,7 +230,6 @@ const StackProfileNavigator = () => {
 // Stylesheet for the homepage screen
 const stylesHomeScreen = StyleSheet.create({
   startText: {
-    fontFamily: 'SansationBold',
     fontSize: 25,
     display: 'flex',
     letterSpacing: 2,
