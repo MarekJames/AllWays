@@ -20,7 +20,7 @@ import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, Dimensions, 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // Imports to get the screens of other javascript files, necessary for the app navigator ( navigate through screens )
-import {PlansScreen, LoadingScreen, DaysScreen} from './Views/Plans.js'
+import {PlansScreen, LoadingScreen, DaysScreen, ActivitiesScreen} from './Views/Plans.js'
 import { LoginUserScreen, RegisterUserScreen } from './Views/User.js';
 import {ProfileScreen} from './Views/Profile.js'
 import {SettingsScreen} from './Views/Settings.js'
@@ -123,7 +123,6 @@ class HomeScreen extends React.Component {
 
 */
 const Tab = createBottomTabNavigator();
-
 const BottomTabNavigator = () => {
 
   return (
@@ -144,24 +143,24 @@ const BottomTabNavigator = () => {
       }}
     >
       <Tab.Screen 
-        name="Plans" 
-        component={PlansScreen}
+        name="StackRoutePlanNavigator" 
+        component={StackRoutePlanNavigator}
         options={{
           title: 'Search',
           tabBarIcon: ({size,focused,color}) => { return ( <Ionicons name={'search-outline'} size={size} color={color} />)},
         }}
       />
       <Tab.Screen 
-        name="Days" 
-        component={DaysScreen}
+        name="Home" 
+        component={HomeScreen}
         options={{
           title: 'Saved',
           tabBarIcon: ({size,focused,color}) => { return (<Ionicons name={'heart-outline'} size={size} color={color} />)},
         }}
       />
       <Tab.Screen 
-        name="Profile" 
-        component={ProfileScreen} 
+        name="StackProfileNavigator" 
+        component={StackProfileNavigator} 
         options= {{
           title: 'Profile', 
           tabBarIcon: ({size,focused,color}) => { return ( <Ionicons name={'person-circle-outline'} size={size} color={color} />)}
@@ -178,28 +177,61 @@ const BottomTabNavigator = () => {
 
 */
 const Stack = createNativeStackNavigator();
+
 export const StackNavigator = () => {
   return (
     <Stack.Navigator
-      initialRoute = {HomeScreen}
+      initialRoute = {DaysScreen}
       screenOptions={{
         headerShown: false,
         gestureEnabled: false,
       }}
     >
+      
       <Stack.Screen name="Home" component={HomeScreen}/>
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Tabs" component={BottomTabNavigator} />
       <Stack.Screen name="Login" component={LoginUserScreen} />
       <Stack.Screen name="Register" component={RegisterUserScreen} />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
-      <Stack.Screen name="Loading" component={LoadingScreen} />
-      <Stack.Screen name="Tabs" component={BottomTabNavigator} />
+      <Stack.Screen name="Loading" component={LoadingScreen}/>
+
     </Stack.Navigator>
   );
 }; 
 
+const StackRoutePlanNavigator = () => {
+  return (
+    <Stack.Navigator
+      initialRoute = {PlansScreen}
+      screenOptions={{
+        headerShown: false,
+        gestureEnabled: false,
+      }}
+    >
+      <Stack.Screen name="Plans" component={PlansScreen} />
+      <Stack.Screen name="Days" component={DaysScreen} />
+      <Stack.Screen name="Activities" component={ActivitiesScreen} />
+     
+    </Stack.Navigator>
+  );
+}; 
 
+const StackProfileNavigator = () => {
+  return (
+    <Stack.Navigator
+      initialRoute = {ProfileScreen}
+      screenOptions={{
+        headerShown: false,
+        gestureEnabled: false,
+      }}
+    >
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+     
+    </Stack.Navigator>
+  );
+}; 
 
+ 
 
 /********************* Stylesheets ***********************/
 

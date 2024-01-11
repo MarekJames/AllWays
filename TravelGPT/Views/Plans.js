@@ -435,6 +435,160 @@ export class LoadingScreen extends React.Component{
   Shows the detailed route plan for the specific day
 
 */
+export class ActivitiesScreen extends React.Component{
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      fontsLoaded: false,
+    };
+  }
+
+  // Load text fonts function
+  async loadFonts() {
+    await Font.loadAsync({
+      'Sansation': require('../assets/fonts/Sansation_Regular.ttf'),
+      'SansationBold': require('../assets/fonts/Sansation_Bold.ttf'),
+    });
+    this.setState({ fontsLoaded: true });
+  }
+
+  // Call load fonts function after component mounted
+  componentDidMount() {
+    this.loadFonts();
+  }
+
+  activities = () => {
+
+    // Define the image variable and the associated function
+    const [towerOfPisaImage, setTowerOfPisaImage] = useState([]);
+    
+    // Called when the screen is loaded
+    useEffect(() => {
+      // Fetch image of the Leaning Tower of Pisa when the component mounts
+      fetchTowerOfPisaImage();
+    }, []);
+    
+    // Const that calls the Image API
+    const fetchTowerOfPisaImage = async () => {
+      try {
+        const accessKey = accessKey; // Replace with your actual Unsplash Access Key
+        const response = await axios.get('https://api.unsplash.com/photos/random', {
+          params: {
+            client_id: 'Q37z9gm8MYXdVPEDA6MFPe77A9jHWLdM9pLtqr060Xo',
+            query: 'Tower of Pisa Italy', // Search query for the Tower of Pisa in Italy
+            count: 5, // Number of images you want to fetch (in this case, just one)
+          },
+        });
+  
+        // Store the image URL in state
+        const imagesOfPisa = response.data.map((photo) => photo.urls.regular);
+        setTowerOfPisaImage(imagesOfPisa);
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
+    };
+    
+    const openGoogleMaps = (activity) => {
+      const mapUrl = `https://www.google.com/maps/search/?api=1&query=${activity}`;
+  
+      Linking.openURL(mapUrl)
+        .catch(err => console.error('An error occurred', err));
+    };
+
+    const openGoogle = (activity) => {
+        // Wikipedia URL for a specific page (example: React_Native)
+        const googlePageURL = `https://www.google.com/search?q=${activity}`;
+    
+        Linking.openURL(googlePageURL)
+          .then((supported) => {
+            if (!supported) {
+              console.error("Can't open Wikipedia page.");
+            }
+          })
+          .catch((err) => console.error('An error occurred: ', err));
+    };
+
+    // Only show the screen after the images are loaded
+    if (towerOfPisaImage) { 
+      return routePlan.activities.map((item, index) => (   
+        
+        <View style={ActivitiesListStyles.square} key={index}>
+
+          {/* Image at the top occupying 50% of the square */}
+          <Image
+            source={{ uri: towerOfPisaImage[index] }}
+            style={ActivitiesListStyles.image}
+          />
+
+          {/* Title and description */}
+          <View style={ActivitiesListStyles.textContainer}>
+            <Text style={ActivitiesListStyles.title}>{item.name}</Text>
+            <Text style={ActivitiesListStyles.description}>{item.description}</Text>
+          </View>
+
+          {/* Buttons at the bottom */}
+          <View style={ActivitiesListStyles.buttonContainer}>
+            <TouchableOpacity  style={ActivitiesListStyles.button} onPress = { () => {openGoogleMaps(item.name)}}>
+              <LinearGradient
+                colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={ActivitiesListStyles.gradient}
+                
+              > 
+                <Text style={ActivitiesListStyles.buttonText}>Maps</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity style={ActivitiesListStyles.button} onPress = { () => {openGoogle(item.name)}}>
+            <LinearGradient
+                colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={ActivitiesListStyles.gradient}
+              > 
+                <Text style={ActivitiesListStyles.buttonText}>+Info</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+
+        </View>
+      ))
+    }
+  }
+
+  render(){
+    return (
+      <View style={ParentStyles.container}>
+        
+        {/* Logo */}
+        <View style = {{alignSelf:'center', padding:10}}>
+          {/* Your Logo Component */}
+          <SVGLogo style = {ParentStyles.imageLogo}/>
+        </View>
+
+        {/* Scroll view of the list of activities for the specified day */}
+        <ScrollView style={{flex:1}}>
+
+          {/* Title and description */}
+          <Text style={ParentStyles.listTitle}> Discover {city}, {country} </Text>
+          <Text style={ParentStyles.listSubtitle}> Here is the perfect route for {days} days </Text>
+
+          {/* Specified Day */}
+          <Text style={ParentStyles.dayText}> {routePlan.day} </Text>
+          
+          {/* List of activities, description and, maps and info buttons */}
+          <View style={{alignItems:'center'}}>
+            <this.activities/>
+          </View>
+
+        </ScrollView>
+      
+      </View>
+    );
+  }
+}
+
 export class DaysScreen extends React.Component {  
   
   // Constructor
@@ -442,7 +596,6 @@ export class DaysScreen extends React.Component {
     super(props);
     this.state = {
       fontsLoaded: false,
-      showDayRoutePlan: false
     };
   }
   
@@ -465,7 +618,7 @@ export class DaysScreen extends React.Component {
     // Only show after the fonts are loaded
     if (this.state.fontsLoaded) {
       return listsPlan.map((item, index) => (
-        <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {routePlan= listsPlan[index]; this.setState({ showDayRoutePlan: true })}}>
+        <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {routePlan= listsPlan[index]; this.props.navigation.navigate('Activities')}}>
           <LinearGradient
               colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
               start={{ x: 0, y: 0 }}
@@ -484,108 +637,7 @@ export class DaysScreen extends React.Component {
 
     // Const that gets the images for the specific activities
     // Also defines what is shown in the specific day route plan screen
-    const DayRoutePlan = () => {
-
-      // Define the image variable and the associated function
-      const [towerOfPisaImage, setTowerOfPisaImage] = useState([]);
-      
-      // Called when the screen is loaded
-      useEffect(() => {
-        // Fetch image of the Leaning Tower of Pisa when the component mounts
-        fetchTowerOfPisaImage();
-      }, []);
-      
-      // Called when the user clicks to go back
-      useEffect(() => {
-        // Const that alerts the user that he/she pressed the go back button
-        const backAction = () => {
-          Alert.alert('Hold on!', 'Are you sure you want to go back?', [
-            {
-              text: 'Cancel',
-              onPress: () => null,
-              style: 'cancel',
-            },
-            {text: 'YES', onPress: () => this.setState({ showDayRoutePlan: false })},
-          ]);
-          return true;
-        };
     
-        const backHandler = BackHandler.addEventListener(
-          'hardwareBackPress',
-          backAction,
-        );
-    
-        return () => backHandler.remove();
-      }, []);
-    
-      // Const that calls the Image API
-      const fetchTowerOfPisaImage = async () => {
-        try {
-          const accessKey = accessKey; // Replace with your actual Unsplash Access Key
-          const response = await axios.get('https://api.unsplash.com/photos/random', {
-            params: {
-              client_id: 'Q37z9gm8MYXdVPEDA6MFPe77A9jHWLdM9pLtqr060Xo',
-              query: 'Tower of Pisa Italy', // Search query for the Tower of Pisa in Italy
-              count: 5, // Number of images you want to fetch (in this case, just one)
-            },
-          });
-    
-          // Store the image URL in state
-          const imagesOfPisa = response.data.map((photo) => photo.urls.regular);
-          setTowerOfPisaImage(imagesOfPisa);
-        } catch (error) {
-          console.error('Error fetching image:', error);
-        }
-      };
-      
-      // Only show the screen after the images are loaded
-      if (towerOfPisaImage) { 
-        return routePlan.activities.map((item, index) => (   
-          
-          <View style={ActivitiesListStyles.square} key={index}>
-
-            {/* Image at the top occupying 50% of the square */}
-            <Image
-              source={{ uri: towerOfPisaImage[index] }}
-              style={ActivitiesListStyles.image}
-            />
-
-            {/* Title and description */}
-            <View style={ActivitiesListStyles.textContainer}>
-              <Text style={ActivitiesListStyles.title}>{item.name}</Text>
-              <Text style={ActivitiesListStyles.description}>{item.description}</Text>
-            </View>
-
-            {/* Buttons at the bottom */}
-            <View style={ActivitiesListStyles.buttonContainer}>
-              <TouchableOpacity  style={ActivitiesListStyles.button} onPress = { () => {openGoogleMaps(item.name)}}>
-                <LinearGradient
-                  colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={ActivitiesListStyles.gradient}
-                  
-                > 
-                  <Text style={ActivitiesListStyles.buttonText}>Maps</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-              <TouchableOpacity style={ActivitiesListStyles.button} onPress = { () => {openGoogle(item.name)}}>
-              <LinearGradient
-                  colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={ActivitiesListStyles.gradient}
-                > 
-                  <Text style={ActivitiesListStyles.buttonText}>+Info</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
-
-          </View>
-        ))
-      }
-    }
-
     const HeartIcon = () => {
       const [isSaved, setIsSaved] = useState(false); // Initially, the content is not saved
     
@@ -606,30 +658,9 @@ export class DaysScreen extends React.Component {
       );
     };
 
-    const openGoogleMaps = (activity) => {
-      const mapUrl = `https://www.google.com/maps/search/?api=1&query=${activity}`;
-  
-      Linking.openURL(mapUrl)
-        .catch(err => console.error('An error occurred', err));
-    };
-
-    const openGoogle = (activity) => {
-        // Wikipedia URL for a specific page (example: React_Native)
-        const googlePageURL = `https://www.google.com/search?q=${activity}`;
-    
-        Linking.openURL(googlePageURL)
-          .then((supported) => {
-            if (!supported) {
-              console.error("Can't open Wikipedia page.");
-            }
-          })
-          .catch((err) => console.error('An error occurred: ', err));
-    };
-
     // If fonts are loaded and showDayRoutePlan is 0 (Shows the list of days)
-    if(this.state.fontsLoaded && !this.state.showDayRoutePlan){
+    if(this.state.fontsLoaded){
       return (
-
         <View style={ParentStyles.container}>
           
           <View style={ParentStyles.containerLogoHeart}>
@@ -656,37 +687,6 @@ export class DaysScreen extends React.Component {
             {this.lists()}
           </ScrollView>
 
-        </View>
-      );
-    }
-    // If fonts are loaded and showDayRoutePlan is 1 (Shows the route plan for the specified day)
-    else if(this.state.fontsLoaded && this.state.showDayRoutePlan){
-      return (
-        <View style={ParentStyles.container}>
-          
-          {/* Logo */}
-          <View style = {{alignSelf:'center', padding:10}}>
-            {/* Your Logo Component */}
-            <SVGLogo style = {ParentStyles.imageLogo}/>
-          </View>
-
-          {/* Scroll view of the list of activities for the specified day */}
-          <ScrollView style={{flex:1}}>
-
-            {/* Title and description */}
-            <Text style={ParentStyles.listTitle}> Discover {city}, {country} </Text>
-            <Text style={ParentStyles.listSubtitle}> Here is the perfect route for {days} days </Text>
-
-            {/* Specified Day */}
-            <Text style={ParentStyles.dayText}> {routePlan.day} </Text>
-            
-            {/* List of activities, description and, maps and info buttons */}
-            <View style={{alignItems:'center'}}>
-              <DayRoutePlan/>
-            </View>
-
-          </ScrollView>
-        
         </View>
       );
     }
@@ -763,7 +763,7 @@ async function getPlan(navigation, cityName, countryName, daysNumber) {
   // await delay(1000)
 
   // Navigate to the ListPlans to show the days
-  navigator.navigate("Days")
+  navigation.navigate("Days")
   
 }
 
