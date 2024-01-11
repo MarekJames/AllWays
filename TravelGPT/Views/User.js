@@ -12,7 +12,7 @@ User.js
 
 /******************** Imports Section ********************/ 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground } from 'react-native';
 
 import { initializeApp } from "firebase/app";
@@ -40,20 +40,25 @@ import { Ionicons } from '@expo/vector-icons';
 export class LoginUserScreen extends React.Component{
   
   LoginScreen = () => {
+    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     
     const [invalidEmail, setInvalidEmail] = useState('');
     const [invalidPassword, setInvalidPassword] = useState('');
-    
+
     const app = initializeApp(firebaseConfig);
+    
     const auth = getAuth(app, {
       persistence: getReactNativePersistence(ReactNativeAsyncStorage)
     });
 
+
     // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-     const signInGoogle = async () => {
+    // Reset variables everytime the page mounts
+    
+    const signInGoogle = async () => {
     //   try {
     //     await GoogleSignin.configure({
     //       scopes: ['https://www.googleapis.com/auth/userinfo.email'],
@@ -123,7 +128,6 @@ export class LoginUserScreen extends React.Component{
       // );
     }
 
-
     return (
       <View style={LoginUserStyles.container}>
 
@@ -168,7 +172,7 @@ export class LoginUserScreen extends React.Component{
   
   
         
-        <Pressable onPress={() => this.props.navigation.navigate('Register')}>
+        <Pressable onPress={() => {this.props.navigation.reset({ index: 0,routes: [{ name: 'Register' }]})}}>
           <Text style={LoginUserStyles.createAccount}>Create new account</Text>
         </Pressable>
   
@@ -352,7 +356,7 @@ export class RegisterUserScreen extends React.Component{
           <Text style = {{fontSize:20, fontWeight:600, textAlign:'center', color:'#FFFFFF'}}>Sign Up</Text>
         </TouchableOpacity>
   
-        <Pressable onPress = {() => {this.props.navigation.navigate('Login')}}>
+        <Pressable onPress={() => {this.props.navigation.reset({ index: 0,routes: [{ name: 'Login' }]})}}>
           <Text style={RegisterUserStyles.alreadyHaveAccount}>Already have an account</Text>
         </Pressable>
 

@@ -17,7 +17,6 @@ export class SettingsScreen extends React.Component{
             <View style={styles.container}>
                 
                 {/*Image and Settings text */}
-
                 <View style={styles.profileContainer}>
                     <Image source={require('../Images/Profile.png')} style={styles.profileImage} />
                     <Text style = {styles.userName}>Settings</Text>
@@ -120,6 +119,7 @@ export class SettingsScreen extends React.Component{
     }
     
 }
+
 const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -176,5 +176,5 @@ const styles = StyleSheet.create({
         paddingHorizontal:20
 
     }
-  });
+});
 

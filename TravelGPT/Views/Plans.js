@@ -763,7 +763,7 @@ async function getPlan(navigation, cityName, countryName, daysNumber) {
   // await delay(1000)
 
   // Navigate to the ListPlans to show the days
-  //navigator.navigate("Days")
+  navigator.navigate("Days")
   
 }
 

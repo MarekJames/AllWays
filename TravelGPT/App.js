@@ -15,11 +15,8 @@ App.js - Master file
 
 // Imports for the react components add buttons, images, text, etc
 import React from 'react'; 
-import {useEffect, useRef} from 'react'; 
-import { Appearance, StyleSheet, View, Text, TouchableOpacity, ImageBackground, Dimensions, Image, Platform, BackHandler} from 'react-native';  
-import { LinearGradient } from 'expo-linear-gradient';
+import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, Dimensions, Image, Platform, BackHandler} from 'react-native';  
 
-import {createAppContainer} from 'react-navigation'; 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // Imports to get the screens of other javascript files, necessary for the app navigator ( navigate through screens )
@@ -33,7 +30,6 @@ import * as Font from 'expo-font';
 import SVGLogo from './Images/Logo.svg'
 
 // Imports for the nav bar
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -119,7 +115,7 @@ class HomeScreen extends React.Component {
 
 
 
-/******************** App Initializer **********************/
+/******************** Tab Navigator **********************/
 
 /* 
 
@@ -131,7 +127,6 @@ const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
 
   return (
-
     <Tab.Navigator   
       screenOptions={{
         headerShown: false, // Hide the header for tab navigator
@@ -146,92 +141,63 @@ const BottomTabNavigator = () => {
           fontWeight: 'bold', // Make label text bold
           marginBottom: 4
         },
-        
       }}
     >
-
       <Tab.Screen 
         name="Plans" 
         component={PlansScreen}
         options={{
           title: 'Search',
-          tabBarIcon: ({size,focused,color}) => {
-            return (
-             <Ionicons name={'search-outline'} size={size} color={color} />
-            )
-          },
+          tabBarIcon: ({size,focused,color}) => { return ( <Ionicons name={'search-outline'} size={size} color={color} />)},
         }}
       />
-
       <Tab.Screen 
         name="Days" 
         component={DaysScreen}
         options={{
           title: 'Saved',
-          tabBarIcon: ({size,focused,color}) => {
-            return (
-              <Ionicons name={'heart-outline'} size={size} color={color} />
-            )
-          },
+          tabBarIcon: ({size,focused,color}) => { return (<Ionicons name={'heart-outline'} size={size} color={color} />)},
         }}
       />
-
       <Tab.Screen 
         name="Profile" 
         component={ProfileScreen} 
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({size,focused,color}) => {
-            return (
-             <Ionicons name={'person-circle-outline'} size={size} color={color} />
-            )
-          },
+        options= {{
+          title: 'Profile', 
+          tabBarIcon: ({size,focused,color}) => { return ( <Ionicons name={'person-circle-outline'} size={size} color={color} />)}
         }} 
       />
-
     </Tab.Navigator>
   )
 };
-
-const Stack = createNativeStackNavigator();
-
-export const StackNavigator = () => {
-  return (
-   
-      <Stack.Navigator
-        initialRoute = {HomeScreen}
-        screenOptions={{
-          headerShown: false,
-          gestureEnabled: false,
-        }}
-      >
-        <Stack.Screen name="Home" component={HomeScreen}/>
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="Login" component={LoginUserScreen} />
-        <Stack.Screen name="Register" component={RegisterUserScreen} />
-        <Stack.Screen name="Settings" component={SettingsScreen} />
-        <Stack.Screen name="Loading" component={LoadingScreen} />
-        <Stack.Screen name="Tabs" component={BottomTabNavigator} />
-        
-      </Stack.Navigator>
-  );
-}; 
-  
+ 
 /*
 
-    Creates the app
-    Associates the app navigator
-    Set the light mode default
+  Creates the app stack navigator
+  Includes the tab navigator
 
 */
-/* export const AppContainer = createAppContainer(AppNavigator);  
+const Stack = createNativeStackNavigator();
+export const StackNavigator = () => {
+  return (
+    <Stack.Navigator
+      initialRoute = {HomeScreen}
+      screenOptions={{
+        headerShown: false,
+        gestureEnabled: false,
+      }}
+    >
+      <Stack.Screen name="Home" component={HomeScreen}/>
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Login" component={LoginUserScreen} />
+      <Stack.Screen name="Register" component={RegisterUserScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="Loading" component={LoadingScreen} />
+      <Stack.Screen name="Tabs" component={BottomTabNavigator} />
+    </Stack.Navigator>
+  );
+}; 
 
-export default class App extends React.Component {  
-    render() {  
-        return <AppContainer />;  
-    }  
-}  
- */
 
 
 
