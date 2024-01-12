@@ -199,7 +199,7 @@ const config = new Configuration({
 const openai = new OpenAIApi(config)
 
 // Access key to the images API
-const accessKey = 'Q37z9gm8MYXdVPEDA6MFPe77A9jHWLdM9pLtqr060Xo'
+//const accessKey = 'Q37z9gm8MYXdVPEDA6MFPe77A9jHWLdM9pLtqr060Xo'
 
 
 
@@ -678,18 +678,20 @@ async function getPlan(navigation, cityName, countryName, daysNumber) {
   
   navigation.navigate("Loading")
 
+  console.log(prompt);
+
   // Call the OpenAI to get the route plan
-  // const res = await openai.createCompletion({
-  //   model: "text-davinci-003",
-  //   prompt: prompt,
-  //   max_tokens: 2048
-  // })
+  const res = await openai.createCompletion({
+    model: "gpt-3.5-turbo-instruct",
+    prompt: prompt,
+    max_tokens: 2048
+  })
 
   //console.log(res.data.choices[0].text)
   //console.log(JSON.parse(res.data.choices[0].text))
 
   // Parse the OpenAI response to JSON
-  //listsPlan = JSON.parse(res.data.choices[0].text)
+  listsPlan = JSON.parse(res.data.choices[0].text)
 
   // Waits 10 seconds for testing purposes
   // Only needed if chatgpt is commented
