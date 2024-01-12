@@ -31,7 +31,7 @@ import SVGLogo from './Images/Logo.svg'
 
 // Imports for the nav bar
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
+import  Ionicons  from '@expo/vector-icons/Ionicons';
 
 
 
@@ -222,6 +222,7 @@ const StackProfileNavigator = () => {
     </Stack.Navigator>
   );
 }; 
+
 
  
 
