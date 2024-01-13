@@ -1,42 +1,25 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import {firebaseConfig} from '../firebase-config';
-import { initializeApp } from "firebase/app";
-import {getReactNativePersistence } from 'firebase/auth';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { getAuth, signOut } from "firebase/auth";
-import {SettingsScreen} from './Settings.js'
+import  Ionicons  from '@expo/vector-icons/Ionicons';
+import {getAuth} from '../firebase-config';
+
+
 
 const options = [
-    { name: 'Favorites', icon: require('../Images/Favorite.png') },
-    { name: 'Payment', icon: require('../Images/Payment.png') },
-    { name: 'Tell Your Friends', icon: require('../Images/TellYourFriends.png') },
-    { name: 'Promotions', icon: require('../Images/Promotions.png') },
-    { name: 'Settings', icon: require('../Images/Settings.png') },
-    { name: 'Log Out', icon: require('../Images/Logout.png') },
+    { name: 'Favorites', icon: 'heart' },
+    { name: 'Payment', icon: 'wallet-outline' },
+    { name: 'Settings', icon: 'settings-outline' },
+    { name: 'Log Out', icon: 'log-out-outline' },
   ];
 
 export class ProfileScreen extends React.Component{
 
    
     Profile = () => {
-        const handleLogout = async (option) => {
-            if(option.name == 'Log Out'){
-                
-                const app = initializeApp(firebaseConfig);
-                const auth = getAuth(app, {
-                    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-                });
 
-                signOut(auth).then(() => {
-                  console.log('Log out successful');
-                  this.props.navigation.navigate('Login');
-                }).catch((error) => {
-                  // An error happened.
-                  alert(error.code);
-                });
-            }
-        };
+        const handleLogout =  () => {
+            getAuth().signOut();
+        }
 
         return (
             <View style={styles.container}>
@@ -47,9 +30,12 @@ export class ProfileScreen extends React.Component{
               <View style={styles.optionsContainer}>
                 {options.map((option, index) => (
                   <TouchableOpacity onPress={()=> {
+
                       if(option.name ==  'Settings'){this.props.navigation.navigate('Settings')}
+                      if(option.name ==  'Log Out'){handleLogout()}
+
                     }} style={styles.optionItem} key={index}>
-                    <Image source={option.icon} style={styles.optionIcon} />
+                    <Ionicons style = {styles.optionIcon} name={option.icon} size = {30} color = '#309CFF' />
                     <Text style={styles.optionName}>{option.name}</Text>
                   </TouchableOpacity>
                 ))}
@@ -88,17 +74,15 @@ const styles = StyleSheet.create({
     },
     optionsContainer: {
       alignItems: 'flex-start',
-      marginTop:20,
-      marginLeft:10
+      justifyContent:'center',
+      margin:20
     },
     optionItem: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginVertical: 8,
+      marginVertical: 10,
     },
     optionIcon: {
-      width: 45,
-      height: 45,
       marginRight: 10,
       margin:10
     },

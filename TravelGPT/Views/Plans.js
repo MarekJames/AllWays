@@ -19,8 +19,9 @@ import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text,  TextInput,
 import axios from 'axios';
 import { Configuration, OpenAIApi } from 'openai'
 import { LinearGradient } from 'expo-linear-gradient';
-import SVGLogo from '../Images/RouteMasterLogo.svg'
+import SVGLogo from '../Images/Logo.svg'
 import "react-native-url-polyfill/auto"
+import { Ionicons } from '@expo/vector-icons';
 
 
 /******************* Global Variables ********************/
@@ -188,7 +189,22 @@ listsPlan = [
           }
 ]  // Test route plan
 
-var routePlan = []  // Stores the specific day to show the route plan
+var routePlan = [{"day": "Day 1", 
+"activities" : [{"name": "Visit the Colosseum",
+                 "description": "Walk through the colosseum....."},
+
+                 {"name": "Visit the Roman Forum",
+                 "description": "Walk through the forum....."},
+
+                 {"name": "Palatine Hill",
+                 "description": " Suck my balls in palatine hill"},
+
+                 {"name": "Jao is Gay",
+                 "description": "Finger Jao"},
+
+                 {"name": "Jao takes it up the bum",
+                 "description": "A lot"}
+                 ]}]  // Stores the specific day to show the route plan
 
 // Configs the apiKey -> We may need to encrypt this key
 const config = new Configuration({
@@ -519,9 +535,28 @@ export class ActivitiesScreen extends React.Component{
       <View style={ParentStyles.container}>
         
         {/* Logo */}
-        <View style = {{alignSelf:'center', padding:10}}>
+        <View style = {{flexDirection: 'row', alignItems: 'center', marginBottom:5}}>
           {/* Your Logo Component */}
-          <SVGLogo style = {ParentStyles.imageLogo}/>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('Days')}
+            style={{
+              width: 45,
+              height: 45,
+              borderRadius: 30,
+              backgroundColor: 'lightgrey',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginLeft:15
+            }}
+          >
+            
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
+          </TouchableOpacity>
+
+          
+          <View style={{ alignSelf: 'center'}}>
+            <SVGLogo/>
+          </View>
         </View>
 
         {/* Scroll view of the list of activities for the specified day */}
@@ -600,11 +635,8 @@ export class DaysScreen extends React.Component {
           
           <View style={ParentStyles.containerLogoHeart}>
             {/* SVGLogo component */}
-            <View style={ParentStyles.containerLogo}>
-              <Image
-                source={require('../Images/RouteMasterLogo.png')}
-                style={ParentStyles.logo}
-              />
+            <View style={{ alignSelf: 'center'}}>
+              <SVGLogo/>
             </View>
 
             {/* HeartIcon component */}
@@ -613,12 +645,13 @@ export class DaysScreen extends React.Component {
             </View>
           </View>
 
-          {/* Title and description */}
-          <Text style={ParentStyles.listTitle}> Discover {city}, {country} </Text>
-          <Text style={ParentStyles.listSubtitle}> Here is the perfect route for {days} days </Text>
-          
+        
            {/* Scroll view with the list of days */}
           <ScrollView style={{flex:1}}>
+              {/* Title and description */}
+            <Text style={ParentStyles.listTitle}> Discover {city}, {country} </Text>
+            <Text style={ParentStyles.listSubtitle}> Here is the perfect route for {days} days </Text>
+          
             {this.lists()}
           </ScrollView>
 
@@ -681,17 +714,17 @@ async function getPlan(navigation, cityName, countryName, daysNumber) {
   console.log(prompt);
 
   // Call the OpenAI to get the route plan
-  const res = await openai.createCompletion({
-    model: "gpt-3.5-turbo-instruct",
-    prompt: prompt,
-    max_tokens: 2048
-  })
+  // const res = await openai.createCompletion({
+  //   model: "gpt-3.5-turbo-instruct",
+  //   prompt: prompt,
+  //   max_tokens: 2048
+  // })
 
   //console.log(res.data.choices[0].text)
   //console.log(JSON.parse(res.data.choices[0].text))
 
   // Parse the OpenAI response to JSON
-  listsPlan = JSON.parse(res.data.choices[0].text)
+  //listsPlan = JSON.parse(res.data.choices[0].text)
 
   // Waits 10 seconds for testing purposes
   // Only needed if chatgpt is commented
@@ -851,13 +884,12 @@ const ParentStyles = StyleSheet.create({
   containerLogoHeart: {
     flexDirection: 'row', // Arrange children horizontally
     alignItems: 'center', // Align items vertically
-    justifyContent: 'space-between', // Space evenly between children
-    padding: 20,
+    justifyContent: 'center', // Space evenly between children
     height:'20%',
     width:'100%'
   },
   containerLogo: {
-    flex: 1, // Occupy available space
+    flex:1,
     marginRight: 10, // Adjust margin as needed
   },
   logo: {
@@ -895,7 +927,6 @@ const ParentStyles = StyleSheet.create({
     alignSelf:'center',
   },
   saveRouteText:{
-   
     fontSize: 30,
     color:'#000'
   }

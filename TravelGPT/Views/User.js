@@ -12,15 +12,11 @@ User.js
 
 /******************** Imports Section ********************/ 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground } from 'react-native';
 
-import { initializeApp} from "firebase/app";
-import {getReactNativePersistence, initializeAuth} from 'firebase/auth';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
-import { getApp, getAuth } from '../firebase-config';
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from 'firebase/auth';
+import { getAuth } from '../firebase-config';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
@@ -37,6 +33,7 @@ import  Ionicons  from '@expo/vector-icons/Ionicons';
   Allows the user to input username/password
 
 */
+
 export class LoginUserScreen extends React.Component{
   
   LoginScreen = () => {
@@ -65,12 +62,12 @@ export class LoginUserScreen extends React.Component{
     //     console.error('Google Sign-in error:', error);
     //   }
      };
-
+    
     const handleSubmit = async () => {
       if(email && password){
         await signInWithEmailAndPassword(getAuth(),email,password)
-          .then(() => {
-            console.log('Signed In');
+          .then((response) => {
+            console.log('Signed In : ' + response.user.uid);
             this.props.navigation.push('Tabs');
           })
           .catch(error => {

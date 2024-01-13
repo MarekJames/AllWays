@@ -100,7 +100,7 @@ class HomeScreen extends React.Component {
 
 */
 const Tab = createBottomTabNavigator();
-const BottomTabNavigator = () => {
+export const BottomTabNavigator = () => {
 
   return (
     <Tab.Navigator   
@@ -121,16 +121,13 @@ const BottomTabNavigator = () => {
       screenListeners={({ navigation }) => ({
         tabPress: (e) =>{
         
-            console.log(navigation.getState().index)
 
             //Checks if the last tab clicked is the same as at the moment, also checks if the index is the first tab, to route to the planscreen
             if(e.target == navigation.getState().history[navigation.getState().history.length - 1].key && navigation.getState().index == 0 )
             {
               navigation.navigate('Plans')
             }
-            //e.preventDefault();
-            
-            
+            //e.preventDefault();  
         } 
     })}
     >
@@ -180,11 +177,13 @@ export const StackNavigator = () => {
       }}
     >
       
-      <Stack.Screen name="Home" component={HomeScreen}/>
+      <Stack.Screen 
+      name="Home" 
+      component={HomeScreen}/>
+
       <Stack.Screen name="Tabs" component={BottomTabNavigator} />
       <Stack.Screen name="Login" component={LoginUserScreen} />
       <Stack.Screen name="Register" component={RegisterUserScreen} />
-      <Stack.Screen name="Loading" component={LoadingScreen}/>
 
     </Stack.Navigator>
   );
@@ -193,15 +192,36 @@ export const StackNavigator = () => {
 const StackRoutePlanNavigator = () => {
   return (
     <Stack.Navigator
-      initialRoute = {PlansScreen}
       screenOptions={{
         headerShown: false,
-        gestureEnabled: false,
       }}
     >
-      <Stack.Screen name="Plans" component={PlansScreen} />
-      <Stack.Screen name="Days" component={DaysScreen} />
-      <Stack.Screen name="Activities" component={ActivitiesScreen} />
+      <Stack.Screen 
+       options={{
+        gestureEnabled: false,
+        }} 
+        name="Plans" component={PlansScreen} />
+
+        <Stack.Screen
+        options={{
+          gestureEnabled: false,
+        }} 
+        name="Days" component={DaysScreen} />
+
+      <Stack.Screen 
+        options={{
+          gestureEnabled: true,
+        }}
+        name="Activities" component={ActivitiesScreen} />
+
+      <Stack.Screen options={{
+          gestureEnabled: false,
+        }}
+        name="Loading" component={LoadingScreen}/>
+
+      
+    
+      
      
     </Stack.Navigator>
   );
