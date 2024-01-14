@@ -62,7 +62,7 @@ class HomeScreen extends React.Component {
         <View style={stylesHomeScreen.container}>
         {/* Background Image */}
         <ImageBackground
-          source={require('./Images/HomeBackground.png')} // Replace with your image path
+          source={require('./Images/Background4.jpg')} // Replace with your image path
           style={stylesHomeScreen.imageBackground}
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >
@@ -72,16 +72,18 @@ class HomeScreen extends React.Component {
               style = {stylesHomeScreen.imageLogo}
             />
           </View>
-  
-          {/* Login Button */}
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')} style={stylesHomeScreen.optionButton}>
-              <Text style={stylesHomeScreen.startText}>Login</Text>
-          </TouchableOpacity>
 
-          {/* Create Button */}
-          <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')} style={stylesHomeScreen.optionButton}>
-              <Text style={stylesHomeScreen.startText}>Create Account</Text>
-          </TouchableOpacity>
+          <View style = {{justifyContent:'flex-end', marginBottom:50}}>
+            {/* Login Button */}
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')} style={stylesHomeScreen.optionButton}>
+                <Text style={stylesHomeScreen.startText}>Login</Text>
+            </TouchableOpacity>
+
+            {/* Create Button */}
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')} style={stylesHomeScreen.optionButton}>
+                <Text style={stylesHomeScreen.startText}>Create Account</Text>
+            </TouchableOpacity>
+          </View>
   
         </ImageBackground>
       </View>
@@ -118,18 +120,30 @@ export const BottomTabNavigator = () => {
           marginBottom: 4
         },
       }}
-      screenListeners={({ navigation }) => ({
-        tabPress: (e) =>{
-        
+        // screenListeners={({ navigation }) => ({
+        //   tabPress: (e) =>{
+             
+        //       const lastScreen = navigation.getState().routes[0].state.routes[navigation.getState().routes[0].state.routes.length-1];
 
-            //Checks if the last tab clicked is the same as at the moment, also checks if the index is the first tab, to route to the planscreen
-            if(e.target == navigation.getState().history[navigation.getState().history.length - 1].key && navigation.getState().index == 0 )
-            {
-              navigation.navigate('Plans')
-            }
-            //e.preventDefault();  
-        } 
-    })}
+              
+        //       //This means the route has been generated, otherwise the last screen would be "Plans"
+        //       if(lastScreen.name== 'Activities' || lastScreen.name == 'Days'){
+
+        //         //Get listsPlan
+        //         //console.log(navigation.getState().routes[0]);
+        //         console.log(lastScreen.name);
+        //         navigation.navigate('Days', {
+        //           savedRoutes: lastScreen.params.savedRoutes,
+        //           listsPlan: lastScreen.params.listsPlan,
+        //           city: lastScreen.params.city,
+        //           days: lastScreen.params.days
+        //         })
+        //       }
+             
+        //   }
+               
+        //})}
+      
     >
       <Tab.Screen 
         name="StackRoutePlanNavigator" 
@@ -138,6 +152,7 @@ export const BottomTabNavigator = () => {
           title: 'Search',
           tabBarIcon: ({size,focused,color}) => { return ( <Ionicons name={'search-outline'} size={size} color={color} />)},
         }}
+    
       />
       <Tab.Screen 
         name="StackSavedNavigator" 
@@ -303,13 +318,14 @@ const stylesHomeScreen = StyleSheet.create({
   },
 
   optionButton: {
-    backgroundColor:'#4E80B5',
+    backgroundColor:'#212121',
     alignSelf: 'center',
+    elevation:5,
+    shadowColor:'#8B4513',
     margin:10,
-    marginBottom:20,
-    height:'7%',
+    height: 60,
     width:'80%',
-    borderRadius:30,
+    borderRadius:10,
     justifyContent:'center',
     alignItems:'center'
   },

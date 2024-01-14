@@ -472,13 +472,13 @@ const RegisterUserStyles = StyleSheet.create ({
     fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 10,
-    marginTop:100,
+    marginTop:80,
     color:'#1F41BB',
     alignSelf:'center'
   },
   subTitle: {
     fontSize: 14,
-    marginBottom: 60,
+    marginBottom: 40,
     color:'#000000',
     textAlign:'center'
   },
