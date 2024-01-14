@@ -20,7 +20,7 @@ import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, Dimensions, 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // Imports to get the screens of other javascript files, necessary for the app navigator ( navigate through screens )
-import {PlansScreen, LoadingScreen, DaysScreen, ActivitiesScreen} from './Views/Plans.js'
+import {PlansScreen, LoadingScreen, DaysScreen, ActivitiesScreen, SavedRoutesScreen} from './Views/Plans.js'
 import { LoginUserScreen, RegisterUserScreen } from './Views/User.js';
 import {ProfileScreen} from './Views/Profile.js'
 import {SettingsScreen} from './Views/Settings.js'
@@ -140,8 +140,8 @@ export const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen 
-        name="Home" 
-        component={HomeScreen}
+        name="StackSavedNavigator" 
+        component={StackSavedNavigator}
         options={{
           title: 'Saved',
           tabBarIcon: ({size,focused,color}) => { return (<Ionicons name={'heart-outline'} size={size} color={color} />)},
@@ -219,9 +219,36 @@ const StackRoutePlanNavigator = () => {
         }}
         name="Loading" component={LoadingScreen}/>
 
-      
-    
-      
+    </Stack.Navigator>
+  );
+}; 
+
+const StackSavedNavigator = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+  
+      <Stack.Screen 
+        options={{
+          gestureEnabled: false,
+        }}
+        name="SavedRoutes" component={SavedRoutesScreen}/>
+
+      <Stack.Screen
+        options={{
+          gestureEnabled: false,
+        }} 
+        name="Days" component={DaysScreen} />
+
+      <Stack.Screen 
+        options={{
+          gestureEnabled: true,
+        }}
+        name="Activities" component={ActivitiesScreen} />
+
      
     </Stack.Navigator>
   );

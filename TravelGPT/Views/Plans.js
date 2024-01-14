@@ -206,6 +206,324 @@ var routePlan = [{"day": "Day 1",
                  "description": "A lot"}
                  ]}]  // Stores the specific day to show the route plan
 
+savedRoutes = [
+  {
+    "city": "New York",
+    "days": 7
+  },
+  {
+    "city": "Paris",
+    "days": 5
+  }
+]
+
+routeNewYork = [
+  {
+    "day": "day1",
+    "activities": [
+      {
+        "name": "Explore Central Park",
+        "description": "Enjoy a leisurely walk and discover the beauty of Central Park."
+      },
+      {
+        "name": "Visit Times Square",
+        "description": "Experience the vibrant atmosphere of Times Square and its iconic billboards."
+      },
+      {
+        "name": "Tour the Metropolitan Museum of Art",
+        "description": "Immerse yourself in art and culture at the renowned Met Museum."
+      },
+      {
+        "name": "Dine at a Local Deli",
+        "description": "Savor classic New York flavors with a meal at a traditional deli."
+      },
+      {
+        "name": "Take a Hudson River Cruise",
+        "description": "Enjoy scenic views of the city skyline on a relaxing Hudson River cruise."
+      }
+    ]
+  },
+  {
+    "day": "day2",
+    "activities": [
+      {
+        "name": "Explore the High Line",
+        "description": "Stroll along the elevated High Line park with greenery and art installations."
+      },
+      {
+        "name": "Visit the Statue of Liberty",
+        "description": "Take a ferry to see the iconic Statue of Liberty up close."
+      },
+      {
+        "name": "Discover Chelsea Market",
+        "description": "Indulge in a variety of gourmet delights at Chelsea Market."
+      },
+      {
+        "name": "Broadway Show",
+        "description": "Experience the magic of Broadway with a captivating live show."
+      },
+      {
+        "name": "Nightlife in Greenwich Village",
+        "description": "Explore the vibrant nightlife of Greenwich Village with its eclectic bars and clubs."
+      }
+    ]
+  },
+  {
+    "day": "day3",
+    "activities": [
+      {
+        "name": "Museum of Modern Art (MoMA)",
+        "description": "Marvel at contemporary art masterpieces at the Museum of Modern Art."
+      },
+      {
+        "name": "Central Perk Coffee at Friends Experience",
+        "description": "Relive the 'Friends' TV show with coffee at the Central Perk pop-up."
+      },
+      {
+        "name": "Walk across Brooklyn Bridge",
+        "description": "Take a scenic walk across the iconic Brooklyn Bridge for breathtaking views."
+      },
+      {
+        "name": "Brooklyn Flea Market",
+        "description": "Shop for unique finds and vintage treasures at the Brooklyn Flea Market."
+      },
+      {
+        "name": "Dinner at Grimaldi's Pizzeria",
+        "description": "Indulge in authentic New York-style pizza at Grimaldi's in Brooklyn."
+      }
+    ]
+  },
+  {
+    "day": "day4",
+    "activities": [
+      {
+        "name": "Explore Grand Central Terminal",
+        "description": "Admire the architecture and history of Grand Central Terminal."
+      },
+      {
+        "name": "Rockefeller Center Observation Deck",
+        "description": "Take in panoramic views of the city from the Top of the Rock Observation Deck."
+      },
+      {
+        "name": "Shop on Fifth Avenue",
+        "description": "Indulge in luxury shopping on the famous Fifth Avenue."
+      },
+      {
+        "name": "Visit St. Patrick's Cathedral",
+        "description": "Experience the serenity of St. Patrick's Cathedral, a historic landmark."
+      },
+      {
+        "name": "Dinner in Little Italy",
+        "description": "Savor Italian cuisine in the charming streets of Little Italy."
+      }
+    ]
+  },
+  {
+    "day": "day5",
+    "activities": [
+      {
+        "name": "Explore the Lower East Side",
+        "description": "Discover the vibrant culture and street art of the Lower East Side."
+      },
+      {
+        "name": "Tenement Museum",
+        "description": "Learn about immigrant history with a visit to the Tenement Museum."
+      },
+      {
+        "name": "Chinatown Food Tour",
+        "description": "Embark on a culinary adventure with a food tour in vibrant Chinatown."
+      },
+      {
+        "name": "Visit the 9/11 Memorial",
+        "description": "Pay respects at the solemn 9/11 Memorial and Reflecting Pools."
+      },
+      {
+        "name": "Dinner in SoHo",
+        "description": "Experience trendy dining in the fashionable neighborhood of SoHo."
+      }
+    ]
+  },
+  {
+    "day": "day6",
+    "activities": [
+      {
+        "name": "Visit the American Museum of Natural History",
+        "description": "Explore exhibits showcasing the wonders of the natural world."
+      },
+      {
+        "name": "Central Park Zoo",
+        "description": "Enjoy a family-friendly visit to the Central Park Zoo."
+      },
+      {
+        "name": "Shopping at Columbus Circle",
+        "description": "Discover upscale shops and boutiques at the Time Warner Center in Columbus Circle."
+      },
+      {
+        "name": "Dine with a View at The View",
+        "description": "Experience revolving panoramic views with dinner at The View restaurant."
+      },
+      {
+        "name": "Nighttime at Empire State Building",
+        "description": "Witness the city lights from the top of the iconic Empire State Building."
+      }
+    ]
+  },
+  {
+    "day": "day7",
+    "activities": [
+      {
+        "name": "Visit the Guggenheim Museum",
+        "description": "Admire the unique architecture and modern art at the Guggenheim Museum."
+      },
+      {
+        "name": "Boat Ride in Central Park",
+        "description": "Relax with a scenic boat ride on the lake in Central Park."
+      },
+      {
+        "name": "Explore Harlem",
+        "description": "Discover the rich history and culture of Harlem."
+      },
+      {
+        "name": "Apollo Theater",
+        "description": "Experience the legendary Apollo Theater, a historic venue for music and performances."
+      },
+      {
+        "name": "Farewell Dinner at a Rooftop Restaurant",
+        "description": "Conclude your trip with a memorable farewell dinner at a rooftop restaurant."
+      }
+    ]
+  }
+]
+
+routeParis = [
+  {
+    "day": "day1",
+    "activities": [
+      {
+        "name": "Eiffel Tower Exploration",
+        "description": "Visit the iconic Eiffel Tower and enjoy panoramic views of Paris."
+      },
+      {
+        "name": "Louvre Museum Tour",
+        "description": "Immerse yourself in art and history at the world-famous Louvre Museum."
+      },
+      {
+        "name": "Seine River Cruise",
+        "description": "Relax on a scenic cruise along the Seine River, passing by landmarks."
+      },
+      {
+        "name": "Montmartre Artists' Square",
+        "description": "Explore the charming streets and artistry of Montmartre."
+      },
+      {
+        "name": "Dinner in a Parisian Bistro",
+        "description": "Savor authentic French cuisine in a cozy Parisian bistro."
+      }
+    ]
+  },
+  {
+    "day": "day2",
+    "activities": [
+      {
+        "name": "Sainte-Chapelle Visit",
+        "description": "Admire the stunning stained glass windows of Sainte-Chapelle."
+      },
+      {
+        "name": "Notre-Dame Cathedral",
+        "description": "Discover the architectural beauty of Notre-Dame Cathedral."
+      },
+      {
+        "name": "Latin Quarter Exploration",
+        "description": "Wander through the historic streets of the charming Latin Quarter."
+      },
+      {
+        "name": "Luxembourg Gardens Stroll",
+        "description": "Relax in the picturesque Luxembourg Gardens with fountains and greenery."
+      },
+      {
+        "name": "Dinner at Le Marais",
+        "description": "Experience the trendy atmosphere and cuisine of Le Marais district."
+      }
+    ]
+  },
+  {
+    "day": "day3",
+    "activities": [
+      {
+        "name": "Orsay Museum Art Tour",
+        "description": "Explore the impressive collection of Impressionist masterpieces at the Orsay Museum."
+      },
+      {
+        "name": "Champs-Élysées and Arc de Triomphe",
+        "description": "Stroll along the grand Champs-Élysées and admire the Arc de Triomphe."
+      },
+      {
+        "name": "Elysian Fields Picnic",
+        "description": "Enjoy a relaxing picnic in the beautiful Elysian Fields gardens."
+      },
+      {
+        "name": "Grand Palais Visit",
+        "description": "Marvel at the architectural beauty of the Grand Palais."
+      },
+      {
+        "name": "Seine River Night Cruise",
+        "description": "Experience the magic of Paris illuminated on a nighttime Seine River cruise."
+      }
+    ]
+  },
+  {
+    "day": "day4",
+    "activities": [
+      {
+        "name": "Visit the Picasso Museum",
+        "description": "Discover the diverse works of Pablo Picasso at the Picasso Museum."
+      },
+      {
+        "name": "Le Marais District Walk",
+        "description": "Explore the historic and trendy Le Marais district on foot."
+      },
+      {
+        "name": "Père Lachaise Cemetery",
+        "description": "Visit the famous Père Lachaise Cemetery with its artistic tombs."
+      },
+      {
+        "name": "Canal Saint-Martin Cruise",
+        "description": "Take a leisurely cruise along the scenic Canal Saint-Martin."
+      },
+      {
+        "name": "Dinner in a Parisian Brasserie",
+        "description": "Enjoy classic French dishes in a traditional Parisian brasserie."
+      }
+    ]
+  },
+  {
+    "day": "day5",
+    "activities": [
+      {
+        "name": "Pantheon Visit",
+        "description": "Explore the impressive Pantheon with its neoclassical architecture."
+      },
+      {
+        "name": "Saint-Germain-des-Prés District",
+        "description": "Stroll through the artistic and intellectual atmosphere of Saint-Germain-des-Prés."
+      },
+      {
+        "name": "Musée Rodin and Gardens",
+        "description": "Discover the sculptor's masterpieces at the Musée Rodin and its beautiful gardens."
+      },
+      {
+        "name": "Bateaux-Mouches River Cruise",
+        "description": "Enjoy a scenic river cruise with Bateaux-Mouches for a different perspective of Paris."
+      },
+      {
+        "name": "Farewell Dinner with a View",
+        "description": "Conclude your trip with a memorable farewell dinner overlooking the city lights."
+      }
+    ]
+  }
+]
+
+
 // Configs the apiKey -> We may need to encrypt this key
 const config = new Configuration({
   apiKey: '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'
@@ -389,7 +707,6 @@ export class PlansScreen extends React.Component {
    
 }
 
-
 /*
 
   LoadingScreen class
@@ -424,7 +741,7 @@ export class LoadingScreen extends React.Component{
 
 /*
 
-  DaysScreen class
+  ActivitiesScreen class
   Displayed when the user selects a day from the route plan
   Shows the detailed route plan for the specific day
 
@@ -531,6 +848,10 @@ export class ActivitiesScreen extends React.Component{
   }
 
   render(){
+
+    const { route } = this.props;
+    const { savedRoutes, listsPlan, city, days } = route.params;
+
     return (
       <View style={ParentStyles.container}>
         
@@ -538,7 +859,7 @@ export class ActivitiesScreen extends React.Component{
         <View style = {{flexDirection: 'row', alignItems: 'center', marginBottom:5}}>
           {/* Your Logo Component */}
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Days')}
+            onPress={() => this.props.navigation.navigate('Days', {savedRoutes:savedRoutes, listsPlan:listsPlan, city: city, days:days})}
             style={{
               width: 45,
               height: 45,
@@ -563,7 +884,7 @@ export class ActivitiesScreen extends React.Component{
         <ScrollView style={{flex:1}}>
 
           {/* Title and description */}
-          <Text style={ParentStyles.listTitle}> Discover {city}, {country} </Text>
+          <Text style={ParentStyles.listTitle}> Discover {city} </Text>
           <Text style={ParentStyles.listSubtitle}> Here is the perfect route for {days} days </Text>
 
           {/* Specified Day */}
@@ -581,14 +902,24 @@ export class ActivitiesScreen extends React.Component{
   }
 }
 
+/*
+
+  DaysScreen class
+  Displayed after CHATGPT response
+  Shows the list of days
+
+*/
 export class DaysScreen extends React.Component {  
   
+ 
   // Function that displays the list of days
   lists = () => {
     // Only show after the fonts are loaded
-    
+    const { route } = this.props;
+    const { savedRoutes, listsPlan, city, days} = route.params;
+  
     return listsPlan.map((item, index) => (
-      <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {routePlan= listsPlan[index]; this.props.navigation.navigate('Activities')}}>
+      <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {routePlan= listsPlan[index]; this.props.navigation.navigate('Activities', {savedRoutes: savedRoutes, listsPlan:listsPlan, city: city, days:days})}}>
         <LinearGradient
             colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
             start={{ x: 0, y: 0 }}
@@ -604,10 +935,12 @@ export class DaysScreen extends React.Component {
 
   // Renders the screen
   render() {
-
+    const { route } = this.props;
+    const { savedRoutes, city, days } = route.params;
+  
     // Const that gets the images for the specific activities
     // Also defines what is shown in the specific day route plan screen
-    
+  
     const HeartIcon = () => {
       const [isSaved, setIsSaved] = useState(false); // Initially, the content is not saved
     
@@ -620,7 +953,7 @@ export class DaysScreen extends React.Component {
         <TouchableOpacity onPress={toggleSave}>
           <View>
             <Image
-              source={isSaved ? require('../Images/fullHeart.png') : require('../Images/emptyHeart.png')}
+              source={(isSaved) ? require('../Images/fullHeart.png') : require('../Images/emptyHeart.png')}
               style={{ width: 30, height: 30 }}
             />
           </View>
@@ -634,22 +967,39 @@ export class DaysScreen extends React.Component {
         <View style={ParentStyles.container}>
           
           <View style={ParentStyles.containerLogoHeart}>
+            
+            {savedRoutes && (<TouchableOpacity
+              onPress={() => this.props.navigation.navigate('SavedRoutes')}
+              style={{
+                width: 45,
+                height: 45,
+                borderRadius: 30,
+                backgroundColor: 'lightgrey',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginLeft:15
+              }}
+            >
+              <Text><Ionicons name="arrow-back-outline" size={30} color="black" /></Text>
+            </TouchableOpacity>
+            )}
+
             {/* SVGLogo component */}
             <View style={{ alignSelf: 'center'}}>
               <SVGLogo/>
             </View>
 
             {/* HeartIcon component */}
-            <View style = {ParentStyles.iconContainer}>
+            {!savedRoutes && (<View style = {ParentStyles.iconContainer}>
               <HeartIcon />
-            </View>
+            </View>)}
           </View>
 
         
            {/* Scroll view with the list of days */}
           <ScrollView style={{flex:1}}>
               {/* Title and description */}
-            <Text style={ParentStyles.listTitle}> Discover {city}, {country} </Text>
+            <Text style={ParentStyles.listTitle}> Discover {city} </Text>
             <Text style={ParentStyles.listSubtitle}> Here is the perfect route for {days} days </Text>
           
             {this.lists()}
@@ -660,7 +1010,100 @@ export class DaysScreen extends React.Component {
   }
 }
 
+/*
 
+  SavedRoutesScreen class
+  Displayed when Saved tab is clicked
+  Shows the users saved routes
+
+*/
+export class SavedRoutesScreen extends React.Component{
+
+  savedRoutes = () => {
+
+    // Define the image variable and the associated function
+    const [towerOfPisaImage, setTowerOfPisaImage] = useState([]);
+    
+    // Called when the screen is loaded
+    useEffect(() => {
+      // Fetch image of the Leaning Tower of Pisa when the component mounts
+      fetchTowerOfPisaImage();
+    }, []);
+    
+    // Const that calls the Image API
+    const fetchTowerOfPisaImage = async () => {
+      try {
+        const accessKey = accessKey; // Replace with your actual Unsplash Access Key
+        const response = await axios.get('https://api.unsplash.com/photos/random', {
+          params: {
+            client_id: 'Q37z9gm8MYXdVPEDA6MFPe77A9jHWLdM9pLtqr060Xo',
+            query: 'Tower of Pisa Italy', // Search query for the Tower of Pisa in Italy
+            count: 5, // Number of images you want to fetch (in this case, just one)
+          },
+        });
+  
+        // Store the image URL in state
+        const imagesOfPisa = response.data.map((photo) => photo.urls.regular);
+        setTowerOfPisaImage(imagesOfPisa);
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
+    };
+    
+
+    // Only show the screen after the images are loaded
+    if (towerOfPisaImage) { 
+      return savedRoutes.map((item, index) => (   
+        
+        <TouchableOpacity style={SavedRoutesStyles.square} key={index} onPress={() =>  {
+            if(item.city == 'Paris') this.props.navigation.navigate('Days', {savedRoutes: true, listsPlan: routeParis })
+            else this.props.navigation.navigate('Days', {savedRoutes: true, listsPlan: routeNewYork })
+          }}>
+
+          {/* Image at the top occupying 50% of the square */}
+          <Image
+            source={{ uri: towerOfPisaImage[index] }}
+            style={SavedRoutesStyles.image}
+          />
+
+          {/* Title and description */}
+          <View style={SavedRoutesStyles.textContainer}>
+            <Text style={SavedRoutesStyles.title}>{item.city}</Text>
+            <Text style={SavedRoutesStyles.description}>{item.days} Days </Text>
+          </View>
+        </TouchableOpacity>
+      ))
+    }
+  }
+
+  render(){
+
+    return (
+      <View style={ParentStyles.container}>
+
+        {/* Your Logo Component */}
+        <View style={{ alignSelf: 'center'}}>
+          <SVGLogo/>
+        </View>
+      
+
+        {/* Scroll view of the list of activities for the specified day */}
+        <ScrollView style={{flex:1}}>
+
+          {/* Title and description */}
+          <Text style={ParentStyles.listTitle}> Saved Routes </Text>
+    
+          {/* List of activities, description and, maps and info buttons */}
+          <View style={{alignItems:'center'}}>
+            <this.savedRoutes/>
+          </View>
+
+        </ScrollView>
+      
+      </View>
+    );
+  } 
+}
 
 
 /********************** Functions ************************/
@@ -732,7 +1175,12 @@ async function getPlan(navigation, cityName, countryName, daysNumber) {
   // await delay(1000)
 
   // Navigate to the ListPlans to show the days
-  navigation.navigate("Days")
+  navigation.navigate("Days", {
+    savedRoutes: false,
+    listsPlan : listsPlan,
+    city:city,
+    days:days
+  })
   
 }
 
@@ -984,6 +1432,58 @@ const ActivitiesListStyles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  gradient: {
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal:50,
+  },
+});
+
+const SavedRoutesStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  square: {
+    width: width * 0.9, // 90% of the device width
+    height: 200,
+    backgroundColor: 'lightgrey',
+    borderRadius: 10,
+    overflow: 'hidden',
+    elevation: 5, // Adds a shadow (Android)
+    shadowColor: '#000', // Adds a shadow (iOS)
+    shadowOffset: { width: 0, height: 2 }, // Adds a shadow (iOS)
+    shadowOpacity: 0.25, // Adds a shadow (iOS)
+    shadowRadius: 3.84, // Adds a shadow (iOS)
+    margin: 10,
+  },
+  image: {
+    width: '100%',
+    height: '60%', // Adjusted to 100% to fill the container
+  },
+  textContainer: {
+    marginTop: 10, // Adjusted margin top for better spacing
+    alignItems:'center'
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 600,
+    marginBottom: 5,
+    
+  },
+  description: {
+    fontSize: 16,
   },
   buttonContainer: {
     flexDirection: 'row',
