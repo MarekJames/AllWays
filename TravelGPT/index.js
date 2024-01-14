@@ -32,13 +32,10 @@ const App = () => {
 
   return (
     <NavigationContainer>
-  
-    
+
           {/* Rest of your app code */}
           { !loading && (user  ? <BottomTabNavigator /> : <StackNavigator />)}
-        
-      
-     
+
     </NavigationContainer>
   );
 };

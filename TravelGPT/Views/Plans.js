@@ -219,7 +219,7 @@ savedRoutes = [
 
 routeNewYork = [
   {
-    "day": "day1",
+    "day": "Day 1",
     "activities": [
       {
         "name": "Explore Central Park",
@@ -244,7 +244,7 @@ routeNewYork = [
     ]
   },
   {
-    "day": "day2",
+    "day": "Day 2",
     "activities": [
       {
         "name": "Explore the High Line",
@@ -269,7 +269,7 @@ routeNewYork = [
     ]
   },
   {
-    "day": "day3",
+    "day": "Day 3",
     "activities": [
       {
         "name": "Museum of Modern Art (MoMA)",
@@ -294,7 +294,7 @@ routeNewYork = [
     ]
   },
   {
-    "day": "day4",
+    "day": "Day 4",
     "activities": [
       {
         "name": "Explore Grand Central Terminal",
@@ -319,7 +319,7 @@ routeNewYork = [
     ]
   },
   {
-    "day": "day5",
+    "day": "Day 5",
     "activities": [
       {
         "name": "Explore the Lower East Side",
@@ -344,7 +344,7 @@ routeNewYork = [
     ]
   },
   {
-    "day": "day6",
+    "day": "Day 6",
     "activities": [
       {
         "name": "Visit the American Museum of Natural History",
@@ -369,7 +369,7 @@ routeNewYork = [
     ]
   },
   {
-    "day": "day7",
+    "day": "Day 7",
     "activities": [
       {
         "name": "Visit the Guggenheim Museum",
@@ -397,7 +397,7 @@ routeNewYork = [
 
 routeParis = [
   {
-    "day": "day1",
+    "day": "Day 1",
     "activities": [
       {
         "name": "Eiffel Tower Exploration",
@@ -422,7 +422,7 @@ routeParis = [
     ]
   },
   {
-    "day": "day2",
+    "day": "Day 2",
     "activities": [
       {
         "name": "Sainte-Chapelle Visit",
@@ -447,7 +447,7 @@ routeParis = [
     ]
   },
   {
-    "day": "day3",
+    "day": "Day 3",
     "activities": [
       {
         "name": "Orsay Museum Art Tour",
@@ -472,7 +472,7 @@ routeParis = [
     ]
   },
   {
-    "day": "day4",
+    "day": "Day 4",
     "activities": [
       {
         "name": "Visit the Picasso Museum",
@@ -497,7 +497,7 @@ routeParis = [
     ]
   },
   {
-    "day": "day5",
+    "day": "Day 5",
     "activities": [
       {
         "name": "Pantheon Visit",
@@ -1056,8 +1056,8 @@ export class SavedRoutesScreen extends React.Component{
       return savedRoutes.map((item, index) => (   
         
         <TouchableOpacity style={SavedRoutesStyles.square} key={index} onPress={() =>  {
-            if(item.city == 'Paris') this.props.navigation.navigate('Days', {savedRoutes: true, listsPlan: routeParis })
-            else this.props.navigation.navigate('Days', {savedRoutes: true, listsPlan: routeNewYork })
+            if(item.city == 'Paris') this.props.navigation.navigate('Days', {savedRoutes: true, listsPlan: routeParis, city: item.city, days: item.days })
+            else this.props.navigation.navigate('Days', {savedRoutes: true, listsPlan: routeNewYork, city:item.city, days:item.days })
           }}>
 
           {/* Image at the top occupying 50% of the square */}
@@ -1118,10 +1118,14 @@ export class SavedRoutesScreen extends React.Component{
 */
 async function getPlan(navigation, cityName, countryName, daysNumber) {
   // Get city and contry via the location coordinates
-  city = cityName;
-  country = countryName;
-  days = daysNumber;
+  // city = cityName;
+  // country = countryName;
+  // days = daysNumber;
   
+  //Comment this when using chatgpt and uncomment the lines above
+  city = 'TestCity';
+  days = 'TestDays';
+
   // Prompt to submit to the OpenAI
   //var prompt = 'Can you give a JSON file with a plan for ' + days +' days in ' + city[0].city +', '+ city[0].country +' using this format as example [{"day": "day1", "activities" : ["activity1", "activity2", "activity3"]}] ? Give 5 activities for each day'
   
