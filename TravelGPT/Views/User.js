@@ -76,8 +76,8 @@ export class LoginUserScreen extends React.Component{
               setInvalidPassword('');
             }
             else if(error.code == 'auth/invalid-credential'){
-              setInvalidEmail('');
-              setInvalidPassword('Invalid password, try again');
+              setInvalidEmail('Invalid email or password, try again');
+              setInvalidPassword('');
             }
             else if(error.code == 'auth/too-many-requests'){
               setInvalidEmail('');
