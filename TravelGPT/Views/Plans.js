@@ -22,6 +22,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import SVGLogo from '../Images/Logo.svg'
 import "react-native-url-polyfill/auto"
 import { Ionicons } from '@expo/vector-icons';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 
 /******************* Global Variables ********************/
@@ -523,6 +524,7 @@ routeParis = [
   }
 ]
 
+const googleKey = 'AIzaSyBBMeeABSN3vKTm8pw12UAcf7Gwcajymj4';
 
 // Configs the apiKey -> We may need to encrypt this key
 const config = new Configuration({
@@ -626,41 +628,44 @@ export class PlansScreen extends React.Component {
             <Text style={PlansScreenStyles.wellGiveText}>We'll give you the route for it</Text>
           </View>
     
+          <View >
+   
           {/* Country Dropdown */}
-          <View style={PlansScreenStyles.dropdownContainer}>
-            <TouchableOpacity onPress={() => setIsOpenCountry(!isOpenCountry)} style={PlansScreenStyles.howManyDaysButton}>
-              <Text style={PlansScreenStyles.dropdownText}>{selectedCountry ? selectedCountry : 'Select Country'}</Text>
-            </TouchableOpacity>
-            {isOpenCountry && (
-              <View style={PlansScreenStyles.dropdownList}>
-                <FlatList
-                  data={countries}
-                  keyExtractor={(item) => item.countryId}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => handleCountrySelect(item.countryName)} style={PlansScreenStyles.dropdownItem}>
-                      <Text>{item.countryName}</Text>
-                    </TouchableOpacity>
-                  )}
-                />
-              </View>
-            )}
+             <GooglePlacesAutocomplete
+              placeholder='Enter Location'
+              styles={{
+                container:{
+                  backgroundColor: '#FFFFFF',
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  width:'80%',
+      
+                },
+                textInput: {
+                  textAlign:'center',
+                  height: 50,
+                  borderRadius:20,
+                  color: '#000',
+                  fontSize: 16,
+                  backgroundColor:'#DDD'
+                },
+                predefinedPlacesDescription: {
+                  color: '#1faadb',
+                },
+               
+              }}
+              onPress={(data, details = null) => console.log(data, details)}
+              onFail={error => console.log(error)}
+              onNotFound={() => console.log('no results')}
+              query={{key: googleKey, type: '(cities)' }}
+              
+            />
+  
+
           </View>
-    
-          {/* City Dropdown */}
-          {selectedCountry && (
-            <View style={PlansScreenStyles.dropdownContainer}>
-              <TouchableOpacity style={PlansScreenStyles.howManyDaysButton}>
-                <TextInput 
-                  style={PlansScreenStyles.dropdownInput}
-                  placeholder = {selectedCity || 'Select City'}
-                  value = {selectedCity}
-                  onChangeText={handleCitySelect}
-                  placeholderTextColor={'#000'}
-                />
-              </TouchableOpacity>
-            </View>
-          )}
-    
+
+          <View>
           {/* Number of Days Dropdown */}
           <TouchableOpacity onPress={() => setIsOpen(!isOpen)} style={PlansScreenStyles.howManyDaysButton}>
             <Text style={PlansScreenStyles.dropdownText}>{selectedNumber || 'Number of days'}</Text>
@@ -692,7 +697,7 @@ export class PlansScreen extends React.Component {
               </LinearGradient>
             </TouchableOpacity>
           </View>
-
+        </View>
         </View> 
       ); 
     
