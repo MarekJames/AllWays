@@ -606,7 +606,7 @@ export class ActivitiesScreen extends React.Component{
     
     const getImageUrl = async (query,index) => {
       // Call the google search engine here
-      const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1`;
+      const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
 
       await axios.get(url)
       .then((response) => {
@@ -625,8 +625,8 @@ export class ActivitiesScreen extends React.Component{
       var counter = 0;
       //Loop through the activities and put the url in the routePlan object
       await routePlan.activities.forEach(async (item, index) => {
-        await getImageUrl(item.name + ' ' + city,index);
-        
+        await getImageUrl(item.name + ',' + city,index);
+      
         //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
         counter++;
         if(counter == 5){setImagesLoaded(true); console.log(routePlan.activities)}
