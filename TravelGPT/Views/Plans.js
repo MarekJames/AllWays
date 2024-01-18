@@ -676,9 +676,8 @@ export class ActivitiesScreen extends React.Component{
         
         //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
         counter++;
-        if(counter == 5){setImagesLoaded(true);}
+        if(counter == 5){setImagesLoaded(true); console.log(routePlan.activities)}
       });
-    
     }
 
     // Called when the screen is loaded
@@ -719,7 +718,10 @@ export class ActivitiesScreen extends React.Component{
             source={{ uri: item.imageUrl }}
             style={ActivitiesListStyles.image}
           />}
-          {!imagesLoaded &&  <ActivityIndicator size="large"/>}
+
+          {!imagesLoaded &&  <ActivityIndicator 
+            size="small"
+          />}
 
           {/* Title and description */}
           <View style={ActivitiesListStyles.textContainer}>
@@ -1042,7 +1044,7 @@ async function getPlan(navigation, cityName, countryName, daysNumber) {
   
   var prompt = 'Give me a JSON format only response for the following prompt: ' +
   `Generate a route plan for ${days} days ` +
-  `in ${city}, ${country} with 5 activities for each day with a name and description. Give a specific name for the activity and a SINGLE LINE description` + 
+  `in ${city}, ${country} with 5 activities for each day with a name and description. Give a specific name for the activity like "Colisseum", avoid phrases with "visit, try, etc",  and give a SINGLE LINE description` + 
   `Use the following json format mandatorily: ` +
   ` [{  "day": "day1", ` + 
   `     "activities" : [{` + 
