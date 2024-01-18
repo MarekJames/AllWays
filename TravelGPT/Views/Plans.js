@@ -452,64 +452,17 @@ export class PlansScreen extends React.Component {
 
   // pontosScreen Function that configs what is displayed in this class
   pontosScreen = () => {
-   
-
-    const [isOpenCountry, setIsOpenCountry] = useState(false);                                                      // Control if Country dropdown was selected
-    const [selectedCountry, setSelectedCountry] = useState(null);                                                   // Contains the value of the chosen country
-    const [selectedCity, setSelectedCity] = useState(null);                                                         // Contains the value of the chosen city
-    const [countries, setCountries] = useState([]);                                                                 // Contains all the countries received from the API
+    // Contains the value of the chosen country
+    const [selectedCity, setSelectedCity] = useState(null);                                                         // Contains the value of the chosen city                                                              // Contains all the countries received from the API
     const [isOpen, setIsOpen] = useState(false);                                                                    // Controls if Days dropdown was selected
     const [selectedNumber, setSelectedNumber] = useState(null);                                                     // Contains the value of the selected days
     const numbers = Array.from({ length: 10 }, (_, index) => ({ label: `${index + 1}`, value: `${index + 1}` }));   // List from 1 to 10 to allow the user to choose
    
-    // Handles what happens when Select Country is pressed
-    const handleCountrySelect = (item) => {
-      setSelectedCountry(item);
-      setSelectedCity(null); // Reset city selection when country changes
-      setIsOpenCountry(false);
-    };
-
-    // Handles what happens when Select City is pressed
-    const handleCitySelect = (item) => {
-      setSelectedCity(item);
-    };
-
     // Handles what happens when Number of Days is pressed
     const handleSelect = (item) => {
       setSelectedNumber(item.value);
       setIsOpen(false);
     };
-
-    // Gets all countries from the API
-    const getCountriesURL = async () => {
-      try {
-        const response = await fetch('https://restcountries.com/v3.1/all');
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
-        const data = await response.json();
-        
-        const countries = data.map((country) => ({
-          countryId: country.cca3, // Using 'cca3' as the country ID, you can use other fields as needed
-          countryName: country.name.common,
-        }));
-
-        //console.log(countries); // Display the extracted city IDs and names
-        // Sort countries alphabetically by countryName
-        const sortedCountries = countries.sort((a, b) =>
-          a.countryName.localeCompare(b.countryName)
-        );
-        setCountries(sortedCountries);
-
-      } catch (error) {
-        console.error('Error fetching countries:', error);
-      }
-    };
-    
-    // Calls the GetCountriesUrl when screen is loaded
-    useEffect(() => {
-      getCountriesURL();
-    }, []);
 
     // Defines the screen components
    
@@ -579,7 +532,7 @@ export class PlansScreen extends React.Component {
     
             {/* Route Up button */}
           
-            <TouchableOpacity style={PlansScreenStyles.routeUpButton} onPress={() => { getPlan(this.props.navigation, selectedCity, selectedCountry, selectedNumber) }}>
+            <TouchableOpacity style={PlansScreenStyles.routeUpButton} onPress={() => { getPlan(this.props.navigation, selectedCity, selectedNumber) }}>
               <LinearGradient
                 colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
                 start={{ x: 0, y: 0 }}
@@ -647,7 +600,7 @@ export class ActivitiesScreen extends React.Component{
   activities = () => {
 
     const { route } = this.props;
-    const { routePlan } = route.params;
+    const { routePlan, city } = route.params;
   
     const [imagesLoaded, setImagesLoaded ] = useState(false);
     
@@ -672,7 +625,7 @@ export class ActivitiesScreen extends React.Component{
       var counter = 0;
       //Loop through the activities and put the url in the routePlan object
       await routePlan.activities.forEach(async (item, index) => {
-        await getImageUrl(item.name,index);
+        await getImageUrl(item.name + ' ' + city,index);
         
         //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
         counter++;
@@ -682,7 +635,15 @@ export class ActivitiesScreen extends React.Component{
 
     // Called when the screen is loaded
     useEffect(() => {
-      createImagesUrls();
+      // Only call the API if the field imageUrl doesn't exist
+      if(!routePlan.activities[0].imageUrl){
+        console.log('Images not loaded');
+        createImagesUrls();
+      }
+      else{
+        setImagesLoaded(true)
+      }
+      
     }, []);
 
     
@@ -1029,10 +990,9 @@ export class SavedRoutesScreen extends React.Component{
   Calls the ListPlans after the response is received and verified
 
 */
-async function getPlan(navigation, cityName, countryName, daysNumber) {
+async function getPlan(navigation, cityName, daysNumber) {
   // Get city and contry via the location coordinates
   city = cityName;
-  country = countryName;
   days = daysNumber;
   
   //Comment this when using chatgpt and uncomment the lines above
@@ -1044,7 +1004,7 @@ async function getPlan(navigation, cityName, countryName, daysNumber) {
   
   var prompt = 'Give me a JSON format only response for the following prompt: ' +
   `Generate a route plan for ${days} days ` +
-  `in ${city}, ${country} with 5 activities for each day with a name and description. Give a specific name for the activity like "Colisseum", avoid phrases with "visit, try, etc",  and give a SINGLE LINE description` + 
+  `in ${city} with 5 activities for each day with a name and description. Give a specific name for the activity like "Colisseum", avoid phrases with "visit, try, etc",  and give a SINGLE LINE description` + 
   `Use the following json format mandatorily: ` +
   ` [{  "day": "day1", ` + 
   `     "activities" : [{` + 
