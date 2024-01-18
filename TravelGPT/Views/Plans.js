@@ -15,7 +15,7 @@ Plans.js
 
 // Imports for the react components add buttons, images, text, etc
 import React, {useState, useEffect} from 'react';  
-import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text,  TextInput, Dimensions, TouchableOpacity, ScrollView, Linking} from 'react-native'; 
+import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, Linking} from 'react-native'; 
 import axios from 'axios';
 import { Configuration, OpenAIApi } from 'openai'
 import { LinearGradient } from 'expo-linear-gradient';
@@ -39,7 +39,8 @@ const height = Dimensions.get('window').height // Get height of the user screen
 listsPlan = [
   {"day": "Day 1", 
    "activities" : [{"name": "Visit the Colosseum",
-                    "description": "Walk through the colosseum....."},
+                    "description": "Walk through the colosseum.....",
+                  },
 
                     {"name": "Visit the Roman Forum",
                     "description": "Walk through the forum....."},
@@ -47,10 +48,10 @@ listsPlan = [
                     {"name": "Palatine Hill",
                     "description": " Suck my balls in palatine hill"},
 
-                    {"name": "Jao is Gay",
-                    "description": "Finger Jao"},
+                    {"name": "Try an italian restaurant",
+                    "description": "restaurante description"},
 
-                    {"name": "Jao takes it up the bum",
+                    {"name": "Mamertine Prison",
                     "description": "A lot"}
                     ]},
     {"day": "Day 2", 
@@ -189,23 +190,6 @@ listsPlan = [
                           ]
           }
 ]  // Test route plan
-
-var routePlan = [{"day": "Day 1", 
-"activities" : [{"name": "Visit the Colosseum",
-                 "description": "Walk through the colosseum....."},
-
-                 {"name": "Visit the Roman Forum",
-                 "description": "Walk through the forum....."},
-
-                 {"name": "Palatine Hill",
-                 "description": " Suck my balls in palatine hill"},
-
-                 {"name": "Jao is Gay",
-                 "description": "Finger Jao"},
-
-                 {"name": "Jao takes it up the bum",
-                 "description": "A lot"}
-                 ]}]  // Stores the specific day to show the route plan
 
 savedRoutes = [
   {
@@ -396,135 +380,54 @@ routeNewYork = [
   }
 ]
 
-routeParis = [
+routeParis =[
   {
-    "day": "Day 1",
+    "day": "day1",
     "activities": [
       {
-        "name": "Eiffel Tower Exploration",
-        "description": "Visit the iconic Eiffel Tower and enjoy panoramic views of Paris."
-      },
-      {
-        "name": "Louvre Museum Tour",
-        "description": "Immerse yourself in art and history at the world-famous Louvre Museum."
-      },
-      {
-        "name": "Seine River Cruise",
-        "description": "Relax on a scenic cruise along the Seine River, passing by landmarks."
-      },
-      {
-        "name": "Montmartre Artists' Square",
-        "description": "Explore the charming streets and artistry of Montmartre."
-      },
-      {
-        "name": "Dinner in a Parisian Bistro",
-        "description": "Savor authentic French cuisine in a cozy Parisian bistro."
-      }
-    ]
+        "description": "Explore the famous Eiffel Tower and enjoy stunning views of Paris from the top.", 
+        "imageUrl": "https://www.eiffeltowertour.com/wp-content/uploads/2021/01/Eiffel-Tower-in-Paris-at-sunset.jpg", 
+        "name": "Eiffel Tower Tour"}, 
+
+      { "description": "Experience the world-renowned Louvre Museum and its impressive collection of art and artifacts.", 
+        "imageUrl": "https://wanderyourway.com/wp-content/uploads/2021/06/Paris-911new.jpg", 
+        "name": "Louvre Museum Visit"}, 
+
+      { "description": "Marvel at the Gothic architecture of this iconic cathedral and learn about its history and significance in Paris.", 
+        "imageUrl": "https://www.friendsofnotredamedeparis.org/wp-content/uploads/2020/04/NDP11.jpg", 
+        "name": "Notre-Dame Cathedral Tour"}, 
+
+      { "description": "Relax and take in the sights of Paris from a boat on the beautiful Seine River.", 
+        "imageUrl": "https://cdn.getyourguide.com/img/tour/cf879ee295abc8e4.jpeg/146.jpg", 
+        "name": "Seine River Cruise"}, 
+
+      { "description": "Discover the charming neighborhood of Montmartre and its lively cafes, street performers, and beautiful views of the city.", 
+        "imageUrl": "https://www.ontheluce.com/wp-content/uploads/2022/12/Montmartre-self-guided-walk-map-1440x900.jpg.webp", 
+        "name": "Montmartre Walking Tour"}
+      ]
   },
   {
-    "day": "Day 2",
+    "day": "day2",
     "activities": [
-      {
-        "name": "Sainte-Chapelle Visit",
-        "description": "Admire the stunning stained glass windows of Sainte-Chapelle."
-      },
-      {
-        "name": "Notre-Dame Cathedral",
-        "description": "Discover the architectural beauty of Notre-Dame Cathedral."
-      },
-      {
-        "name": "Latin Quarter Exploration",
-        "description": "Wander through the historic streets of the charming Latin Quarter."
-      },
-      {
-        "name": "Luxembourg Gardens Stroll",
-        "description": "Relax in the picturesque Luxembourg Gardens with fountains and greenery."
-      },
-      {
-        "name": "Dinner at Le Marais",
-        "description": "Experience the trendy atmosphere and cuisine of Le Marais district."
-      }
-    ]
-  },
-  {
-    "day": "Day 3",
-    "activities": [
-      {
-        "name": "Orsay Museum Art Tour",
-        "description": "Explore the impressive collection of Impressionist masterpieces at the Orsay Museum."
-      },
-      {
-        "name": "Champs-Élysées and Arc de Triomphe",
-        "description": "Stroll along the grand Champs-Élysées and admire the Arc de Triomphe."
-      },
-      {
-        "name": "Elysian Fields Picnic",
-        "description": "Enjoy a relaxing picnic in the beautiful Elysian Fields gardens."
-      },
-      {
-        "name": "Grand Palais Visit",
-        "description": "Marvel at the architectural beauty of the Grand Palais."
-      },
-      {
-        "name": "Seine River Night Cruise",
-        "description": "Experience the magic of Paris illuminated on a nighttime Seine River cruise."
-      }
-    ]
-  },
-  {
-    "day": "Day 4",
-    "activities": [
-      {
-        "name": "Visit the Picasso Museum",
-        "description": "Discover the diverse works of Pablo Picasso at the Picasso Museum."
-      },
-      {
-        "name": "Le Marais District Walk",
-        "description": "Explore the historic and trendy Le Marais district on foot."
-      },
-      {
-        "name": "Père Lachaise Cemetery",
-        "description": "Visit the famous Père Lachaise Cemetery with its artistic tombs."
-      },
-      {
-        "name": "Canal Saint-Martin Cruise",
-        "description": "Take a leisurely cruise along the scenic Canal Saint-Martin."
-      },
-      {
-        "name": "Dinner in a Parisian Brasserie",
-        "description": "Enjoy classic French dishes in a traditional Parisian brasserie."
-      }
-    ]
-  },
-  {
-    "day": "Day 5",
-    "activities": [
-      {
-        "name": "Pantheon Visit",
-        "description": "Explore the impressive Pantheon with its neoclassical architecture."
-      },
-      {
-        "name": "Saint-Germain-des-Prés District",
-        "description": "Stroll through the artistic and intellectual atmosphere of Saint-Germain-des-Prés."
-      },
-      {
-        "name": "Musée Rodin and Gardens",
-        "description": "Discover the sculptor's masterpieces at the Musée Rodin and its beautiful gardens."
-      },
-      {
-        "name": "Bateaux-Mouches River Cruise",
-        "description": "Enjoy a scenic river cruise with Bateaux-Mouches for a different perspective of Paris."
-      },
-      {
-        "name": "Farewell Dinner with a View",
-        "description": "Conclude your trip with a memorable farewell dinner overlooking the city lights."
-      }
-    ]
+      { "description": "Take a day trip to the opulent palace and gardens of Versailles", 
+      "imageUrl": "https://versaillespalace.tours/wp-content/uploads/2021/10/Versailles-tour-768x512.jpeg", 
+      "name": "Versailles Palace Tour"}, 
+      {"description": "Stroll through the charming streets of this artistic neighborhood", 
+      "imageUrl": "https://www.ontheluce.com/wp-content/uploads/2022/12/Montmartre-self-guided-walk-map-1440x900.jpg.webp", 
+      "name": "Montmartre Walking Tour"}, {"description": "Climb to the top of this landmark for stunning views of the city", 
+      "imageUrl": "https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/27/55/1f.jpg", "name": "Sacré-Cœur Basilica Visit"}, 
+      {"description": "Descend into the underground tunnels and burial chambers of Paris", 
+      "imageUrl": "https://www.indianalandmarks.org/wp-content/uploads/2016/06/catacombs.jpg", 
+      "name": "Catacombs Tour"}, 
+      {"description": "Experience the famous cabaret show in the heart of Paris", 
+      "imageUrl": "https://medias.moulinrouge.fr/wp-content/uploads/2021/11/sb3_3836_mod-877x466-c-default.jpg", 
+      "name": "Moulin Rouge Show"}]
   }
 ]
 
 const googleKey = 'AIzaSyBBMeeABSN3vKTm8pw12UAcf7Gwcajymj4';
+const customSearchKey = 'AIzaSyDW7bNgl6zvJLw1MN7PDTSXgCEoITRvYgc';
+const searchEngineId = '81c835a580db7436d';
 
 // Configs the apiKey -> We may need to encrypt this key
 const config = new Configuration({
@@ -533,12 +436,6 @@ const config = new Configuration({
 
 // Configs the openai api
 const openai = new OpenAIApi(config)
-
-// Access key to the images API
-//const accessKey = 'Q37z9gm8MYXdVPEDA6MFPe77A9jHWLdM9pLtqr060Xo'
-
-
-
 
 /*********************** Classes *************************/
 
@@ -628,49 +525,44 @@ export class PlansScreen extends React.Component {
             <Text style={PlansScreenStyles.wellGiveText}>We'll give you the route for it</Text>
           </View>
     
-          <View >
-   
-          {/* Country Dropdown */}
-             <GooglePlacesAutocomplete
-              placeholder='Enter Location'
-              styles={{
-                container:{
-                  backgroundColor: '#FFFFFF',
-                  flex: 1,
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  width:'80%',
-      
-                },
-                textInput: {
-                  textAlign:'center',
-                  height: 50,
-                  borderRadius:20,
-                  color: '#000',
-                  fontSize: 16,
-                  backgroundColor:'#DDD'
-                },
-                predefinedPlacesDescription: {
-                  color: '#1faadb',
-                },
-               
-              }}
-              onPress={(data, details = null) => console.log(data, details)}
-              onFail={error => console.log(error)}
-              onNotFound={() => console.log('no results')}
-              query={{key: googleKey, type: '(cities)' }}
+
+            {/* Country Dropdown */}
+            <GooglePlacesAutocomplete
+            placeholder="Enter Location"
+            styles={{
+              container: {
+                width:'80%'
+              },
+              textInput: {
+                textAlign: 'center',
+                height: 50,
+                borderRadius: 20,
+                color: '#000',
+                fontSize: 16,
+                backgroundColor: '#DDD',
+              },
+              predefinedPlacesDescription: {
+                color: '#1faadb',
+              },
               
-            />
-  
-
-          </View>
-
-          <View>
+            }}
+            onPress={(data) => setSelectedCity(data.description)}
+            query={{ key: googleKey, language: 'en', types : '(cities)'}}
+            fetchDetails
+            onFail={(error) => console.error(error)}
+            onNotFound={() => console.log('no results')}
+            debounce={300}
+          />
+      
           {/* Number of Days Dropdown */}
-          <TouchableOpacity onPress={() => setIsOpen(!isOpen)} style={PlansScreenStyles.howManyDaysButton}>
-            <Text style={PlansScreenStyles.dropdownText}>{selectedNumber || 'Number of days'}</Text>
-          </TouchableOpacity>
-          {isOpen && (
+          <View style={PlansScreenStyles.dropdownContainer}>
+           
+            {selectedCity && (
+              <TouchableOpacity onPress={() => setIsOpen(!isOpen)} style={PlansScreenStyles.howManyDaysButton}>
+                <Text style={PlansScreenStyles.dropdownText}>{selectedNumber || 'Number of days'}</Text>
+              </TouchableOpacity>
+             )}
+            {isOpen && (
             <View style={PlansScreenStyles.howManyDaysDrop}>
               <FlatList
                 data={numbers}
@@ -682,10 +574,11 @@ export class PlansScreen extends React.Component {
                 )}
               />
             </View>
-          )}
+            )}
+           
     
-          {/* Route Up button */}
-          <View style={PlansScreenStyles.dropdownContainer}>
+            {/* Route Up button */}
+          
             <TouchableOpacity style={PlansScreenStyles.routeUpButton} onPress={() => { getPlan(this.props.navigation, selectedCity, selectedCountry, selectedNumber) }}>
               <LinearGradient
                 colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
@@ -697,10 +590,8 @@ export class PlansScreen extends React.Component {
               </LinearGradient>
             </TouchableOpacity>
           </View>
-        </View>
-        </View> 
-      ); 
-    
+      </View>
+    ); 
   }
 
   // Renders the screen components defined in the pontosScreen function
@@ -755,34 +646,46 @@ export class ActivitiesScreen extends React.Component{
 
   activities = () => {
 
-    // Define the image variable and the associated function
-    const [towerOfPisaImage, setTowerOfPisaImage] = useState([]);
+    const { route } = this.props;
+    const { routePlan } = route.params;
+  
+    const [imagesLoaded, setImagesLoaded ] = useState(false);
     
+    const getImageUrl = async (query,index) => {
+      // Call the google search engine here
+      const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1`;
+
+      await axios.get(url)
+      .then((response) => {
+        const image = response.data.items[0];
+        return image;
+      })
+      .then((image) => {
+        const imageUrl = image.link;
+        routePlan.activities[index].imageUrl = imageUrl;
+        //console.log(routePlan.activities[index].imageUrl);
+      })
+      
+    }
+
+    const createImagesUrls = async () => {
+      var counter = 0;
+      //Loop through the activities and put the url in the routePlan object
+      await routePlan.activities.forEach(async (item, index) => {
+        await getImageUrl(item.name,index);
+        
+        //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
+        counter++;
+        if(counter == 5){setImagesLoaded(true);}
+      });
+    
+    }
+
     // Called when the screen is loaded
     useEffect(() => {
-      // Fetch image of the Leaning Tower of Pisa when the component mounts
-      fetchTowerOfPisaImage();
+      createImagesUrls();
     }, []);
-    
-    // Const that calls the Image API
-    const fetchTowerOfPisaImage = async () => {
-      try {
-        const accessKey = accessKey; // Replace with your actual Unsplash Access Key
-        const response = await axios.get('https://api.unsplash.com/photos/random', {
-          params: {
-            client_id: 'Q37z9gm8MYXdVPEDA6MFPe77A9jHWLdM9pLtqr060Xo',
-            query: 'Tower of Pisa Italy', // Search query for the Tower of Pisa in Italy
-            count: 5, // Number of images you want to fetch (in this case, just one)
-          },
-        });
-  
-        // Store the image URL in state
-        const imagesOfPisa = response.data.map((photo) => photo.urls.regular);
-        setTowerOfPisaImage(imagesOfPisa);
-      } catch (error) {
-        console.error('Error fetching image:', error);
-      }
-    };
+
     
     const openGoogleMaps = (activity) => {
       const mapUrl = `https://www.google.com/maps/search/?api=1&query=${activity}`;
@@ -805,16 +708,18 @@ export class ActivitiesScreen extends React.Component{
     };
 
     // Only show the screen after the images are loaded
-    if (towerOfPisaImage) { 
+    
+
       return routePlan.activities.map((item, index) => (   
         
         <View style={ActivitiesListStyles.square} key={index}>
 
           {/* Image at the top occupying 50% of the square */}
-          <Image
-            source={{ uri: towerOfPisaImage[index] }}
+         {imagesLoaded && <Image
+            source={{ uri: item.imageUrl }}
             style={ActivitiesListStyles.image}
-          />
+          />}
+          {!imagesLoaded &&  <ActivityIndicator size="large"/>}
 
           {/* Title and description */}
           <View style={ActivitiesListStyles.textContainer}>
@@ -848,15 +753,16 @@ export class ActivitiesScreen extends React.Component{
           </View>
 
         </View>
-      ))
-    }
-  }
+      )) 
+    } 
+
 
   render(){
 
     const { route } = this.props;
-    const { savedRoutes, listsPlan, city, days } = route.params;
-
+    const { routePlan, city, days } = route.params;
+    // Define the image variable and the associated function
+    
     return (
       <View style={ParentStyles.container}>
         
@@ -864,7 +770,7 @@ export class ActivitiesScreen extends React.Component{
         <View style = {{flexDirection: 'row', alignItems: 'center', marginBottom:5}}>
           {/* Your Logo Component */}
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Days', {savedRoutes:savedRoutes, listsPlan:listsPlan, city: city, days:days})}
+            onPress={() => this.props.navigation.goBack()}
             style={{
               width: 45,
               height: 45,
@@ -919,12 +825,12 @@ export class DaysScreen extends React.Component {
  
   // Function that displays the list of days
   lists = () => {
-    // Only show after the fonts are loaded
+    
     const { route } = this.props;
     const { savedRoutes, listsPlan, city, days} = route.params;
   
     return listsPlan.map((item, index) => (
-      <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {routePlan= listsPlan[index]; this.props.navigation.navigate('Activities', {savedRoutes: savedRoutes, listsPlan:listsPlan, city: city, days:days})}}>
+      <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {this.props.navigation.navigate('Activities', {savedRoutes: savedRoutes, routePlan:listsPlan[index], city: city, days:days})}}>
         <LinearGradient
             colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
             start={{ x: 0, y: 0 }}
@@ -1123,20 +1029,20 @@ export class SavedRoutesScreen extends React.Component{
 */
 async function getPlan(navigation, cityName, countryName, daysNumber) {
   // Get city and contry via the location coordinates
-  // city = cityName;
-  // country = countryName;
-  // days = daysNumber;
+  city = cityName;
+  country = countryName;
+  days = daysNumber;
   
   //Comment this when using chatgpt and uncomment the lines above
-  city = 'TestCity';
-  days = 'TestDays';
+  // city = 'TestCity';
+  // days = 'TestDays';
 
   // Prompt to submit to the OpenAI
   //var prompt = 'Can you give a JSON file with a plan for ' + days +' days in ' + city[0].city +', '+ city[0].country +' using this format as example [{"day": "day1", "activities" : ["activity1", "activity2", "activity3"]}] ? Give 5 activities for each day'
   
   var prompt = 'Give me a JSON format only response for the following prompt: ' +
   `Generate a route plan for ${days} days ` +
-  `in ${city}, ${country} with 5 activities for each day with a name and description. Give a specific name for the activity and a single line description` + 
+  `in ${city}, ${country} with 5 activities for each day with a name and description. Give a specific name for the activity and a SINGLE LINE description` + 
   `Use the following json format mandatorily: ` +
   ` [{  "day": "day1", ` + 
   `     "activities" : [{` + 
@@ -1163,20 +1069,20 @@ async function getPlan(navigation, cityName, countryName, daysNumber) {
   
   navigation.navigate("Loading")
 
-  console.log(prompt);
+  //console.log(prompt);
 
   // Call the OpenAI to get the route plan
-  // const res = await openai.createCompletion({
-  //   model: "gpt-3.5-turbo-instruct",
-  //   prompt: prompt,
-  //   max_tokens: 2048
-  // })
+  const res = await openai.createCompletion({
+    model: "gpt-3.5-turbo-instruct",
+    prompt: prompt,
+    max_tokens: 2048
+  })
 
   //console.log(res.data.choices[0].text)
   //console.log(JSON.parse(res.data.choices[0].text))
 
   // Parse the OpenAI response to JSON
-  //listsPlan = JSON.parse(res.data.choices[0].text)
+  listsPlan = JSON.parse(res.data.choices[0].text)
 
   // Waits 10 seconds for testing purposes
   // Only needed if chatgpt is commented
@@ -1202,10 +1108,8 @@ async function getPlan(navigation, cityName, countryName, daysNumber) {
 const PlansScreenStyles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 20,
+    flex:1
   },
   containerLogo: {
     alignItems: 'center',
@@ -1242,6 +1146,7 @@ const PlansScreenStyles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     marginVertical: 10,
+    zIndex:2
   },
   dropdown: {
     borderWidth: 1,
@@ -1277,9 +1182,10 @@ const PlansScreenStyles = StyleSheet.create({
     borderRadius: 20,
     width: '80%',
     height: 50,
-    marginVertical: 10,
+    marginVertical: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex:2
   },
   howManyDaysDrop: {
     backgroundColor: '#DDD',
@@ -1290,6 +1196,7 @@ const PlansScreenStyles = StyleSheet.create({
   routeUpButton: {
     justifyContent:'center',
     alignItems:'center',
+    zIndex:2
   },
   routeUpText: {
     fontSize: 20,
