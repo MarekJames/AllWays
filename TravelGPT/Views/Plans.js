@@ -602,7 +602,7 @@ export class ActivitiesScreen extends React.Component{
     const { route } = this.props;
     const { routePlan, city } = route.params;
   
-    const [imagesLoaded, setImagesLoaded ] = useState(false);
+    const [imagesLoaded, setImagesLoaded] = useState(false);
     
     const getImageUrl = async (query,index) => {
       // Call the google search engine here
@@ -637,7 +637,6 @@ export class ActivitiesScreen extends React.Component{
     useEffect(() => {
       // Only call the API if the field imageUrl doesn't exist
       if(!routePlan.activities[0].imageUrl){
-        console.log('Images not loaded');
         createImagesUrls();
       }
       else{
@@ -1004,9 +1003,10 @@ async function getPlan(navigation, cityName, daysNumber) {
   
   var prompt = 'Give me a JSON format only response for the following prompt: ' +
   `Generate a route plan for ${days} days ` +
-  `in ${city} with 5 activities for each day with a name and description. Give a specific name for the activity like "Colisseum", avoid phrases with "visit, try, etc",  and give a SINGLE LINE description` + 
+  `in ${city} with 5 activities for each day with a name and description. Give a specific name for the activity and give a SINGLE LINE description. For each day give a specific description as well with a summary of the activites of that day` + 
   `Use the following json format mandatorily: ` +
   ` [{  "day": "day1", ` + 
+  `     "description: "day 1 description",` +
   `     "activities" : [{` + 
   `       "name": "activity name 1",
           "description": "activity description"},
@@ -1045,7 +1045,7 @@ async function getPlan(navigation, cityName, daysNumber) {
 
   // Parse the OpenAI response to JSON
   listsPlan = JSON.parse(res.data.choices[0].text)
-
+  console.log(listsPlan);
   // Waits 10 seconds for testing purposes
   // Only needed if chatgpt is commented
   // const delay = ms => new Promise(async resolve => setTimeout(resolve, ms))
