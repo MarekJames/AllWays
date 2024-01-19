@@ -68,7 +68,7 @@ export class LoginUserScreen extends React.Component{
         await signInWithEmailAndPassword(getAuth(),email,password)
           .then((response) => {
             console.log('Signed In : ' + response.user.uid);
-            this.props.navigation.push('Tabs');
+            this.props.navigation.push('Tabs', {userUID: response.user.uid});
           })
           .catch(error => {
             if(error.code == 'auth/invalid-email'){
@@ -139,7 +139,7 @@ export class LoginUserScreen extends React.Component{
         <TextInput
           style={LoginUserStyles.input}
           placeholder="Email"
-          placeholderTextColor={'grey'}
+          placeholderTextColor={'#626262'}
           value={email}
           onChangeText={setEmail}
         />
@@ -150,7 +150,7 @@ export class LoginUserScreen extends React.Component{
         <TextInput
           style={LoginUserStyles.input}
           placeholder="Password"
-          placeholderTextColor={'grey'}
+          placeholderTextColor={'#626262'}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -216,9 +216,9 @@ export class RegisterUserScreen extends React.Component{
       if(( name && email && password && confirmPassword) && (password == confirmPassword)){
        
           await createUserWithEmailAndPassword(getAuth(),email,password)
-          .then(() =>{
-            console.log('Account Created!');
-            this.props.navigation.navigate('Tabs');
+          .then((response) =>{
+            console.log(response.user.uid);
+            this.props.navigation.navigate('Tabs', {userUID: response.user.uid});
           })
           .catch(error => {
             if(error.code == 'auth/invalid-email'){
@@ -287,14 +287,14 @@ export class RegisterUserScreen extends React.Component{
         >
         <Text style={RegisterUserStyles.title}>Create Account</Text>
   
-        <Text style={RegisterUserStyles.subTitle}>Create an account so you can explore all the existing jobs</Text>
+        <Text style={RegisterUserStyles.subTitle}>So you can explore this beautiful world!</Text>
 
         {invalidName !== null && ( // Checking if the variable is not null
           <Text style = {{color:'red',fontSize:12,fontWeight:600,textAlign:'center'}}>{invalidName}</Text>
         )}
         <TextInput
           style={RegisterUserStyles.input}
-          placeholderTextColor={'grey'}
+          placeholderTextColor={'#626262'}
           placeholder="Name"
           value={name}
           onChangeText={setName}
@@ -306,7 +306,7 @@ export class RegisterUserScreen extends React.Component{
         <TextInput
           style={RegisterUserStyles.input}
           placeholder="Email"
-          placeholderTextColor={'grey'}
+          placeholderTextColor={'#626262'}
           value={email}
           onChangeText={setEmail}
         />
@@ -317,7 +317,7 @@ export class RegisterUserScreen extends React.Component{
         <TextInput
           style={RegisterUserStyles.input}
           placeholder="Password"
-          placeholderTextColor={'grey'}
+          placeholderTextColor={'#626262'}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -329,7 +329,7 @@ export class RegisterUserScreen extends React.Component{
         <TextInput
           style={RegisterUserStyles.input}
           placeholder="Confirm Password"
-          placeholderTextColor={'grey'}
+          placeholderTextColor={'#626262'}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry
@@ -392,14 +392,14 @@ const LoginUserStyles = StyleSheet.create ({
     fontWeight: 'bold',
     marginBottom: 20,
     marginTop:100,
-    color:'#1F41BB',
+    color:'#23C2DF',
     alignSelf:'center'
   },
   subTitle:{
     fontSize: 20,
     fontWeight: 600,
     marginBottom: 70,
-    color:'#000000',
+    color:'#494949',
     textAlign:'center',
     width:'50%',
     alignSelf:'center'
@@ -407,9 +407,9 @@ const LoginUserStyles = StyleSheet.create ({
   input: {
     width: '80%',
     height: 50,
-    padding: 10,
+    paddingLeft: 20,
     marginBottom: 20,
-    borderRadius:10,
+    borderRadius:30,
     alignSelf:'center',
     backgroundColor:'#F1F4FF'
   },
@@ -419,12 +419,13 @@ const LoginUserStyles = StyleSheet.create ({
     marginTop: 20,
     fontSize: 14,
     fontWeight: 600,
-    color:'#1F41BB'
+    color:'#23C2DF'
   },
   createAccount: {
     marginTop: 5,
     textAlign: 'center',
     fontSize:14,
+    color:'#494949',
     fontWeight: 600,
   },
   socialLogin: {
@@ -433,17 +434,17 @@ const LoginUserStyles = StyleSheet.create ({
   continueWith: {
     textAlign:'center',
     fontSize:14,
-    color:'#1F41BB',
+    color:'#23C2DF',
     fontWeight:600,
     marginTop:50
   },
   signIn: {
     width: '80%',
     height: 50,
-    backgroundColor:'#4E55FF',
+    backgroundColor:'#23C2DF',
     padding: 10,
     marginBottom: 20,
-    borderRadius:10,
+    borderRadius:30,
     alignSelf:'center'
   },
   icons:{
@@ -473,21 +474,22 @@ const RegisterUserStyles = StyleSheet.create ({
     fontWeight: 'bold',
     marginBottom: 10,
     marginTop:80,
-    color:'#1F41BB',
+    color:'#23C2DF',
     alignSelf:'center'
   },
   subTitle: {
-    fontSize: 14,
+    fontSize: 20,
     marginBottom: 40,
-    color:'#000000',
+    color:'#494949',
+    fontWeight:600,
     textAlign:'center'
   },
   input: {
     width: '80%',
     height: 50,
-    padding: 10,
+    paddingLeft: 20,
     marginBottom: 20,
-    borderRadius:10,
+    borderRadius:30,
     alignSelf:'center',
     backgroundColor:'#F1F4FF'
   },
@@ -495,22 +497,23 @@ const RegisterUserStyles = StyleSheet.create ({
     textAlign: 'center',
     fontSize: 14,
     marginTop: 20,
-    color:'#000000'
+    fontWeight:600,
+    color:'#494949'
   },
   signUp: {
     width: '80%',
     height: 50,
-    backgroundColor:'#4E55FF',
+    backgroundColor:'#23C2DF',
     marginTop:10,
-    marginBottom: 20,
-    borderRadius:10,
+    marginBottom: 10,
+    borderRadius:30,
     alignSelf:'center',
     justifyContent:'center'
   },
   continueWith:{
     textAlign:'center',
     fontSize:14,
-    color:'#1F41BB',
+    color:'#23C2DF',
     fontWeight:600,
     marginTop:30
   },

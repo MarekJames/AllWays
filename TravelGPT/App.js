@@ -20,7 +20,7 @@ import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, Dimensions, 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // Imports to get the screens of other javascript files, necessary for the app navigator ( navigate through screens )
-import {PlansScreen, LoadingScreen, DaysScreen, ActivitiesScreen, SavedRoutesScreen} from './Views/Plans.js'
+import {PlansScreen, DaysScreen, ActivitiesScreen, SavedRoutesScreen} from './Views/Plans.js'
 import { LoginUserScreen, RegisterUserScreen } from './Views/User.js';
 import {ProfileScreen} from './Views/Profile.js'
 import {SettingsScreen} from './Views/Settings.js'
@@ -62,7 +62,7 @@ class HomeScreen extends React.Component {
         <View style={stylesHomeScreen.container}>
         {/* Background Image */}
         <ImageBackground
-          source={require('./Images/Background4.jpg')} // Replace with your image path
+          source={require('./Images/BackgroundHome.jpg')} // Replace with your image path
           style={stylesHomeScreen.imageBackground}
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >
@@ -75,12 +75,12 @@ class HomeScreen extends React.Component {
 
           <View style = {{justifyContent:'flex-end', marginBottom:50}}>
             {/* Login Button */}
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')} style={stylesHomeScreen.optionButton}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')} style={stylesHomeScreen.loginButton}>
                 <Text style={stylesHomeScreen.startText}>Login</Text>
             </TouchableOpacity>
 
             {/* Create Button */}
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')} style={stylesHomeScreen.optionButton}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')} style={stylesHomeScreen.createButton}>
                 <Text style={stylesHomeScreen.startText}>Create Account</Text>
             </TouchableOpacity>
           </View>
@@ -229,11 +229,6 @@ const StackRoutePlanNavigator = () => {
         }}
         name="Activities" component={ActivitiesScreen} />
 
-      <Stack.Screen options={{
-          gestureEnabled: false,
-        }}
-        name="Loading" component={LoadingScreen}/>
-
     </Stack.Navigator>
   );
 }; 
@@ -293,10 +288,10 @@ const StackProfileNavigator = () => {
 // Stylesheet for the homepage screen
 const stylesHomeScreen = StyleSheet.create({
   startText: {
-    fontSize: 25,
+    fontSize: 20,
+    fontWeight:500,
     display: 'flex',
-    letterSpacing: 2,
-    color: '#FFFFFF',
+    color: '#000000',
   },
   imageBackground: {
     width: '100%', // You can adjust width and height as needed
@@ -310,22 +305,30 @@ const stylesHomeScreen = StyleSheet.create({
   imageLogo:{
     width:'100%',
     height:'20%',
-    top:'20%',
+    top:'40%',
   },
   container: {
     flex: 1,
     alignItems: 'center',
   },
 
-  optionButton: {
-    backgroundColor:'#212121',
+  createButton: {
+    backgroundColor:'#23C2DF',
     alignSelf: 'center',
-    elevation:5,
-    shadowColor:'#8B4513',
     margin:10,
     height: 60,
     width:'80%',
-    borderRadius:10,
+    borderRadius:30,
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  loginButton: {
+    backgroundColor:'#FFFFFF',
+    alignSelf: 'center',
+    margin:10,
+    height: 60,
+    width:'80%',
+    borderRadius:30,
     justifyContent:'center',
     alignItems:'center'
   },

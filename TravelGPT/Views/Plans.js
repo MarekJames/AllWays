@@ -23,7 +23,7 @@ import SVGLogo from '../Images/Logo.svg'
 import "react-native-url-polyfill/auto"
 import { Ionicons } from '@expo/vector-icons';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-
+import { getAuth } from '../firebase-config';
 
 /******************* Global Variables ********************/
 
@@ -449,7 +449,6 @@ const openai = new OpenAIApi(config)
 
 export class PlansScreen extends React.Component {  
     
-
   // pontosScreen Function that configs what is displayed in this class
   pontosScreen = () => {
     // Contains the value of the chosen country
@@ -457,15 +456,75 @@ export class PlansScreen extends React.Component {
     const [isOpen, setIsOpen] = useState(false);                                                                    // Controls if Days dropdown was selected
     const [selectedNumber, setSelectedNumber] = useState(null);                                                     // Contains the value of the selected days
     const numbers = Array.from({ length: 10 }, (_, index) => ({ label: `${index + 1}`, value: `${index + 1}` }));   // List from 1 to 10 to allow the user to choose
-   
+    const [loading, setLoading] = useState(false);
+
     // Handles what happens when Number of Days is pressed
     const handleSelect = (item) => {
       setSelectedNumber(item.value);
       setIsOpen(false);
     };
 
+    async function getPlan(navigation, cityName, daysNumber) {
+      // Get city and contry via the location coordinates
+      city = cityName;
+      days = daysNumber;
+      
+      //Comment this when using chatgpt and uncomment the lines above
+      // city = 'TestCity';
+      // days = 'TestDays';
+    
+      // Prompt to submit to the OpenAI
+      //var prompt = 'Can you give a JSON file with a plan for ' + days +' days in ' + city[0].city +', '+ city[0].country +' using this format as example [{"day": "day1", "activities" : ["activity1", "activity2", "activity3"]}] ? Give 5 activities for each day'
+      
+      var prompt = 'Give me a JSON format only response for the following prompt: ' + `Generate a route plan for ${days} days ` + `in ${city} with 5 activities for each day with a name and description. Give a specific name for the activity and give a SINGLE LINE description. For each day give a specific description as well with a summary of the activites of that day` +  `Use the following json format mandatorily: ` + ` 
+        [{  "day": "day1", "description: "day 1 description", "activities" : [
+              { "name": "activity name 1","description": "activity description"},
+              { "name": "activity name 2","description": "activity description"},
+              { "name": "activity name 3","description": "activity description"},
+              { "name": "activity name 4","description": "activity description"},
+              { "name": "activity name 5","description": "activity description"} ]}
+        }] `
+    
+    
+      // Navigate to the LoadingScreen while waiting for the response
+      
+      // Accessing the parent navigator (Stack Navigator)
+      
+      // navigation.navigate("Loading")
+    
+      //console.log(prompt);
+    
+      // Call the OpenAI to get the route plan
+      // const res = await openai.createCompletion({
+      //   model: "gpt-3.5-turbo-instruct",
+      //   prompt: prompt,
+      //   max_tokens: 2048
+      // })
+    
+      //console.log(res.data.choices[0].text)
+      //console.log(JSON.parse(res.data.choices[0].text))
+    
+      // Parse the OpenAI response to JSON
+     // listsPlan = JSON.parse(res.data.choices[0].text)
+      //console.log(listsPlan);
+      // Waits 10 seconds for testing purposes
+      // Only needed if chatgpt is commented
+      const delay = ms => new Promise(async resolve => setTimeout(resolve, ms))
+      await delay(1000)
+    
+      // Navigate to the ListPlans to show the days
+      setLoading(false);
+      navigation.navigate("Days", {
+        savedRoutes: false,
+        listsPlan : listsPlan,
+        city:city,
+        days:days
+      }) 
+    }
+    
     // Defines the screen components
    
+    if(!loading){
       return (
         <View style={PlansScreenStyles.container}>
 
@@ -532,7 +591,7 @@ export class PlansScreen extends React.Component {
     
             {/* Route Up button */}
           
-            <TouchableOpacity style={PlansScreenStyles.routeUpButton} onPress={() => { getPlan(this.props.navigation, selectedCity, selectedNumber) }}>
+            <TouchableOpacity style={PlansScreenStyles.routeUpButton} onPress={() => { setLoading(true); getPlan(this.props.navigation, selectedCity, selectedNumber) }}>
               <LinearGradient
                 colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
                 start={{ x: 0, y: 0 }}
@@ -543,49 +602,39 @@ export class PlansScreen extends React.Component {
               </LinearGradient>
             </TouchableOpacity>
           </View>
-      </View>
-    ); 
+        </View>
+      );
+    } 
+    else{
+      return ( 
+        <View style = {LoadingScreenStyle.container}>  
+          
+          {/* Show Logo */}
+          <SVGLogo
+            style = {LoadingScreenStyle.imageLogo}
+          />
+
+          {/* Title and subtitle */}
+          <Text style = {LoadingScreenStyle.titleText}> Generating your response</Text>
+          <Text style = {LoadingScreenStyle.subtitleText}> Wait a moment</Text>
+          
+          <Text> {" "}</Text>
+
+          {/* Loading indicator */}
+          <ActivityIndicator size="large"/>
+        </View>
+      )
+    }
   }
 
   // Renders the screen components defined in the pontosScreen function
-  render() {  
+  render() { 
+   
     return (
       <this.pontosScreen></this.pontosScreen>
-    )    
+    ) 
   }
    
-}
-
-/*
-
-  LoadingScreen class
-  Used when waiting for the AI response
-
-*/
-export class LoadingScreen extends React.Component{
-  
-  // Renders the loading screen
-  render(){
-    return (
-      <View style = {LoadingScreenStyle.container}>  
-        
-        {/* Show Logo */}
-        <SVGLogo
-          style = {LoadingScreenStyle.imageLogo}
-        />
-
-        {/* Title and subtitle */}
-        <Text style = {LoadingScreenStyle.titleText}> Generating your response</Text>
-        <Text style = {LoadingScreenStyle.subtitleText}> Wait a moment</Text>
-        
-        <Text> {" "}</Text>
-
-        {/* Loading indicator */}
-        <ActivityIndicator size="large"/>
-
-      </View>
-    )
-  }
 }
 
 /*
@@ -976,89 +1025,6 @@ export class SavedRoutesScreen extends React.Component{
       </View>
     );
   } 
-}
-
-
-/********************** Functions ************************/
-
-/*
-
-  getPlan Function
-  Calls the OpenAI to get the route plan for the specified days and destination
-  Calls the LoadingScreen while waiting for the response
-  Calls the ListPlans after the response is received and verified
-
-*/
-async function getPlan(navigation, cityName, daysNumber) {
-  // Get city and contry via the location coordinates
-  city = cityName;
-  days = daysNumber;
-  
-  //Comment this when using chatgpt and uncomment the lines above
-  // city = 'TestCity';
-  // days = 'TestDays';
-
-  // Prompt to submit to the OpenAI
-  //var prompt = 'Can you give a JSON file with a plan for ' + days +' days in ' + city[0].city +', '+ city[0].country +' using this format as example [{"day": "day1", "activities" : ["activity1", "activity2", "activity3"]}] ? Give 5 activities for each day'
-  
-  var prompt = 'Give me a JSON format only response for the following prompt: ' +
-  `Generate a route plan for ${days} days ` +
-  `in ${city} with 5 activities for each day with a name and description. Give a specific name for the activity and give a SINGLE LINE description. For each day give a specific description as well with a summary of the activites of that day` + 
-  `Use the following json format mandatorily: ` +
-  ` [{  "day": "day1", ` + 
-  `     "description: "day 1 description",` +
-  `     "activities" : [{` + 
-  `       "name": "activity name 1",
-          "description": "activity description"},
-
-        { "name": "activity name 2",
-          "description": "activity description"},
-
-        { "name": "activity name 3",
-          "description": "activity description"},
-
-        { "name": "activity name 4",
-          "description": "activity description"},
-
-        { "name": "activity name 5",
-          "description": "activity description"}
-      ]}}] `
-
-
-  // Navigate to the LoadingScreen while waiting for the response
-  
-  // Accessing the parent navigator (Stack Navigator)
-  
-  navigation.navigate("Loading")
-
-  //console.log(prompt);
-
-  // Call the OpenAI to get the route plan
-  const res = await openai.createCompletion({
-    model: "gpt-3.5-turbo-instruct",
-    prompt: prompt,
-    max_tokens: 2048
-  })
-
-  //console.log(res.data.choices[0].text)
-  //console.log(JSON.parse(res.data.choices[0].text))
-
-  // Parse the OpenAI response to JSON
-  listsPlan = JSON.parse(res.data.choices[0].text)
-  console.log(listsPlan);
-  // Waits 10 seconds for testing purposes
-  // Only needed if chatgpt is commented
-  // const delay = ms => new Promise(async resolve => setTimeout(resolve, ms))
-  // await delay(1000)
-
-  // Navigate to the ListPlans to show the days
-  navigation.navigate("Days", {
-    savedRoutes: false,
-    listsPlan : listsPlan,
-    city:city,
-    days:days
-  })
-  
 }
 
 

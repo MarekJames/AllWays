@@ -35,6 +35,7 @@ const App = () => {
 
           {/* Rest of your app code */}
           { !loading && (user  ? <BottomTabNavigator /> : <StackNavigator />)}
+          
 
     </NavigationContainer>
   );
