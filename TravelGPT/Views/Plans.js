@@ -15,7 +15,7 @@ Plans.js
 
 // Imports for the react components add buttons, images, text, etc
 import React, {useState, useEffect} from 'react';  
-import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, Linking} from 'react-native'; 
+import { FlatList, Image, KeyboardAvoidingView, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, Linking} from 'react-native'; 
 import axios from 'axios';
 import { Configuration, OpenAIApi } from 'openai'
 import { LinearGradient } from 'expo-linear-gradient';
@@ -527,23 +527,25 @@ export class PlansScreen extends React.Component {
     if(!loading){
       return (
         <View style={PlansScreenStyles.container}>
+      
 
           {/* Logo and Title */}
-          <View style={PlansScreenStyles.containerLogo}>
-            {/* Your Logo Component */}
+        {/*   <View style={PlansScreenStyles.containerLogo}>
+           
             <SVGLogo style={PlansScreenStyles.imageLogo} />
-            {/* Title and subtitle */}
+           
             <Text style={PlansScreenStyles.whereToText}>Where to?</Text>
             <Text style={PlansScreenStyles.wellGiveText}>We'll give you the route for it</Text>
-          </View>
-    
+          </View> */}
 
-            {/* Country Dropdown */}
-            <GooglePlacesAutocomplete
+          {/* Country Dropdown */}
+          <GooglePlacesAutocomplete
             placeholder="Enter Location"
             styles={{
               container: {
-                width:'80%'
+                flex:1,
+                width: '80%',
+                top:'10%'
               },
               textInput: {
                 textAlign: 'center',
@@ -553,27 +555,22 @@ export class PlansScreen extends React.Component {
                 fontSize: 16,
                 backgroundColor: '#DDD',
               },
-              predefinedPlacesDescription: {
-                color: '#1faadb',
-              },
-              
             }}
+            enablePoweredByContainer = {false}
+            isRowScrollable={true}
+            minLength={2}
+            debounce={500}
             onPress={(data) => setSelectedCity(data.description)}
             query={{ key: googleKey, language: 'en', types : '(cities)'}}
             fetchDetails
             onFail={(error) => console.error(error)}
             onNotFound={() => console.log('no results')}
-            debounce={300}
           />
-      
-          {/* Number of Days Dropdown */}
-          <View style={PlansScreenStyles.dropdownContainer}>
-           
-            {selectedCity && (
-              <TouchableOpacity onPress={() => setIsOpen(!isOpen)} style={PlansScreenStyles.howManyDaysButton}>
-                <Text style={PlansScreenStyles.dropdownText}>{selectedNumber || 'Number of days'}</Text>
-              </TouchableOpacity>
-             )}
+
+           <TouchableOpacity onPress={() => setIsOpen(!isOpen)} style={PlansScreenStyles.howManyDaysButton}>
+              <Text style={PlansScreenStyles.dropdownText}>{selectedNumber || 'Number of days'}</Text>
+          </TouchableOpacity>
+          
             {isOpen && (
             <View style={PlansScreenStyles.howManyDaysDrop}>
               <FlatList
@@ -587,22 +584,14 @@ export class PlansScreen extends React.Component {
               />
             </View>
             )}
-           
-    
-            {/* Route Up button */}
+
+           {/* Route Up button */}
           
             <TouchableOpacity style={PlansScreenStyles.routeUpButton} onPress={() => { setLoading(true); getPlan(this.props.navigation, selectedCity, selectedNumber) }}>
-              <LinearGradient
-                colors={['#0038F5', '#9F03FF']} // Replace with your gradient colors
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={PlansScreenStyles.gradient}
-              >
                 <Text style={PlansScreenStyles.routeUpText}>Route!</Text>
-              </LinearGradient>
             </TouchableOpacity>
           </View>
-        </View>
+         
       );
     } 
     else{
@@ -1038,6 +1027,7 @@ const PlansScreenStyles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     flex:1
+   
   },
   containerLogo: {
     alignItems: 'center',
@@ -1074,7 +1064,6 @@ const PlansScreenStyles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     marginVertical: 10,
-    zIndex:2
   },
   dropdown: {
     borderWidth: 1,
@@ -1124,17 +1113,17 @@ const PlansScreenStyles = StyleSheet.create({
   routeUpButton: {
     justifyContent:'center',
     alignItems:'center',
-    zIndex:2
+    backgroundColor:'#000000',
+    borderRadius:30,
+    width:'80%',
+    height:50,
+    margin:20,
   },
   routeUpText: {
     fontSize: 20,
     color: '#FFFFFF',
   },
-  gradient: {
-    borderRadius: 30,
-    paddingVertical: '5%',
-    paddingHorizontal: '30%',
-  },
+  
 });
 
 // Used for the LoadingScreen class
