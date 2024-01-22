@@ -15,8 +15,8 @@ User.js
 import React, { useState} from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground } from 'react-native';
 
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from 'firebase/auth';
-import { getAuth } from '../firebase-config';
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
+import { getAuth, insertUser } from '../config/firebase-config';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
@@ -61,7 +61,7 @@ export class LoginUserScreen extends React.Component{
     //   } catch (error) {
     //     console.error('Google Sign-in error:', error);
     //   }
-     };
+    };
     
     const handleSubmit = async () => {
       if(email && password){
@@ -217,7 +217,9 @@ export class RegisterUserScreen extends React.Component{
        
           await createUserWithEmailAndPassword(getAuth(),email,password)
           .then((response) =>{
-            console.log(response.user.uid);
+            console.log("User uid: " + response.user.uid);
+            insertUser(response.user.uid, name);
+
             this.props.navigation.navigate('Tabs', {userUID: response.user.uid});
           })
           .catch(error => {

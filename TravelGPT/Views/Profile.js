@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
-import {getAuth} from '../firebase-config';
+import {getAuth} from '../config/firebase-config';
 
 
 
@@ -90,5 +90,5 @@ const styles = StyleSheet.create({
       fontSize: 18,
       fontWeight:600
     },
-  });
+});
 
