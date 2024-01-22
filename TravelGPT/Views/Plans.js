@@ -15,7 +15,7 @@ Plans.js
 
 // Imports for the react components add buttons, images, text, etc
 import React, {useState, useEffect} from 'react';  
-import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, Linking} from 'react-native'; 
+import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, Linking, ImageBackground} from 'react-native'; 
 import axios from 'axios';
 
 import { LinearGradient } from 'expo-linear-gradient';
@@ -443,7 +443,7 @@ export class DaysScreen extends React.Component {
           {!imagesLoaded &&  <ActivityIndicator 
             size="small"
           />}
-          <View style = {{flexDirection:'column', justifyContent:'flex-start', alignItems:'flex-start'}}>
+          <View style = {{flexDirection:'column', justifyContent:'center', alignItems:'flex-start'}}>
             <Text style = {DaysListStyles.dayTitle}>{item.day}</Text>
             <Text style = {DaysListStyles.daySubtitle}>{item.description}</Text>
           </View>
@@ -475,10 +475,9 @@ export class DaysScreen extends React.Component {
       return (
         <TouchableOpacity onPress={toggleSave}>
           <View>
-            <Image
-              source={(isSaved) ? require('../Images/fullHeart.png') : require('../Images/emptyHeart.png')}
-              style={{ width: 30, height: 30 }}
-            />
+            {!isSaved && <Ionicons name="heart-outline" size={30} color="black" /> }
+            {isSaved && <Ionicons name="heart" size={30} color="black" /> }
+            
           </View>
         </TouchableOpacity>
       );
@@ -489,42 +488,60 @@ export class DaysScreen extends React.Component {
     return (
       <View style={ParentStyles.container}>
         
-        <View style={ParentStyles.containerLogoHeart}>
+        <View style={ParentStyles.imageBackground}>
           
-          {savedRoutes && (<TouchableOpacity
-            onPress={() => this.props.navigation.navigate('SavedRoutes')}
-            style={{
-              width: 45,
-              height: 45,
-              borderRadius: 30,
-              backgroundColor: 'lightgrey',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginLeft:15
-            }}
-          >
-            <Text><Ionicons name="arrow-back-outline" size={30} color="black" /></Text>
-          </TouchableOpacity>
-          )}
+          <ImageBackground source={{ uri: listsPlan[0].imageUrl }}style={DaysListStyles.imageBackground} >
 
-          {/* SVGLogo component */}
-          <View style={{ alignSelf: 'center'}}>
-            <SVGLogo/>
-          </View>
+            <View style ={{flexDirection:'row', justifyContent:'space-between'}} >
+              {savedRoutes && (<TouchableOpacity
+                onPress={() => this.props.navigation.navigate('SavedRoutes')}
+                style={{
+                  width: 45,
+                  height: 45,
+                  borderRadius: 30,
+                  backgroundColor: '#fff',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  margin:20
+                }}
+              >
+                <Text><Ionicons name="arrow-back-outline" size={30} color="black" /></Text>
+              </TouchableOpacity>
+              )}
 
-          {/* HeartIcon component */}
-          {!savedRoutes && (<View style = {ParentStyles.iconContainer}>
-            <HeartIcon />
-          </View>)}
+              {/* HeartIcon component */}
+              {savedRoutes && (<TouchableOpacity
+                onPress={() => this.props.navigation.navigate('SavedRoutes')}
+                style={{
+                  width: 45,
+                  height: 45,
+                  borderRadius: 30,
+                  backgroundColor: '#fff',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  margin:20
+                }}
+              >
+                <HeartIcon/>
+              </TouchableOpacity>
+              )}
+            </View>
+
+            <View style = {{flex:1, justifyContent:'flex-end',marginBottom:30}}>
+              <Text style ={ParentStyles.title}>{city}</Text>
+              <Text style ={ParentStyles.subtitle}>{days} Days</Text>  
+            </View>
+           
+          </ImageBackground>
+          
         </View>
 
       
           {/* Scroll view with the list of days */}
         <ScrollView style={{flex:1}}>
             {/* Title and description */}
-          <Text style={ParentStyles.listTitle}> Discover {city} </Text>
-          <Text style={ParentStyles.listSubtitle}> Here is the perfect route for {days} days </Text>
-        
+          <Text style={ParentStyles.listTitle}> Select a day to discover your journey</Text>
+         
           <this.lists/>
         </ScrollView>
 
@@ -761,6 +778,10 @@ const ParentStyles = StyleSheet.create({
     paddingTop: 40,
     
   },
+  imageBackground: {
+    width:'100%',
+    height:'30%',
+  },
   header: {
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
@@ -771,8 +792,6 @@ const ParentStyles = StyleSheet.create({
     flexDirection: 'row', // Arrange children horizontally
     alignItems: 'center', // Align items vertically
     justifyContent: 'center', // Space evenly between children
-    height:'20%',
-    width:'100%'
   },
   containerLogo: {
     flex:1,
@@ -788,8 +807,9 @@ const ParentStyles = StyleSheet.create({
     paddingRight:10
   },
   listTitle: {
-    fontSize: 30,
- 
+    fontSize: 20,
+    fontWeight:'500',
+    marginTop:10,
     textAlign: 'center',
   },
   listSubtitle: {
@@ -815,15 +835,27 @@ const ParentStyles = StyleSheet.create({
   saveRouteText:{
     fontSize: 30,
     color:'#000'
+  },
+  title:{
+    marginLeft:10,
+    fontWeight:500,
+    fontSize:40,
+    color:'#fff'
+  },
+  subtitle:{
+    marginLeft:10,
+    fontWeight:500,
+    fontSize:20,
+    color:'#fff'
   }
 });
 
 const DaysListStyles = StyleSheet.create({
   dayContainer: {
-      width: width * 0.8, // 90% of the device width
-      height: height * 0.1,
+      width: width * 0.9, // 90% of the device width
+      height: height * 0.12,
       backgroundColor: 'lightgrey',
-      borderRadius: 10,
+      borderRadius: 25,
       overflow: 'hidden',
       elevation: 5, // Adds a shadow (Android)
       shadowColor: '#000', // Adds a shadow (iOS)
@@ -838,16 +870,22 @@ const DaysListStyles = StyleSheet.create({
     width: '35%',
     height: '100%', // Adjusted to 100% to fill the container
   },
+  imageBackground: {
+    width: '100%',
+    height: '100%', // Adjusted to 100% to fill the container
+   
+  },
   dayTitle: {
     fontSize: 30,
+    fontWeight:'500',
     color:'#000',
-    paddingLeft:10,
+    paddingLeft:20,
   },  
   daySubtitle: {
-    fontSize: 12,
-   
+    fontSize: 15,
     color:'#000',
-    paddingLeft:10,
+    paddingLeft:20,
+    paddingBottom:10
 
   },
 
