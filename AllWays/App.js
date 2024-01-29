@@ -160,26 +160,26 @@ const StackProfileNavigator = () => {
   );
 }; 
 
+
+
 class HomeScreen extends React.Component {
 
-  // Screen components
-  render() { 
+  HomeScreen = () => {
 
-    // Load screen after the fonts are loaded
-    //const fade = useRef(new Animated.Value(0)).current;
+    const fade = useRef(new Animated.Value(0)).current;
    
-    // const fadeIn = () => {
-    //   Animated.timing(fade, {
-    //     toValue: 1,
-    //     duration: 500,
-    //     useNativeDriver:true
-    //   }).start();
-    // };
+    const fadeIn = () => {
+      Animated.timing(fade, {
+        toValue: 1,
+        duration: 2000,
+        useNativeDriver:true
+      }).start();
+    };
 
-    // useEffect(() => {
-    //   fadeIn();  
-    // }, []);
-
+    useEffect(() => {
+       fadeIn();  
+    },);
+  
     return ( 
       <SafeAreaView
        style = {{height:'100%', width:'100%'}}
@@ -197,12 +197,12 @@ class HomeScreen extends React.Component {
           
           <Animated.Image
           source = {require('./Images/Logo.png')}
-          style = {{width:'100%', height:'20%', top:'40%'}}
+          style = {{width:'80%', height:'20%', top:'40%', opacity:fade}}
           resizeMode='contain'
           />
         </View>
 
-        <View style = {{justifyContent:'flex-end', marginBottom:50}}>
+        <Animated.View style = {{justifyContent:'flex-end', marginBottom:50, opacity:fade}}>
           {/* Login Button */}
           <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')} style={stylesHomeScreen.loginButton}>
               <Text style={stylesHomeScreen.startText}>Login</Text>
@@ -212,12 +212,18 @@ class HomeScreen extends React.Component {
           <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')} style={stylesHomeScreen.createButton}>
               <Text style={stylesHomeScreen.startText}>Create Account</Text>
           </TouchableOpacity>
-        </View>
+        </Animated.View>
 
       </ImageBackground>
     {/* </View> */}
     </SafeAreaView>
     );      
+  }
+
+  // Screen components
+  render() { 
+
+    return (<this.HomeScreen/>)
   }  
 }
 

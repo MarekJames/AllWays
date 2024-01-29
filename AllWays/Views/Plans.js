@@ -256,7 +256,7 @@ export class PlansScreen extends React.Component {
               <Text style = {{paddingLeft:30, fontSize:15, color:'red'}}>{isValidCity}</Text>
             )}
 
-            <View style = {{flexDirection:'row', justifyContent:'space-between', margin:20, marginBottom:100}}>
+            <View style = {{flex:1, flexDirection:'row', justifyContent:'space-between', margin:20, marginBottom:100}}>
               {/* Country Dropdown */}
               
               {/* <View style = {{width:'80%', height:'100', marginRight:10}}> */}
