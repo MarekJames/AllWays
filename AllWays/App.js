@@ -26,13 +26,16 @@ const BottomTabNavigator = () => {
           marginTop:3,
           backgroundColor: 'transparent',
           elevation: 0, // this solved the triangle type view problem in android
+          
         },
+        tabBarActiveTintColor:'#23C2DF',
         tabBarLabelStyle: {
           fontSize: 14, // Adjust label font size
           fontWeight: 'bold', // Make label text bold
-          marginBottom: 4
+          marginBottom: 4,
         },
       }}
+  
     >
       <Tab.Screen 
         name="StackRoutePlanNavigator" 
@@ -55,7 +58,7 @@ const BottomTabNavigator = () => {
         name="StackProfileNavigator" 
         component={StackProfileNavigator} 
         options= {{
-          title: 'Profile', 
+          title: 'Profile',
           tabBarIcon: ({size,focused,color}) => { return ( <Ionicons name={'person-circle-outline'} size={size} color={color} />)}
         }} 
       />
@@ -177,7 +180,8 @@ class HomeScreen extends React.Component {
             
             <Image
             source = {require('./Images/Logo.png')}
-              style = {stylesHomeScreen.imageLogo}
+            style = {stylesHomeScreen.imageLogo}
+            resizeMode='contain'
             />
           </View>
 

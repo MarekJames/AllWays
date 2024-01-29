@@ -52,22 +52,57 @@ export class PlansScreen extends React.Component {
   pontosScreen = () => {
     
     // Contains the value of the chosen country
-    const [selectedCity, setSelectedCity] = useState(null);                                                         // Contains the value of the chosen city                                                              // Contains all the countries received from the API
-    const [isOpen, setIsOpen] = useState(false);                                                                    // Controls if Days dropdown was selected
-    const [selectedNumber, setSelectedNumber] = useState(null);                                                     // Contains the value of the selected days
-    const numbers = Array.from({ length: 10 }, (_, index) => ({ label: `${index + 1}`, value: `${index + 1}` }));   // List from 1 to 10 to allow the user to choose
+    const [selectedCity, setSelectedCity] = useState(null);                                                         // Contains the value of the chosen city                                                                                                                     // Contains all the countries received from the API
+    const [selectedNumber, setSelectedNumber] = useState('');                                                       // Contains the value of the selected days
     const [loading, setLoading] = useState(false);
+    const [isNext, setNext] = useState(false);
+    const [isValidCity, setValidCity] = useState('');
+    const [isResponse, setReponse] =useState(false);
 
-    // Handles what happens when Number of Days is pressed
-    const handleSelect = (item) => {
-      setSelectedNumber(item.value);
-      setIsOpen(false);
-    };
+    var listsPlan2;
+
+    const getImageUrl = async (query,index) => {
+      // Call the google search engine here
+      const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
+
+      await axios.get(url)
+      .then((response) => {
+        const image = response.data.items[0];
+        return image;
+      })
+      .then((image) => {
+        const imageUrl = image.link;
+        listsPlan2[index].activities[0].imageUrl = imageUrl;
+        listsPlan2[index].imageUrl = imageUrl;
+      })
+      
+    }
+
+    const createImagesUrls = async (navigation, city) => {
+      //Loop through the activities and put the url in the listsPlan object
+      var counter = 0;
+      //Loop through the activities and put the url in the listsPlan object
+      listsPlan2.forEach(async (item, index) => {
+        await getImageUrl(item.activities[0].name + ',' + city,index);
+      
+        //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
+        counter++;
+        if(counter == listsPlan2.length){
+          setLoading(false);
+          console.log(listsPlan2[0])
+          navigation.navigate("Days", {
+            savedRoutes: false,
+            listsPlan : listsPlan2,
+            city: selectedCity,
+            days: selectedNumber
+          }) 
+        }
+      });
+    }
 
     async function getPlan(navigation, cityName, daysNumber) {
      
       const prompt = generatePrompt(daysNumber, cityName);
-      var listsPlan2;
 
       try {
         const result = await axios.post(
@@ -84,23 +119,59 @@ export class PlansScreen extends React.Component {
             },
           },
         )
+        setReponse(true);
         listsPlan2 = JSON.parse(result.data.choices[0].text);
+        createImagesUrls(navigation, cityName);
 
       } catch (error) {
         console.error('Error fetching AI response:', error);
-        navigation.navigate('Plans');
-      }
-    
-      // Navigate to the ListPlans to show the days
-      setLoading(false);
-      navigation.navigate("Days", {
-        savedRoutes: false,
-        listsPlan : listsPlan2,
-        city: cityName,
-        days: daysNumber
-      }) 
+        setLoading(false);
+        alert('There was an error with the AI response. \nPlease try again.')
+      } 
     }
     
+    function checkCity(){
+      if(selectedCity == null){
+        return false;
+      }
+      return true;
+    }
+
+    function checkNumber(){
+     
+      if(selectedNumber == null || !Number.isInteger(parseInt(selectedNumber)) || selectedNumber % 1 != 0 || parseInt(selectedNumber) < 1 || parseInt(selectedNumber) > 10){
+        return false;
+      }
+      return true;
+    }
+
+    const handleNext = () =>{
+    
+      if(isNext){
+
+        if(checkNumber()){
+          setValidCity('')
+          setLoading(true); 
+          getPlan(this.props.navigation, selectedCity, selectedNumber);
+          setNext(false);
+        
+        }
+        else{setValidCity('Please select a valid number (1 to 10)')}
+      
+      }
+      else{
+
+        if(checkCity() && isValidCity != null){
+          setValidCity('');
+          setNext(true);
+          
+        }
+        else{setValidCity('Please select a valid city')}
+        
+      }
+
+    }
+
     // Defines the screen components
     if(!loading){
       
@@ -110,27 +181,42 @@ export class PlansScreen extends React.Component {
           <ImageBackground style={{flex:1, width:'100%', height:'100%'}} source = {require('../Images/SearchBackground.png')}>
 
             
-              <View style = {{flex:1, width:'100%', justifyContent:'center', alignItems:'center'}}>
+              {/* <View style = {{flex:1, width:'100%', justifyContent:'center', alignItems:'center'}}>
                 <Image  style = {PlansScreenStyles.imageLogo} source = {require('../Images/Logo.png')}/>
-              </View>
-           
-              <View style = {{alignSelf:'flex-start', justifyContent:'center', width:'70%', paddingLeft:20}}>
+              </View> */}
+
+              {isNext && 
+                <View style = {{justifyContent:'flex-start', marginTop:30, paddingLeft:15}}>
+                  <TouchableOpacity onPress={()=> setNext(false)}>
+                    <Ionicons name="arrow-back-circle-outline" size={50} color="#23C2DF" />
+                  </TouchableOpacity>
+                </View>
+              }
+            <View style = {{flex:1, justifyContent:'flex-end'}}>
+              <View style = {{alignSelf:'flex-start', justifyContent:'center', width:'80%', paddingLeft:20}}>
                 <Text style = {{fontSize:20, color:'#fff', fontWeight:'200'}}>Welcome to AllWays</Text>
-                <Text style = {{fontSize:42, fontWeight:'600', color:'#fff'}}>Where do you want to go?</Text>
+                {!isNext && <Text style = {{fontSize:42, fontWeight:'600', color:'#fff'}}>Where do you want to go?</Text>}
+                {isNext && <Text style = {{fontSize:42, fontWeight:'600', color:'#fff'}}>How many days of exploration?</Text>}
               </View>
-          
+            
+            {isValidCity != null && (
+              <Text style = {{paddingLeft:30, fontSize:15, color:'red'}}>{isValidCity}</Text>
+            )}
+
             <View style = {{flexDirection:'row', justifyContent:'space-between', margin:20, marginBottom:100}}>
               {/* Country Dropdown */}
-              {/* <View style = {{width:'80%', height:'100', marginRight:10}}> */}
               
+              {/* <View style = {{width:'80%', height:'100', marginRight:10}}> */}
+              {!isNext && ( 
+                
                 <GooglePlacesAutocomplete
-                  placeholder="City"
+                  placeholder = "City"
                   styles={{
                     container: {
                       flex:1,
                       width: '100%',
                       height:'100%',
- 
+
                     },
                     textInput: {
                       textAlign: 'left',
@@ -151,24 +237,44 @@ export class PlansScreen extends React.Component {
                       flexDirection: 'row',
                     },
                   }}
-                
                   enablePoweredByContainer = {false}
-                  
                   minLength={2}
                   debounce={500}
                   onPress={ (data) => {setSelectedCity(data.description)}}
                   query={{ key: googleKey, language: 'en', types : '(cities)'}}
                   onFail={(error) => console.error(error)}
                   onNotFound={() => console.log('no results')}
-                  
                 />
-             {/*  </View> */}
+
+              )}
+
+              {/*  </View> */}
+
+              {/* <View style = {{width:'80%', height:'100', marginRight:10}}> */}
+              
+              {isNext && ( 
+
+                <TouchableOpacity style = {{width:'87%',justifyContent:'center', borderRadius:30, height:50, backgroundColor: '#F1F4FF'}}>
+                    <TextInput
+                      style = {{textAlign:'left', fontSize:15, paddingLeft:30}}
+                      onChangeText={setSelectedNumber}
+                      value={selectedNumber}
+                      placeholder="Number of days"
+                      keyboardType="numeric"
+                    />
+                </TouchableOpacity> 
+
+              )}
+
+              {/*  </View> */}
+
               {/* Route Up button */}
             
-              <TouchableOpacity onPress={() => { setLoading(true); getPlan(this.props.navigation, selectedCity, selectedNumber) }}>
+              <TouchableOpacity onPress={() => {handleNext()}}>
                 <Ionicons name="arrow-forward-circle-outline" size={50} color="#23C2DF" />
               </TouchableOpacity>
           
+            </View>
             </View>
 
           </ImageBackground>
@@ -182,13 +288,27 @@ export class PlansScreen extends React.Component {
           {/* Show Logo */}
           <Image
           source={require('../Images/Logo.png')}
-            style = {LoadingScreenStyle.imageLogo}
+          style = {LoadingScreenStyle.imageLogo}
+          resizeMode='contain'
           />
 
           {/* Title and subtitle */}
-          <Text style = {LoadingScreenStyle.titleText}> Generating your response</Text>
-          <Text style = {LoadingScreenStyle.subtitleText}> Wait a moment</Text>
-          
+          {!isResponse &&
+            <Text style = {LoadingScreenStyle.titleText}> Generating your response</Text>
+           
+          }
+          {!isResponse &&
+            <Text style = {LoadingScreenStyle.subtitleText}> Wait a moment</Text>
+          }
+
+          {isResponse &&
+            <Text style = {LoadingScreenStyle.titleText}> AI response generated</Text>
+           
+          }
+          {isResponse &&
+            <Text style = {LoadingScreenStyle.subtitleText}> Loading images...</Text>
+          }
+            
           <Text> {" "}</Text>
 
           {/* Loading indicator */}
@@ -398,62 +518,15 @@ export class DaysScreen extends React.Component {
     
     const { route } = this.props;
     const { savedRoutes, listsPlan, city, days} = route.params;
-    const [imagesLoaded, setImagesLoaded] = useState(false);
-    
-    const getImageUrl = async (query,index) => {
-      // Call the google search engine here
-      const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
-
-      await axios.get(url)
-      .then((response) => {
-        const image = response.data.items[0];
-        return image;
-      })
-      .then((image) => {
-        const imageUrl = image.link;
-
-        listsPlan[index].activities[0].imageUrl = imageUrl;
-        listsPlan[index].imageUrl = imageUrl;
-  
-      })
-      
-    }
-
-    const createImagesUrls = async () => {
-      var counter = 0;
-      //Loop through the activities and put the url in the listsPlan object
-      await listsPlan.forEach(async (item, index) => {
-        await getImageUrl(item.activities[0].name + ',' + city,index);
-      
-        //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
-        counter++;
-        if(counter == (listsPlan.length)){setImagesLoaded(true);}
-      });
-    }
-
-    // Called when the screen is loaded
-    useEffect(() => {
-      // Only call the API if the field imageUrl doesn't exist
-      if(!listsPlan[0].imageUrl){
-        createImagesUrls();
-      }
-      else{
-        setImagesLoaded(true)
-      }
-      
-    }, []);
-
+   
     return listsPlan.map((item, index) => (
       <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {this.props.navigation.navigate('Activities', {savedRoutes: savedRoutes, routePlan:listsPlan[index], city: city, days:days})}}>
           {/* Image at the top occupying 50% of the square */}
-          {imagesLoaded && <Image
+          <Image
             source={{ uri: item.imageUrl }}
             style={DaysListStyles.image}
-          />}
+          />
 
-          {!imagesLoaded &&  <ActivityIndicator 
-            size="small"
-          />}
           <View style = {{flexDirection:'column', justifyContent:'center', alignItems:'flex-start'}}>
             <Text style = {DaysListStyles.dayTitle}>{item.day}</Text>
             <Text style = {DaysListStyles.daySubtitle}>{item.description}</Text>
@@ -769,6 +842,7 @@ const LoadingScreenStyle = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor:'#000'
   },
   imageLogo:{
     top:'-5%',
@@ -777,10 +851,12 @@ const LoadingScreenStyle = StyleSheet.create({
   },
   titleText:{
     fontSize: 20,
+    color:'#fff'
   
   },
   subtitleText:{
     fontSize: 15,
+    color:'#fff'
   
   },
 })
@@ -826,10 +902,10 @@ const ParentStyles = StyleSheet.create({
     fontWeight:'500',
     marginTop:10,
     textAlign: 'center',
+    
   },
   listSubtitle: {
     fontSize: 20,
-   
     textAlign: 'center',
     marginTop: 10, // Adjust margin top as needed to bring the list name down
     marginBottom:20
