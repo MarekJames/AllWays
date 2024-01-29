@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "217423999985",
+    "firebase_url": "https://allways-2e097-default-rtdb.firebaseio.com",
+    "project_id": "allways-2e097",
+    "storage_bucket": "allways-2e097.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217423999985:android:2cefd6e019096baf594a50",
+        "android_client_info": {
+          "package_name": "com.allways.allways"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "217423999985-8m1sau08o5fa4dol10c7622bd7oct61t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgwjaEr0uImUmDYdfGrFhtOQ6fu8OvCy8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "217423999985-8m1sau08o5fa4dol10c7622bd7oct61t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "217423999985-op2irapcvei71kfql3o8qtbars2blksp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.allways.allways"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

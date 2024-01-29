@@ -14,9 +14,10 @@ Plans.js
 /******************** Imports Section ********************/ 
 
 // Imports for the react components add buttons, images, text, etc
-import React, {useState, useEffect} from 'react';  
-import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text, Dimensions,inputRef, TextInput, TouchableOpacity, ScrollView, Linking, ImageBackground} from 'react-native'; 
+import React, {useState, useEffect, useRef} from 'react';  
+import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, inputRef, TextInput, TouchableOpacity, ScrollView, Linking, ImageBackground} from 'react-native'; 
 import axios from 'axios';
+import {Animated} from 'react-native';
 
 import "react-native-url-polyfill/auto"
 import { Ionicons } from '@expo/vector-icons';
@@ -58,6 +59,9 @@ export class PlansScreen extends React.Component {
     const [isNext, setNext] = useState(false);
     const [isValidCity, setValidCity] = useState('');
     const [isResponse, setReponse] =useState(false);
+    const animatedValue = useRef(new Animated.Value(0)).current;
+    const fade = useRef(new Animated.Value(1)).current;
+    const fadeInValue = useRef(new Animated.Value(0)).current;
 
     var listsPlan2;
 
@@ -145,7 +149,56 @@ export class PlansScreen extends React.Component {
       return true;
     }
 
-    const handleNext = () =>{
+    const moveRightX = () => {
+
+      Animated.parallel([
+        Animated.timing(animatedValue, {
+          toValue: width,
+          duration: 500,
+          useNativeDriver:true
+    
+        }),
+        Animated.timing(fade, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver:true
+        })
+      ]).start(({finished}) => {
+        if(finished) {setNext(true); fadeIn();}
+      });;   
+    };
+
+    const fadeIn = () => {
+
+      Animated.timing(fadeInValue, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver:true
+      }).start();
+    };
+
+    const fadeOutHow = () => {
+
+      Animated.timing(fadeInValue, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver:true
+      }).start(({finished}) => {
+        if(finished) {setNext(false); animatedValue.setValue(0); fadeInWhere();}
+      });
+    };
+
+    const fadeInWhere = () => {
+
+      Animated.timing(fade, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver:true
+      }).start();
+
+    };
+
+    const handleNext = async () =>{
     
       if(isNext){
 
@@ -163,8 +216,7 @@ export class PlansScreen extends React.Component {
 
         if(checkCity() && isValidCity != null){
           setValidCity('');
-          setNext(true);
-          
+          moveRightX();
         }
         else{setValidCity('Please select a valid city')}
         
@@ -187,16 +239,17 @@ export class PlansScreen extends React.Component {
 
               {isNext && 
                 <View style = {{justifyContent:'flex-start', marginTop:30, paddingLeft:15}}>
-                  <TouchableOpacity onPress={()=> setNext(false)}>
+                  <TouchableOpacity onPress={()=> {fadeOutHow();}}>
                     <Ionicons name="arrow-back-circle-outline" size={50} color="#23C2DF" />
                   </TouchableOpacity>
                 </View>
               }
+
             <View style = {{flex:1, justifyContent:'flex-end'}}>
               <View style = {{alignSelf:'flex-start', justifyContent:'center', width:'80%', paddingLeft:20}}>
                 <Text style = {{fontSize:20, color:'#fff', fontWeight:'200'}}>Welcome to AllWays</Text>
-                {!isNext && <Text style = {{fontSize:42, fontWeight:'600', color:'#fff'}}>Where do you want to go?</Text>}
-                {isNext && <Text style = {{fontSize:42, fontWeight:'600', color:'#fff'}}>How many days of exploration?</Text>}
+                {!isNext && <Animated.Text style = {{fontSize:42, fontWeight:'600', color:'#fff',transform:[{translateX:animatedValue }], opacity: fade }}>Where do you want to go?</Animated.Text>}
+                {isNext && <Animated.Text style = {{fontSize:42, fontWeight:'600', color:'#fff', opacity: fadeInValue}}>How many days of exploration?</Animated.Text>}
               </View>
             
             {isValidCity != null && (
@@ -306,9 +359,11 @@ export class PlansScreen extends React.Component {
            
           }
           {isResponse &&
-            <Text style = {LoadingScreenStyle.subtitleText}> Loading images...</Text>
+            <Text 
+            style = {LoadingScreenStyle.subtitleText}>  
+             Loading images...</Text>
           }
-            
+          
           <Text> {" "}</Text>
 
           {/* Loading indicator */}

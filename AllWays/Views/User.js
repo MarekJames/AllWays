@@ -15,8 +15,8 @@ User.js
 import React, { useState} from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground } from 'react-native';
 
- import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
- import { getAuth } from '../config/firebase-config';
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { getAuth } from '../config/firebase-config';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
@@ -45,16 +45,15 @@ export class LoginUserScreen extends React.Component{
     const [invalidPassword, setInvalidPassword] = useState('');
 
     const signInGoogle = async () => {
-    //   try {
-    //     await GoogleSignin.configure({
-    //       scopes: ['https://www.googleapis.com/auth/userinfo.email'],
-    //     });
-    //     const { idToken } = await GoogleSignin.signIn();
-    //     firebase.auth().signInWithIdToken(idToken);
-    //     setIsLoggedIn(true);
-    //   } catch (error) {
-    //     console.error('Google Sign-in error:', error);
-    //   }
+      /* try {
+        await GoogleSignin.configure({
+          scopes: ['https://www.googleapis.com/auth/userinfo.email'],
+        });
+        const { idToken } = await GoogleSignin.signIn();
+        firebase.auth().signInWithIdToken(idToken);
+      } catch (error) {
+        console.error('Google Sign-in error:', error);
+      } */
     };
     
     const handleSubmit = async () => {
@@ -165,15 +164,15 @@ export class LoginUserScreen extends React.Component{
         <Text style = {LoginUserStyles.continueWith}>Or continue with</Text>
   
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
-          <TouchableOpacity style = {LoginUserStyles.icons} onPress = {signInGoogle}>
-            <Text><Ionicons name={"logo-google"} size={30} color="black" /> </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress = {handleFacebookLogin} style = {LoginUserStyles.icons}>
-            <Text><Ionicons name={"logo-facebook"} size={30} color="black" /></Text>
-          </TouchableOpacity>
-          <TouchableOpacity style = {LoginUserStyles.icons} >
-            <Text><Ionicons name={"logo-instagram"} size={30} color="black" /></Text>
-          </TouchableOpacity>
+            <TouchableOpacity style = {LoginUserStyles.icons} onPress = {signInGoogle}>
+                <Text><Ionicons name="logo-google" size={30} color="black" /></Text>
+            </TouchableOpacity>
+            <TouchableOpacity style = {LoginUserStyles.icons}>
+                <Text><Ionicons name="logo-facebook" size={30} color="black" /></Text>
+            </TouchableOpacity>
+            <TouchableOpacity style = {LoginUserStyles.icons}>
+                <Ionicons name="logo-instagram" size={30} color="black" />
+            </TouchableOpacity>
         </View>
       </ImageBackground>
       </View>

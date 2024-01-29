@@ -1,9 +1,9 @@
 
-import { StyleSheet, Text,  TouchableOpacity, Image, View, ImageBackground} from 'react-native';
+import { StyleSheet, Text,  TouchableOpacity, Image, View, ImageBackground, Animated} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { getAuth } from 'firebase/auth';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 
@@ -166,40 +166,58 @@ class HomeScreen extends React.Component {
   render() { 
 
     // Load screen after the fonts are loaded
+    //const fade = useRef(new Animated.Value(0)).current;
    
-      return (  
-        <View style={stylesHomeScreen.container}>
-        {/* Background Image */}
-        <ImageBackground
-          source={require('./Images/BackgroundHome.jpg')} // Replace with your image path
-          style={stylesHomeScreen.imageBackground}
-          resizeMode="cover" // You can adjust the resizeMode property as needed
-        >
-          {/* Logo */}
-          <View style ={stylesHomeScreen.containerLogo}>
-            
-            <Image
-            source = {require('./Images/Logo.png')}
-            style = {stylesHomeScreen.imageLogo}
-            resizeMode='contain'
-            />
-          </View>
+    // const fadeIn = () => {
+    //   Animated.timing(fade, {
+    //     toValue: 1,
+    //     duration: 500,
+    //     useNativeDriver:true
+    //   }).start();
+    // };
 
-          <View style = {{justifyContent:'flex-end', marginBottom:50}}>
-            {/* Login Button */}
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')} style={stylesHomeScreen.loginButton}>
-                <Text style={stylesHomeScreen.startText}>Login</Text>
-            </TouchableOpacity>
+    // useEffect(() => {
+    //   fadeIn();  
+    // }, []);
 
-            {/* Create Button */}
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')} style={stylesHomeScreen.createButton}>
-                <Text style={stylesHomeScreen.startText}>Create Account</Text>
-            </TouchableOpacity>
-          </View>
-  
-        </ImageBackground>
-      </View>
-      );      
+    return ( 
+      <SafeAreaView
+       style = {{height:'100%', width:'100%'}}
+      statusBarHidden={true}
+      hideNavigationBar={true}> 
+      {/* <View style={stylesHomeScreen.container}> */}
+      {/* Background Image */}
+      <ImageBackground
+        source={require('./Images/BackgroundHome.jpg')} // Replace with your image path
+        style={stylesHomeScreen.imageBackground}
+        resizeMode="cover" // You can adjust the resizeMode property as needed
+      >
+        {/* Logo */}
+        <View style ={stylesHomeScreen.containerLogo}>
+          
+          <Animated.Image
+          source = {require('./Images/Logo.png')}
+          style = {{width:'100%', height:'20%', top:'40%'}}
+          resizeMode='contain'
+          />
+        </View>
+
+        <View style = {{justifyContent:'flex-end', marginBottom:50}}>
+          {/* Login Button */}
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')} style={stylesHomeScreen.loginButton}>
+              <Text style={stylesHomeScreen.startText}>Login</Text>
+          </TouchableOpacity>
+
+          {/* Create Button */}
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('Register')} style={stylesHomeScreen.createButton}>
+              <Text style={stylesHomeScreen.startText}>Create Account</Text>
+          </TouchableOpacity>
+        </View>
+
+      </ImageBackground>
+    {/* </View> */}
+    </SafeAreaView>
+    );      
   }  
 }
 
@@ -221,13 +239,13 @@ export default function App() {
 
 
   return (
-   
-    <NavigationContainer>
+  
+      <NavigationContainer>
 
-          {/* Rest of your app code */}
-          { !loading && (user  ? <BottomTabNavigator /> : <StackNavigator />)}
-          
-    </NavigationContainer>
+            {/* Rest of your app code */}
+            { !loading && (user  ? <BottomTabNavigator /> : <StackNavigator />)}
+            
+      </NavigationContainer>
   
   );   
 }
@@ -247,11 +265,6 @@ const stylesHomeScreen = StyleSheet.create({
     flex:1,
     alignItems:'center',
     resizeMode:'cover'
-  },
-  imageLogo:{
-    width:'100%',
-    height:'20%',
-    top:'40%',
   },
   container: {
     flex: 1,
