@@ -1,5 +1,5 @@
 
-import { StyleSheet, Text,  TouchableOpacity, Image, View, ImageBackground, Animated} from 'react-native';
+import { StyleSheet, BlurView, Text,  TouchableOpacity, Image, View, ImageBackground, Animated} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
@@ -21,20 +21,16 @@ const BottomTabNavigator = () => {
     <Tab.Navigator   
       screenOptions={{
         headerShown: false, // Hide the header for tab navigator
-        tabBarStyle: {
-          borderTopWidth: 0,
-          marginTop:3,
-          backgroundColor: 'transparent',
-          elevation: 0, // this solved the triangle type view problem in android
-          
-        },
         tabBarActiveTintColor:'#23C2DF',
         tabBarLabelStyle: {
           fontSize: 14, // Adjust label font size
           fontWeight: 'bold', // Make label text bold
-          marginBottom: 4,
+          marginBottom:5
         },
-      }}
+        tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:55},
+        tabBarIconStyle: {marginTop:5},
+     
+      }} 
   
     >
       <Tab.Screen 
@@ -181,10 +177,9 @@ class HomeScreen extends React.Component {
     },);
   
     return ( 
-      <SafeAreaView
+      <View
        style = {{height:'100%', width:'100%'}}
-      statusBarHidden={true}
-      hideNavigationBar={true}> 
+       > 
       {/* <View style={stylesHomeScreen.container}> */}
       {/* Background Image */}
       <ImageBackground
@@ -216,7 +211,7 @@ class HomeScreen extends React.Component {
 
       </ImageBackground>
     {/* </View> */}
-    </SafeAreaView>
+    </View>
     );      
   }
 
