@@ -106,6 +106,7 @@ export class PlansScreen extends React.Component {
           fadeWhere.setValue(1);
  
           setLoading(false);
+          this.props.navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:55}});
           navigation.navigate("Days", {
             savedRoutes: false,
             listsPlan : listsPlan2,
@@ -134,7 +135,9 @@ export class PlansScreen extends React.Component {
           useNativeDriver:true
         })
       ]).start(({finished}) => {
-        if(finished) {setNext(true); fadeInHow();}
+        if(finished) {
+          setNext(true); 
+          fadeInHow();}
       });;   
     };
 
@@ -175,10 +178,12 @@ export class PlansScreen extends React.Component {
 
     // Handles the next button on the right of city and number inputs
     const handleNext = async () => {
+      
       if(isNext){
         if( selectedNumber != null && Number.isInteger(parseInt(selectedNumber)) && selectedNumber % 1 == 0 && parseInt(selectedNumber) >= 1 && parseInt(selectedNumber) <= 10 ){
           setValidInput('')
           setLoading(true); 
+          this.props.navigation.getParent().setOptions({tabBarStyle: {display: 'none'}});
           getPlan(this.props.navigation, selectedCity, selectedNumber);
           setNext(false);
           setValidInput(null);
