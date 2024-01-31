@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Switch, View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Switch, View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
-import { resetPassword } from '../config/firebase-config';
+import { resetPassword, deleteUser } from '../config/firebase-config';
 
 export class SettingsScreen extends React.Component{
 
@@ -41,6 +41,21 @@ export class SettingsScreen extends React.Component{
 
                     <TouchableOpacity style={styles.optionItem}>
                         <Text style={styles.optionName}>Privacy</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.optionItem} onPress={() => {
+                        Alert.alert('Delete Account', 'Are you sure?', [
+                            {text: 'Yes', onPress: () => {deleteUser(); alert('Your account has been successfully removed. Sad to see you leave.')}},
+                            {
+                              text: 'No',
+                              onPress: () => console.log('Cancel Pressed'),
+                              style: 'cancel',
+                            },
+                            
+                          ]);
+
+                        }}>
+                        <Text style={styles.optionName}>Delete Account</Text>
                     </TouchableOpacity>
 
                 </View>
