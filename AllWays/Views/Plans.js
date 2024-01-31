@@ -18,6 +18,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import { FlatList, Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, inputRef, TextInput, TouchableOpacity, ScrollView, Linking, ImageBackground} from 'react-native'; 
 import axios from 'axios';
 import {Animated} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import "react-native-url-polyfill/auto"
 import { Ionicons } from '@expo/vector-icons';
@@ -52,19 +53,25 @@ export class PlansScreen extends React.Component {
   // pontosScreen Function that configs what is displayed in this class
   pontosScreen = () => {
     
-    // Contains the value of the chosen country
-    const [selectedCity, setSelectedCity] = useState(null);                                                         // Contains the value of the chosen city                                                                                                                     // Contains all the countries received from the API
-    const [selectedNumber, setSelectedNumber] = useState('');                                                       // Contains the value of the selected days
-    const [loading, setLoading] = useState(false);
-    const [isNext, setNext] = useState(false);
-    const [isValidCity, setValidCity] = useState('');
-    const [isResponse, setReponse] =useState(false);
-    const animatedValue = useRef(new Animated.Value(0)).current;
-    const fade = useRef(new Animated.Value(1)).current;
-    const fadeInValue = useRef(new Animated.Value(0)).current;
+    // Variables for storing purposes
+    const [selectedCity, setSelectedCity] = useState(null);         // Contains the value of the selected city                                                                                                                     // Contains all the countries received from the API
+    const [selectedNumber, setSelectedNumber] = useState('');       // Contains the value of the selected days
+    const [isValidInput, setValidInput] = useState('');               // Contains the error message if a non valid city is selected
+    var listsPlan2;                                                 // Contains the route plan after the AI is called
 
-    var listsPlan2;
+    // Variables for control purposes
+    const [loading, setLoading] = useState(false);                  // Controls if Search/Loading page is shown
+    const [isNext, setNext] = useState(false);                      // Controls if City/Number of days input is shown
+    const [isResponse, setReponse] =useState(false);                // Controls which text appears in the loading page (waiting for Ai or loading images)
+    
+    // Variables for animation purposes
+    const translation = useRef(new Animated.Value(0)).current;
+    const fadeWhere = useRef(new Animated.Value(1)).current;
+    const fadeHow = useRef(new Animated.Value(0)).current;
 
+    //_____ Functions related to the images API ____//
+
+    // Calls the API with a parameter query and updates the listsplan
     const getImageUrl = async (query,index) => {
       // Call the google search engine here
       const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
@@ -82,6 +89,7 @@ export class PlansScreen extends React.Component {
       
     }
 
+    // Loops through the listsplan, calls the getImageUrl and navigates to the days list when finished
     const createImagesUrls = async (navigation, city) => {
       //Loop through the activities and put the url in the listsPlan object
       var counter = 0;
@@ -92,8 +100,12 @@ export class PlansScreen extends React.Component {
         //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
         counter++;
         if(counter == listsPlan2.length){
+          //Reset animations for when the search screen is called again
+          translation.setValue(0);
+          fadeHow.setValue(0);
+          fadeWhere.setValue(1);
+ 
           setLoading(false);
-          console.log(listsPlan2[0])
           navigation.navigate("Days", {
             savedRoutes: false,
             listsPlan : listsPlan2,
@@ -104,6 +116,99 @@ export class PlansScreen extends React.Component {
       });
     }
 
+    //_____ Functions related to the animations ____//
+
+    // Slides the where text to the right and changes opacity
+    const animationWhereText = () => {
+
+      Animated.parallel([
+        Animated.timing(translation, {
+          toValue: width,
+          duration: 500,
+          useNativeDriver:true
+    
+        }),
+        Animated.timing(fadeWhere, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver:true
+        })
+      ]).start(({finished}) => {
+        if(finished) {setNext(true); fadeInHow();}
+      });;   
+    };
+
+    // Fades in the how text
+    const fadeInHow = () => {
+
+      Animated.timing(fadeHow, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver:true
+      }).start();
+    };
+
+    // Fades out the how text
+    const fadeOutHow = () => {
+
+      Animated.timing(fadeHow, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver:true
+      }).start(({finished}) => {
+        if(finished) {setNext(false); translation.setValue(0); fadeInWhere();}
+      });
+    };
+
+    // Fades in the where text
+    const fadeInWhere = () => {
+
+      Animated.timing(fadeWhere, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver:true
+      }).start();
+
+    };
+
+    //_____ Functions related to the button handlers ____//
+
+    // Handles the next button on the right of city and number inputs
+    const handleNext = async () => {
+      if(isNext){
+        if( selectedNumber != null && Number.isInteger(parseInt(selectedNumber)) && selectedNumber % 1 == 0 && parseInt(selectedNumber) >= 1 && parseInt(selectedNumber) <= 10 ){
+          setValidInput('')
+          setLoading(true); 
+          getPlan(this.props.navigation, selectedCity, selectedNumber);
+          setNext(false);
+          setValidInput(null);
+          setSelectedCity(null);
+        }
+        else{
+          setValidInput('Please select a valid number (1 to 10)')
+        }
+      }
+      else{
+        if(selectedCity != null && isValidInput != null){
+          setValidInput('');
+          animationWhereText();
+        }
+        else{
+          setValidInput('Please select a valid city')
+        }
+      }
+    }
+
+    const handleBack = () => {
+      setSelectedCity(null);
+      setSelectedNumber(null);
+      setValidInput(null);
+      fadeOutHow();
+    }
+
+    //_____ Functions related to the AI ____//
+
+    // Calls the AI 
     async function getPlan(navigation, cityName, daysNumber) {
      
       const prompt = generatePrompt(daysNumber, cityName);
@@ -133,130 +238,38 @@ export class PlansScreen extends React.Component {
         alert('There was an error with the AI response. \nPlease try again.')
       } 
     }
-    
-    function checkCity(){
-      if(selectedCity == null){
-        return false;
-      }
-      return true;
-    }
-
-    function checkNumber(){
-     
-      if(selectedNumber == null || !Number.isInteger(parseInt(selectedNumber)) || selectedNumber % 1 != 0 || parseInt(selectedNumber) < 1 || parseInt(selectedNumber) > 10){
-        return false;
-      }
-      return true;
-    }
-
-    const moveRightX = () => {
-
-      Animated.parallel([
-        Animated.timing(animatedValue, {
-          toValue: width,
-          duration: 500,
-          useNativeDriver:true
-    
-        }),
-        Animated.timing(fade, {
-          toValue: 0,
-          duration: 500,
-          useNativeDriver:true
-        })
-      ]).start(({finished}) => {
-        if(finished) {setNext(true); fadeIn();}
-      });;   
-    };
-
-    const fadeIn = () => {
-
-      Animated.timing(fadeInValue, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver:true
-      }).start();
-    };
-
-    const fadeOutHow = () => {
-
-      Animated.timing(fadeInValue, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver:true
-      }).start(({finished}) => {
-        if(finished) {setNext(false); animatedValue.setValue(0); fadeInWhere();}
-      });
-    };
-
-    const fadeInWhere = () => {
-
-      Animated.timing(fade, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver:true
-      }).start();
-
-    };
-
-    const handleNext = async () =>{
-    
-      if(isNext){
-
-        if(checkNumber()){
-          setValidCity('')
-          setLoading(true); 
-          getPlan(this.props.navigation, selectedCity, selectedNumber);
-          setNext(false);
-        
-        }
-        else{setValidCity('Please select a valid number (1 to 10)')}
-      
-      }
-      else{
-
-        if(checkCity() && isValidCity != null){
-          setValidCity('');
-          moveRightX();
-        }
-        else{setValidCity('Please select a valid city')}
-        
-      }
-
-    }
 
     // Defines the screen components
     if(!loading){
-      
       
       return (
         <View style = {PlansScreenStyles.container}>
           <ImageBackground style={{flex:1, width:'100%', height:'100%'}} source = {require('../Images/SearchBackground.png')}>
 
-            
               {/* <View style = {{flex:1, width:'100%', justifyContent:'center', alignItems:'center'}}>
                 <Image  style = {PlansScreenStyles.imageLogo} source = {require('../Images/Logo.png')}/>
               </View> */}
 
               {isNext && 
-                <View style = {{justifyContent:'flex-start', marginTop:30, paddingLeft:15}}>
-                  <TouchableOpacity onPress={()=> {fadeOutHow();}}>
+                <View style = {{flex:1, justifyContent:'flex-start', marginTop:30, paddingLeft:15}}>
+                  <TouchableOpacity onPress={handleBack}>
                     <Ionicons name="arrow-back-circle-outline" size={50} color="#23C2DF" />
                   </TouchableOpacity>
                 </View>
               }
 
-            <View style = {{flex:1, justifyContent:'flex-end'}}>
+            <View style = {{ flex:1, justifyContent:'flex-end'}}>
               <View style = {{alignSelf:'flex-start', justifyContent:'center', width:'80%', paddingLeft:20}}>
                 <Text style = {{fontSize:20, color:'#fff', fontWeight:'200'}}>Welcome to AllWays</Text>
-                {!isNext && <Animated.Text style = {{fontSize:42, fontWeight:'600', color:'#fff',transform:[{translateX:animatedValue }], opacity: fade }}>Where do you want to go?</Animated.Text>}
-                {isNext && <Animated.Text style = {{fontSize:42, fontWeight:'600', color:'#fff', opacity: fadeInValue}}>How many days of exploration?</Animated.Text>}
+                {!isNext && <Animated.Text style = {{fontSize:42, fontWeight:'600', color:'#fff',transform:[{translateX:translation }], opacity: fadeWhere }}>Where do you want to go?</Animated.Text>}
+                {isNext && <Animated.Text style = {{fontSize:42, fontWeight:'600', color:'#fff', opacity: fadeHow}}>How many days of exploration?</Animated.Text>}
               </View>
             
-            {isValidCity != null && (
-              <Text style = {{paddingLeft:30, fontSize:15, color:'red'}}>{isValidCity}</Text>
+            {isValidInput != null && (
+              <Text style = {{paddingLeft:30, fontSize:15, color:'red'}}>{isValidInput}</Text>
             )}
 
-            <View style = {{flex:1, flexDirection:'row', justifyContent:'space-between', margin:20, marginBottom:100}}>
+            <View style = {{ flexDirection:'row', justifyContent:'space-between', margin:20, marginBottom:100}}>
               {/* Country Dropdown */}
               
               {/* <View style = {{width:'80%', height:'100', marginRight:10}}> */}
@@ -313,7 +326,6 @@ export class PlansScreen extends React.Component {
                       onChangeText={setSelectedNumber}
                       value={selectedNumber}
                       placeholder="Number of days"
-                      keyboardType="numeric"
                     />
                 </TouchableOpacity> 
 
@@ -649,7 +661,7 @@ export class DaysScreen extends React.Component {
               )}
 
               {/* HeartIcon component */}
-              {savedRoutes && (<TouchableOpacity
+              {!savedRoutes && (<TouchableOpacity
                 onPress={() => this.props.navigation.navigate('SavedRoutes')}
                 style={{
                   width: 45,
@@ -893,6 +905,7 @@ const PlansScreenStyles = StyleSheet.create({
 
 // Used for the LoadingScreen class
 const LoadingScreenStyle = StyleSheet.create({
+  
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -921,8 +934,6 @@ const ParentStyles = StyleSheet.create({
   container: {
     flex:1,
     backgroundColor: '#FFFFFF',
-    paddingTop: 40,
-    
   },
   imageBackground: {
     width:'100%',

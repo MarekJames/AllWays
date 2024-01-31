@@ -98,7 +98,7 @@ async function deleteRoute(routeId){
 async function updateSavedRoutes() {
   const [data, setData] = useState([]);
 
-    /* useEffect(() => {
+    useEffect(() => {
 
       const q = query(collection(db, "routes"), where("userId", "==", getAuth().currentUser.uid));
 
@@ -120,7 +120,7 @@ async function updateSavedRoutes() {
         unsubscribe();
       };
     }, ['routes', 'userId', getAuth().currentUser.uid]);
- */
+
     return data;
   
 };
