@@ -79,14 +79,12 @@ async function getRoutes(){
   const q = query(collection(db, "routes"), where("userId", "==", getAuth().currentUser.uid));
 
   const querySnapshot = await getDocs(q);
-  const savedRoutes = new Map();
   querySnapshot.forEach((doc) => {
  
-    savedRoutes.set(doc.id, doc.data());
+    deleteRoute(doc.id)
     
   });
 
-  return savedRoutes;
 }
 
 async function deleteRoute(routeId){
@@ -125,4 +123,23 @@ async function updateSavedRoutes() {
   
 };
 
-export { getApp, getAuth, signOut, insertUser, insertRoute, getRoutes, deleteRoute, updateSavedRoutes, resetPassword};
+async function deleteUser(){
+
+  let user = getAuth().currentUser;
+  try{
+
+    //Remove every route related to the user
+    await getRoutes();
+
+    //Remove user
+    user
+      .delete()
+      .then(() => console.log("User deleted"))
+      .catch((error) => console.log(error));
+
+  }catch(e){
+    console.log('Error deleting user: ' + e.getMessage());
+  }
+}
+
+export { getApp, getAuth, signOut, insertUser, insertRoute, getRoutes, deleteRoute, updateSavedRoutes, resetPassword, deleteUser};
