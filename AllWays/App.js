@@ -27,8 +27,9 @@ const BottomTabNavigator = () => {
           fontWeight: 'bold', // Make label text bold
           marginBottom:5
         },
-        tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:55},
-        tabBarIconStyle: {marginTop:5},
+        tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:45},
+        tabBarIconStyle: {},
+        tabBarShowLabel: false,
      
       }} 
   
@@ -38,7 +39,7 @@ const BottomTabNavigator = () => {
         component={StackRoutePlanNavigator}
         options={{
           title: 'Search',
-          tabBarIcon: ({size,focused,color}) => { return ( <Ionicons name={'search-outline'} size={size} color={color} />)},
+          tabBarIcon: ({size,focused,color}) => { return ( <Ionicons name={'search-outline'} size={size + 5} color={color} />)},
         }}
     
       /> 
@@ -47,7 +48,7 @@ const BottomTabNavigator = () => {
         component={StackSavedNavigator}
         options={{
           title: 'Saved',
-          tabBarIcon: ({size,focused,color}) => { return (<Ionicons name={'heart-outline'} size={size} color={color} />)},
+          tabBarIcon: ({size,focused,color}) => { return (<Ionicons name={'heart-outline'} size={size +5} color={color} />)},
         }}
       />
       <Tab.Screen 
@@ -55,7 +56,7 @@ const BottomTabNavigator = () => {
         component={StackProfileNavigator} 
         options= {{
           title: 'Profile',
-          tabBarIcon: ({size,focused,color}) => { return ( <Ionicons name={'person-circle-outline'} size={size} color={color} />)}
+          tabBarIcon: ({size,focused,color}) => { return ( <Ionicons name={'person-circle-outline'} size={size +5} color={color} />)}
         }} 
       />
     </Tab.Navigator>

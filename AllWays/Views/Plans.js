@@ -75,6 +75,25 @@ export class PlansScreen extends React.Component {
     const getImageUrl = async (query,index) => {
       // Call the google search engine here
       const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
+      try{
+        await axios.get(url)
+        .then((response) => {
+          const image = response.data.items[0];
+          return image;
+        })
+        .then((image) => {
+          const imageUrl = image.link;
+          listsPlan2[index].activities[0].imageUrl = imageUrl;
+          listsPlan2[index].imageUrl = imageUrl;
+        }) 
+      }catch(e){
+        console.log(e.response.data)
+      }  
+    }
+
+    const getImageUrlOne = async (query, index) => {
+      // Call the google search engine here
+      const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
 
       await axios.get(url)
       .then((response) => {
@@ -83,10 +102,9 @@ export class PlansScreen extends React.Component {
       })
       .then((image) => {
         const imageUrl = image.link;
-        listsPlan2[index].activities[0].imageUrl = imageUrl;
-        listsPlan2[index].imageUrl = imageUrl;
-      })
+        listsPlan2.imageUrl = imageUrl;
       
+      })   
     }
 
     // Loops through the listsplan, calls the getImageUrl and navigates to the days list when finished
@@ -100,13 +118,17 @@ export class PlansScreen extends React.Component {
         //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
         counter++;
         if(counter == listsPlan2.length){
+
+          // Get an image for the route
+          await getImageUrlOne(city);
+
           //Reset animations for when the search screen is called again
           translation.setValue(0);
           fadeHow.setValue(0);
           fadeWhere.setValue(1);
  
           setLoading(false);
-          this.props.navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:55}});
+          this.props.navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:45}});
           navigation.navigate("Days", {
             savedRoutes: false,
             listsPlan : listsPlan2,
@@ -229,12 +251,13 @@ export class PlansScreen extends React.Component {
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${apiKey}`,
+              Authorization: `Bearer ${apiKey}`
             },
           },
         )
         setReponse(true);
         listsPlan2 = JSON.parse(result.data.choices[0].text);
+        
         createImagesUrls(navigation, cityName);
 
       } catch (error) {
@@ -420,16 +443,20 @@ export class ActivitiesScreen extends React.Component{
       // Call the google search engine here
       const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
 
-      await axios.get(url)
-      .then((response) => {
-        const image = response.data.items[0];
-        return image;
-      })
-      .then((image) => {
-        const imageUrl = image.link;
-        routePlan.activities[index].imageUrl = imageUrl;
-        //console.log(routePlan.activities[index].imageUrl);
-      })
+      try{
+        await axios.get(url)
+        .then((response) => {
+          const image = response.data.items[0];
+          return image;
+        })
+        .then((image) => {
+          const imageUrl = image.link;
+          routePlan.activities[index].imageUrl = imageUrl;
+          //console.log(routePlan.activities[index].imageUrl);
+        })
+      }catch(e){
+        console.log(e.response.data)
+      }
       
     }
 
@@ -491,6 +518,7 @@ export class ActivitiesScreen extends React.Component{
 
         {!imagesLoaded &&  <ActivityIndicator 
           size="small"
+          style = {{justifyContent:'center', alignItems:'center', height:'30%'}}
         />}
 
         {/* Title and description */}
@@ -503,11 +531,10 @@ export class ActivitiesScreen extends React.Component{
         <View style={ActivitiesListStyles.buttonContainer}>
           <TouchableOpacity  style={ActivitiesListStyles.button} onPress = { () => {openGoogleMaps(item.name)}}>
               <Text style={ActivitiesListStyles.buttonText}>Maps</Text>
-          
           </TouchableOpacity>
           <TouchableOpacity style={ActivitiesListStyles.button} onPress = { () => {openGoogle(item.name)}}>
          
-              <Text style={ActivitiesListStyles.buttonText}>+Info</Text>
+              <Text style={ActivitiesListStyles.buttonText}>Info</Text>
          
           </TouchableOpacity>
         </View>
@@ -519,50 +546,48 @@ export class ActivitiesScreen extends React.Component{
   render(){
 
     const { route } = this.props;
-    const { routePlan, city, days } = route.params;
+    const { routePlan, city, listsPlan } = route.params;
     // Define the image variable and the associated function
     
+    var newCity = city.split(',')[0];
     return (
       <View style={ParentStyles.container}>
         
         {/* Logo */}
-        <View style = {{flexDirection: 'row', alignItems: 'center', marginBottom:5}}>
-          {/* Your Logo Component */}
-          <TouchableOpacity
-            onPress={() => this.props.navigation.goBack()}
-            style={{
-              width: 45,
-              height: 45,
-              borderRadius: 30,
-              backgroundColor: 'lightgrey',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginLeft:15
-            }}
-          >
-            <Ionicons name="arrow-back-outline" size={30} color="black" />
-          </TouchableOpacity>
-
+        <View style={ActivitiesListStyles.imageBackground}>
           
-          <View style={{ alignSelf: 'center'}}>
-          <Image
-          source={require('../Images/Logo.png')}
-            style = {LoadingScreenStyle.imageLogo}
-          />
-          </View>
+          <ImageBackground source={{ uri: listsPlan.imageUrl }}style={DaysListStyles.imageBackground} >
 
+           
+              {savedRoutes && (<TouchableOpacity
+                onPress={() => this.props.navigation.goBack()}
+                style={{
+                  width: 45,
+                  height: 45,
+                  borderRadius: 30,
+                  backgroundColor: '#fff',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop:40,
+                  marginLeft:10
+                }}
+              >
+                <Text><Ionicons name="arrow-back-outline" size={30} color="black" /></Text>
+              </TouchableOpacity>
+              )}
+            
+            <Text style ={ParentStyles.title}>{newCity}</Text>
+            <Text style ={ParentStyles.subtitle}>{routePlan.day}</Text>  
+    
+        
+          
+          </ImageBackground>
+        
         </View>
 
         {/* Scroll view of the list of activities for the specified day */}
-        <ScrollView style={{flex:1}}>
+        <ScrollView style={{flex:1, marginBottom:45}}>
 
-          {/* Title and description */}
-          <Text style={ParentStyles.listTitle}> Discover {city} </Text>
-          <Text style={ParentStyles.listSubtitle}> Here is the perfect route for {days} days </Text>
-
-          {/* Specified Day */}
-          <Text style={ParentStyles.dayText}> {routePlan.day} </Text>
-          
           {/* List of activities, description and, maps and info buttons */}
           <View style={{alignItems:'center'}}>
             <this.activities/>
@@ -592,7 +617,7 @@ export class DaysScreen extends React.Component {
     const { savedRoutes, listsPlan, city, days} = route.params;
    
     return listsPlan.map((item, index) => (
-      <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {this.props.navigation.navigate('Activities', {savedRoutes: savedRoutes, routePlan:listsPlan[index], city: city, days:days})}}>
+      <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {this.props.navigation.navigate('Activities', {savedRoutes: savedRoutes, listsPlan:listsPlan, routePlan:listsPlan[index], city: city, days:days})}}>
           {/* Image at the top occupying 50% of the square */}
           <Image
             source={{ uri: item.imageUrl }}
@@ -613,7 +638,7 @@ export class DaysScreen extends React.Component {
   render() {
     const { route } = this.props;
     const { savedRoutes, city, days, listsPlan } = route.params;
-    
+    var newCity = city.split(',')[0];
     // Const that gets the images for the specific activities
     // Also defines what is shown in the specific day route plan screen
    
@@ -646,7 +671,7 @@ export class DaysScreen extends React.Component {
         
         <View style={ParentStyles.imageBackground}>
           
-          <ImageBackground source={{ uri: listsPlan[0].imageUrl }}style={DaysListStyles.imageBackground} >
+          <ImageBackground source={{ uri: listsPlan.imageUrl }}style={DaysListStyles.imageBackground} >
 
             <View style ={{flexDirection:'row', justifyContent:'space-between'}} >
               {savedRoutes && (<TouchableOpacity
@@ -684,7 +709,7 @@ export class DaysScreen extends React.Component {
             </View>
 
             <View style = {{flex:1, justifyContent:'flex-end',marginBottom:30}}>
-              <Text style ={ParentStyles.title}>{city}</Text>
+              <Text style ={ParentStyles.title}>{newCity}</Text>
               <Text style ={ParentStyles.subtitle}>{days} Days</Text>  
             </View>
            
@@ -694,7 +719,7 @@ export class DaysScreen extends React.Component {
 
       
           {/* Scroll view with the list of days */}
-        <ScrollView style={{flex:1}}>
+        <ScrollView style={{flex:1, marginBottom:45}}>
             {/* Title and description */}
           <Text style={ParentStyles.listTitle}> Select a day to discover your journey</Text>
          
@@ -939,6 +964,7 @@ const ParentStyles = StyleSheet.create({
   container: {
     flex:1,
     backgroundColor: '#FFFFFF',
+    
   },
   imageBackground: {
     width:'100%',
@@ -1001,14 +1027,16 @@ const ParentStyles = StyleSheet.create({
   title:{
     marginLeft:10,
     fontWeight:'500',
-    fontSize:40,
-    color:'#fff'
+    fontSize:64,
+    color:'#fff',
+
   },
   subtitle:{
     marginLeft:10,
-    fontWeight:'500',
-    fontSize:20,
-    color:'#fff'
+    fontWeight:'400',
+    fontSize:30,
+    color:'#fff',
+    marginTop:-15
   }
 });
 
@@ -1047,7 +1075,8 @@ const DaysListStyles = StyleSheet.create({
     fontSize: 15,
     color:'#000',
     paddingLeft:20,
-    paddingBottom:10
+    paddingBottom:10,
+    width:'100%'
 
   },
 
@@ -1060,33 +1089,40 @@ const ActivitiesListStyles = StyleSheet.create({
     alignItems: 'center',
   },
   square: {
-    width: width * 0.9, // 90% of the device width
-    height: height * 0.4,
-    backgroundColor: 'lightgrey',
-    borderRadius: 10,
+    width: width * 0.85, // 90% of the device width
+    height: height * 0.35,
+    backgroundColor: '#E8E8E8',
+    borderRadius: 30,
     overflow: 'hidden',
-    elevation: 5, // Adds a shadow (Android)
-    shadowColor: '#000', // Adds a shadow (iOS)
-    shadowOffset: { width: 0, height: 2 }, // Adds a shadow (iOS)
-    shadowOpacity: 0.25, // Adds a shadow (iOS)
-    shadowRadius: 3.84, // Adds a shadow (iOS)
     margin: 10,
+    justifyContent:'space-between',
+  },
+  imageBackground: {
+    width:'100%',
+    height:'25%',
+    marginBottom:10,
+   
   },
   image: {
     width: '100%',
-    height: '50%', // Adjusted to 100% to fill the container
+    height: '35%', // Adjusted to 100% to fill the container
   },
   textContainer: {
-    padding: 10,
-    marginTop: 10, // Adjusted margin top for better spacing
+    justifyContent:'center',
+    alignItems:'center',
+    margin:10
+     // Adjusted margin top for better spacing
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 5,
+    textAlign:'center'
+  
   },
   description: {
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: '400',
+    textAlign:'center'
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -1096,12 +1132,18 @@ const ActivitiesListStyles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+    fontSize:16
   },
-  gradient: {
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal:50,
-  },
+  button: {
+    borderRadius:30,
+    backgroundColor:'#000000',
+    width:'45%',
+    height:35,
+    margin:10,
+    justifyContent:'center',
+    alignItems:'center'
+  }
+
 });
 
 const SavedRoutesStyles = StyleSheet.create({
