@@ -56,7 +56,7 @@ export class PlansScreen extends React.Component {
     // Variables for storing purposes
     const [selectedCity, setSelectedCity] = useState(null);         // Contains the value of the selected city                                                                                                                     // Contains all the countries received from the API
     const [selectedNumber, setSelectedNumber] = useState('');       // Contains the value of the selected days
-    const [isValidInput, setValidInput] = useState('');               // Contains the error message if a non valid city is selected
+    const [isValidInput, setValidInput] = useState('');             // Contains the error message if a non valid city is selected
     var listsPlan2;                                                 // Contains the route plan after the AI is called
 
     // Variables for control purposes
@@ -72,7 +72,7 @@ export class PlansScreen extends React.Component {
     //_____ Functions related to the images API ____//
 
     // Calls the API with a parameter query and updates the listsplan
-    const getImageUrl = async (query,index) => {
+    const getImageUrl = async (query,index, counter) => {
       // Call the google search engine here
       const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
       try{
@@ -85,26 +85,40 @@ export class PlansScreen extends React.Component {
           const imageUrl = image.link;
           listsPlan2[index].activities[0].imageUrl = imageUrl;
           listsPlan2[index].imageUrl = imageUrl;
+          console.log(imageUrl);
         }) 
       }catch(e){
-        console.log(e.response.data)
+        console.log("Error getting image" + e.response.data)
+
+        // Only try three times, to not get an infinite loop
+        if(counter < 3) await getImageUrl(query, index, counter + 1);
       }  
     }
 
-    const getImageUrlOne = async (query, index) => {
+    const getImageUrlOne = async (query, counter) => {
       // Call the google search engine here
       const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
 
-      await axios.get(url)
-      .then((response) => {
-        const image = response.data.items[0];
-        return image;
-      })
-      .then((image) => {
-        const imageUrl = image.link;
-        listsPlan2.imageUrl = imageUrl;
-      
-      })   
+      try{
+        await axios.get(url)
+        .then((response) => {
+          const image = response.data.items[0];
+          return image;
+        })
+        .then((image) => {
+          const imageUrl = image.link;
+          listsPlan2.imageUrl = imageUrl;
+        
+        })
+      }catch(e){
+        console.log("Error getting image");
+
+        //Try to get the image 3 times
+        if(counter < 3){
+          await getImageUrlOne(query, counter + 1)
+        }
+
+      }   
     }
 
     // Loops through the listsplan, calls the getImageUrl and navigates to the days list when finished
@@ -113,20 +127,21 @@ export class PlansScreen extends React.Component {
       var counter = 0;
       //Loop through the activities and put the url in the listsPlan object
       listsPlan2.forEach(async (item, index) => {
-        await getImageUrl(item.activities[0].name + ',' + city,index);
-      
+        await getImageUrl(item.activities[0].name + ',' + city,index,0);
+        
         //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
         counter++;
         if(counter == listsPlan2.length){
 
           // Get an image for the route
-          await getImageUrlOne(city);
+          await getImageUrlOne(city,0);
 
           //Reset animations for when the search screen is called again
           translation.setValue(0);
           fadeHow.setValue(0);
           fadeWhere.setValue(1);
- 
+          
+          console.log(listsPlan2[0]);
           setLoading(false);
           this.props.navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:45}});
           navigation.navigate("Days", {
@@ -262,7 +277,15 @@ export class PlansScreen extends React.Component {
 
       } catch (error) {
         console.error('Error fetching AI response:', error);
+
+        //Reset animations for when the search screen is called again
+        translation.setValue(0);
+        fadeHow.setValue(0);
+        fadeWhere.setValue(1);
+        setSelectedCity('');
+        setSelectedNumber('');
         setLoading(false);
+
         alert('There was an error with the AI response. \nPlease try again.')
       } 
     }
@@ -272,7 +295,7 @@ export class PlansScreen extends React.Component {
       
       return (
         <View style = {PlansScreenStyles.container}>
-          <ImageBackground style={{flex:1, width:'100%', height:'100%'}} source = {require('../Images/SearchBackground.png')}>
+          <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../Images/SearchBackground.jpg')}>
 
               {/* <View style = {{flex:1, width:'100%', justifyContent:'center', alignItems:'center'}}>
                 <Image  style = {PlansScreenStyles.imageLogo} source = {require('../Images/Logo.png')}/>
@@ -297,7 +320,7 @@ export class PlansScreen extends React.Component {
               <Text style = {{paddingLeft:30, fontSize:15, color:'red'}}>{isValidInput}</Text>
             )}
 
-            <View style = {{ flexDirection:'row', justifyContent:'space-between', margin:20, marginBottom:100}}>
+            <View style = {{ flexDirection:'row', justifyContent:'space-between', margin:20, marginBottom:80}}>
               {/* Country Dropdown */}
               
               {/* <View style = {{width:'80%', height:'100', marginRight:10}}> */}
@@ -376,8 +399,8 @@ export class PlansScreen extends React.Component {
     } 
     else{
       return ( 
-        <View style = {LoadingScreenStyle.container}>  
-          
+       
+        <ImageBackground source = {require('../Images/LoadingBackground.png')} style= {{justifyContent:'center', alignItems:'center',  width:'100%', height:'100%', resizeMode:'contain'}}>
           {/* Show Logo */}
           <Image
           source={require('../Images/Logo.png')}
@@ -408,7 +431,8 @@ export class PlansScreen extends React.Component {
 
           {/* Loading indicator */}
           <ActivityIndicator size="large"/>
-        </View>
+        </ImageBackground>
+       
       )
     }
   }
@@ -439,7 +463,7 @@ export class ActivitiesScreen extends React.Component{
   
     const [imagesLoaded, setImagesLoaded] = useState(false);
     
-    const getImageUrl = async (query,index) => {
+    const getImageUrl = async (query,index, counter) => {
       // Call the google search engine here
       const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
 
@@ -452,10 +476,11 @@ export class ActivitiesScreen extends React.Component{
         .then((image) => {
           const imageUrl = image.link;
           routePlan.activities[index].imageUrl = imageUrl;
-          //console.log(routePlan.activities[index].imageUrl);
+          console.log(routePlan.activities[index].imageUrl);
         })
       }catch(e){
         console.log(e.response.data)
+        if( counter < 3 ) await getImageUrl(query,index, counter + 1);
       }
       
     }
@@ -464,8 +489,8 @@ export class ActivitiesScreen extends React.Component{
       var counter = 0;
       //Loop through the activities and put the url in the routePlan object
       await routePlan.activities.forEach(async (item, index) => {
-        
-        if(index != 0) await getImageUrl(item.name + ',' + city,index);
+        console.log(item.name + ', ' + city);
+        if(index != 0) await getImageUrl(item.name + ', ' + city,index,0);
       
         //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
         counter++;
@@ -851,9 +876,8 @@ const PlansScreenStyles = StyleSheet.create({
   },
   imageLogo: {
     resizeMode:'contain',
-    width:'80%',
-    height:250,
-    margin:10
+    top:'10%',
+    width:'80%', height:'30%',
   },
   whereToText: {
     fontSize: 36,
@@ -937,7 +961,6 @@ const PlansScreenStyles = StyleSheet.create({
 const LoadingScreenStyle = StyleSheet.create({
   
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor:'#000'
@@ -1044,7 +1067,7 @@ const DaysListStyles = StyleSheet.create({
   dayContainer: {
       width: width * 0.9, // 90% of the device width
       height: height * 0.12,
-      backgroundColor: 'lightgrey',
+      backgroundColor: '#EEF6FB',
       borderRadius: 25,
       overflow: 'hidden',
       elevation: 5, // Adds a shadow (Android)
@@ -1091,7 +1114,7 @@ const ActivitiesListStyles = StyleSheet.create({
   square: {
     width: width * 0.85, // 90% of the device width
     height: height * 0.35,
-    backgroundColor: '#E8E8E8',
+    backgroundColor: '#EEF6FB',
     borderRadius: 30,
     overflow: 'hidden',
     margin: 10,
@@ -1105,7 +1128,7 @@ const ActivitiesListStyles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: '35%', // Adjusted to 100% to fill the container
+    height: '40%', // Adjusted to 100% to fill the container
   },
   textContainer: {
     justifyContent:'center',
@@ -1136,7 +1159,7 @@ const ActivitiesListStyles = StyleSheet.create({
   },
   button: {
     borderRadius:30,
-    backgroundColor:'#000000',
+    backgroundColor:'#23C2DF',
     width:'45%',
     height:35,
     margin:10,

@@ -27,7 +27,7 @@ export class SettingsScreen extends React.Component{
                 <View style={styles.optionsContainer}>
 
                     <View style={{alignItems:'center', flexDirection:'row',marginTop:20, marginBottom:15}}>
-                        <Ionicons name={"people-sharp"} size={30} color="#309CFF" />
+                        <Ionicons name={"people-sharp"} size={30} color="#23C2DF" />
                         <Text style ={styles.settingsSections}>Account</Text>
                     </View>
 
@@ -37,10 +37,6 @@ export class SettingsScreen extends React.Component{
                 
                     <TouchableOpacity style={styles.optionItem} onPress={resetPassword}>
                         <Text style={styles.optionName}>Change Password</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.optionItem}>
-                        <Text style={styles.optionName}>Privacy</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.optionItem} onPress={() => {
@@ -60,44 +56,11 @@ export class SettingsScreen extends React.Component{
 
                 </View>
 
-                {/*Notification Settings*/}
-                <View style={styles.optionsContainer}>
-                    
-                    <View style={{alignItems:'center', flexDirection:'row', marginTop:20, marginBottom:15}}>
-                        <Ionicons name={"notifications-sharp"} size={30} color="#309CFF" />
-                        <Text style ={styles.settingsSections}>Notifications</Text>
-                    </View>
-
-                    <View style={styles.optionSwitch}>
-                        <Text style={styles.optionName}>Notifications</Text>
-                        <Switch
-                            trackColor={{false: '#F5F5F5', true: '#F5F5F5'}}
-                            thumbColor={isNotification ? '#309FFF' : '#454545'}
-                            ios_backgroundColor="#F5F5F5"
-                            onValueChange={toggleNotification}
-                            value={isNotification}
-                        />
-                    </View>
-
-                    <View style={styles.optionSwitch}>
-                        <Text style={styles.optionName}>Updates</Text>
-                        <Switch
-                            style = {{}}
-                            trackColor={{false: '#F5F5F5', true: '#F5F5F5'}}
-                            thumbColor={isUpdate ? '#309FFF' : '#454545'}
-                            ios_backgroundColor="#F5F5F5"
-                            onValueChange={toggleUpdate}
-                            value={isUpdate}
-                        />
-                    </View>
-
-                </View>
-
                 {/*Other Settings */}
                 <View style={styles.optionsContainer}>
 
                     <View style={{alignItems:'center', flexDirection:'row', marginTop:20, marginBottom:15}}>
-                        <Ionicons name={"cog-sharp"} size={30} color="#309CFF"/>
+                        <Ionicons name={"cog-sharp"} size={30} color="#23C2DF"/>
                         <Text style ={styles.settingsSections}>Other</Text>
                     </View>
 
@@ -108,7 +71,7 @@ export class SettingsScreen extends React.Component{
                         <Switch
                             style = {{marginLeft:10}}
                             trackColor={{false: '#F5F5F5', true: '#F5F5F5'}}
-                            thumbColor={isDark ? '#309FFF' : '#454545'}
+                            thumbColor={isDark ? '#23C2DF' : '#454545'}
                             ios_backgroundColor="#F5F5F5"
                             onValueChange={toggleDark}
                             value={isDark}
@@ -120,9 +83,6 @@ export class SettingsScreen extends React.Component{
                         <Text style={styles.optionName}>Language</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.optionItem}>
-                        <Text style={styles.optionName}>Region</Text>
-                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -150,11 +110,12 @@ const styles = StyleSheet.create({
       width: 50,
       height: 50,
       marginBottom: 20,
+      resizeMode:'contain'
     },
     userName: {
       fontSize: 23,
       fontWeight: '500',
-      color:'#309CFF'
+      color:'#23C2DF'
     },
     optionsContainer: {
       marginTop:20,
@@ -185,7 +146,7 @@ const styles = StyleSheet.create({
       color:'#454545'
     },
     settingsSections:{
-        color:'#309CFF',
+        color:'#23C2DF',
         fontSize:20,
         fontWeight:'500',
         justifyContent:'center',

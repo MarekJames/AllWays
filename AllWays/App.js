@@ -186,7 +186,7 @@ class HomeScreen extends React.Component {
       <ImageBackground
         source={require('./Images/BackgroundHome.jpg')} // Replace with your image path
         style={stylesHomeScreen.imageBackground}
-        resizeMode="cover" // You can adjust the resizeMode property as needed
+        resizeMode='cover' // You can adjust the resizeMode property as needed
       >
         {/* Logo */}
         <View style ={stylesHomeScreen.containerLogo}>
