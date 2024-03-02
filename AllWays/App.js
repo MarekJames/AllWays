@@ -21,7 +21,7 @@ const BottomTabNavigator = () => {
     <Tab.Navigator   
       screenOptions={{
         headerShown: false, // Hide the header for tab navigator
-        tabBarActiveTintColor:'#23C2DF',
+        tabBarActiveTintColor:'#000000',
         tabBarLabelStyle: {
           fontSize: 14, // Adjust label font size
           fontWeight: 'bold', // Make label text bold
@@ -152,7 +152,8 @@ const StackProfileNavigator = () => {
     >
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
-     
+      <Stack.Screen name="TermsConditions" component={TermsConditionsScreen} />
+
     </Stack.Navigator>
   );
 }; 
