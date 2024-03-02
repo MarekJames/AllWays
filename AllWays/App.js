@@ -1,5 +1,5 @@
 
-import { StyleSheet, BlurView, Text,  TouchableOpacity, Image, View, ImageBackground, Animated} from 'react-native';
+import { StyleSheet, Text,  TouchableOpacity, View, ImageBackground, Animated} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
@@ -11,7 +11,7 @@ import {PlansScreen, DaysScreen, ActivitiesScreen, SavedRoutesScreen} from './Vi
 import { LoginUserScreen, RegisterUserScreen } from './Views/User.js';
 import {ProfileScreen} from './Views/Profile.js'
 import {SettingsScreen} from './Views/Settings.js'
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { TermsConditionsScreen } from './Views/Terms&Conditions.js';
 
 
 const Tab = createBottomTabNavigator();
@@ -76,6 +76,7 @@ const StackNavigator = () => {
       <Stack.Screen name="Tabs" component={BottomTabNavigator} />
       <Stack.Screen name="Login" component={LoginUserScreen} />
       <Stack.Screen name="Register" component={RegisterUserScreen} />
+      <Stack.Screen name="TermsConditions" component={TermsConditionsScreen} />
 
     </Stack.Navigator>
   );
@@ -155,8 +156,6 @@ const StackProfileNavigator = () => {
     </Stack.Navigator>
   );
 }; 
-
-
 
 class HomeScreen extends React.Component {
 
