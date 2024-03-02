@@ -721,11 +721,10 @@ export class SavedRoutesScreen extends React.Component{
   savedRoutes =  () => {
    
     // Only call the API if the field imageUrl doesn't exist
-    const userRoutes = updateSavedRoutes();
-    //console.log(userRoutes._j)
-  
-    if(userRoutes.__j!=[]){
-      //console.log(userRoutes);
+    var userRoutes = updateSavedRoutes();
+    
+    if(userRoutes._j.length != 0){
+
       return userRoutes._j.map((item, index) => (   
       
         <TouchableOpacity style={SavedRoutesStyles.square} key={index} onLongPress = {() => {alert('Route Deleted'); deleteRoute(item.id)}} onPress={() =>  {
@@ -749,16 +748,12 @@ export class SavedRoutesScreen extends React.Component{
     }
     else{
       return ( 
-        <View style = {LoadingScreenStyle.container}>  
-
-          {/* Title and subtitle */}
-        
-          <Text style = {LoadingScreenStyle.titleText}> Wait a moment</Text>
-          
-          <Text> {" "}</Text>
-
-          {/* Loading indicator */}
-          <ActivityIndicator size="large"/>
+        <View style = {{alignItems:'center'}}>
+          <Text style = {{marginTop: 70, marginHorizontal:30, marginBottom:10, fontSize:25, textAlign:'center'}}>You haven't saved a route yet!</Text>
+          <Text style = {{fontSize:15}}>Be sure to do so in the Search Tab</Text>
+          <View style = {{width:300, height:300,borderRadius:30, margin:50}}> 
+            <Image source={require('../Images/SavedRoutesEmpty.png')}style={{resizeMode:'contain', width:'100%', height:'100%', borderRadius:100}}/>
+          </View>
         </View>
       )
     }
@@ -769,21 +764,21 @@ export class SavedRoutesScreen extends React.Component{
     return (
       <View style={ParentStyles.container}>
 
-        {/* Your Logo Component */}
-        <View style={{ alignSelf: 'center'}}>
-        
-        <Image
-          source={require('../Images/Logo.png')}
-            style = {ParentStyles.imageLogo}
-          />
+        <View style={SavedRoutesStyles.imageBackground}>
+          
+          <ImageBackground source={require('../Images/BackgroundHome.jpg')}style={DaysListStyles.imageBackground} >
+
+            <View style = {{flex:1, justifyContent:'flex-end', alignItems:'center', marginBottom:30}}>
+              <Text style ={ParentStyles.title}>Saved Routes</Text> 
+            </View>
+           
+          </ImageBackground>
+          
         </View>
       
         {/* Scroll view of the list of activities for the specified day */}
-        <ScrollView style={{flex:1}}>
-
-          {/* Title and description */}
-          <Text style={ParentStyles.listTitle}> Saved Routes </Text>
-    
+        <ScrollView style = {{flex:1}}>
+          
           {/* List of activities, description and, maps and info buttons */}
           <View style={{alignItems:'center'}}>
             <this.savedRoutes/>
@@ -804,11 +799,8 @@ export class SavedRoutesScreen extends React.Component{
 // Used for the PlansScreen class
 const PlansScreenStyles = StyleSheet.create({
   container: {
-  
     alignItems: 'center',
     flex:1
-   
-   
   },
   containerLogo: {
     alignItems: 'center',
@@ -1109,6 +1101,10 @@ const SavedRoutesStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  imageBackground: {
+    width:'100%',
+    height:'20%',
   },
   square: {
     width: width * 0.9, // 90% of the device width
