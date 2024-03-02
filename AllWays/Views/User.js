@@ -14,10 +14,11 @@ User.js
 
 import React, { useState} from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground } from 'react-native';
-
+import { CheckBox } from 'react-native-elements'; // Assuming react-native-elements
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { getAuth } from '../config/firebase-config';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
+import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 /******************* Global Variables ********************/
@@ -204,9 +205,12 @@ export class RegisterUserScreen extends React.Component{
     const [invalidPassword, setInvalidPassword] = useState ('');
     const [invalidName, setInvalidName] = useState ('');
     const [invalidConfirmPassword, setInvalidConfirmPassword] = useState ('');
+    const [checkTerms, setCheckTerms] = useState ('');
+
+    const [isChecked, setIsChecked] = React.useState(false);
 
     const handleSubmit = async () => {
-      if(( name && email && password && confirmPassword) && (password == confirmPassword)){
+      if(( name && email && password && confirmPassword) && (password == confirmPassword) && isChecked){
        
           await createUserWithEmailAndPassword(getAuth(),email,password)
           .then((response) =>{
@@ -230,6 +234,7 @@ export class RegisterUserScreen extends React.Component{
               setInvalidPassword('');
               setInvalidName('');
               setInvalidConfirmPassword('');
+              setCheckTerms('');
             }
 
             else if(error.code == 'auth/weak-password'){
@@ -237,12 +242,14 @@ export class RegisterUserScreen extends React.Component{
               setInvalidEmail('');
               setInvalidName('');
               setInvalidConfirmPassword('');
+              setCheckTerms('');
             }
             else if(error.code == 'auth/email-already-in-use'){
               setInvalidEmail('This email already exists')
               setInvalidConfirmPassword('')
               setInvalidName('');
               setInvalidPassword('');
+              setCheckTerms('');
             }
             else alert(error);
           })
@@ -252,18 +259,21 @@ export class RegisterUserScreen extends React.Component{
         setInvalidConfirmPassword('');
         setInvalidEmail('');
         setInvalidPassword('');
+        setCheckTerms('');
       }
       else if(!email){
         setInvalidEmail('Please input your email')
         setInvalidConfirmPassword('');
         setInvalidName('');
         setInvalidPassword('');
+        setCheckTerms('');
       }
       else if(!password){
         setInvalidPassword('Please input your password')
         setInvalidEmail('')
         setInvalidConfirmPassword('');
         setInvalidName('');
+        setCheckTerms('');
   
       }
       else if(!confirmPassword){
@@ -271,12 +281,21 @@ export class RegisterUserScreen extends React.Component{
         setInvalidEmail('')
         setInvalidName('');
         setInvalidPassword('');
+        setCheckTerms('');
       }
       else if(password!=confirmPassword){
         setInvalidConfirmPassword('Your password and password confirmation are not the same')
         setInvalidEmail('')
         setInvalidName('');
         setInvalidPassword('');
+        setCheckTerms('');
+      }
+      else if(!isChecked){
+        setInvalidConfirmPassword('')
+        setInvalidEmail('')
+        setInvalidName('');
+        setInvalidPassword('');
+        setCheckTerms('Please accept the Terms & Conditions')
       }
     };
 
@@ -336,7 +355,21 @@ export class RegisterUserScreen extends React.Component{
           onChangeText={setConfirmPassword}
           secureTextEntry
         />
-  
+
+        {checkTerms !== null && ( // Checking if the variable is not null
+          <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{checkTerms}</Text>
+        )}
+
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent:'flex-start', marginHorizontal:40}}>
+            <CheckBox
+              checked={isChecked}
+              onPress={() => setIsChecked(!isChecked)}
+            />
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('TermsConditions')}>
+              <Text style={{ color: '#626262', textDecorationLine: 'underline' }}>I agree to the Terms & Conditions</Text>
+            </TouchableOpacity>
+        </View>
+        
         <TouchableOpacity 
           style = {RegisterUserStyles.signUp}
           onPress={handleSubmit}
@@ -361,6 +394,7 @@ export class RegisterUserScreen extends React.Component{
                 <Ionicons name="logo-instagram" size={30} color="black" />
             </TouchableOpacity>
         </View>
+        
         </ImageBackground>
       </View>
     );
