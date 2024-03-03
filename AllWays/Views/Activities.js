@@ -1,0 +1,361 @@
+/*
+
+Activities.js 
+  
+  -> Shows the list of activities for the route generated ( day selected )
+
+*/
+
+
+
+
+/******************** Imports Section ********************/ 
+
+// Imports for the react components add buttons, images, text, etc
+import React, {useState, useEffect} from 'react';  
+import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, Linking} from 'react-native'; 
+import axios from 'axios';
+import "react-native-url-polyfill/auto"
+import { Ionicons } from '@expo/vector-icons';
+import { customSearchKey, searchEngineId} from '../config/keys-config'
+
+
+
+
+/******************* Global Variables ********************/
+
+const width = Dimensions.get('window').width   // Get width of the user screen
+const height = Dimensions.get('window').height // Get height of the user screen
+
+
+
+
+/*********************** Classes *************************/
+
+/*
+
+  ActivitiesScreen class
+  Displayed when the user selects a day from the route plan
+  Shows the detailed route plan for the specific day
+
+*/
+export class ActivitiesScreen extends React.Component{
+
+    activities = () => {
+  
+      const { route } = this.props;
+      const { routePlan, city } = route.params;
+    
+      const [imagesLoaded, setImagesLoaded] = useState(false);
+      
+      const getImageUrl = async (query,index) => {
+        // Call the google search engine here
+        const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
+  
+        await axios.get(url)
+        .then((response) => {
+          const image = response.data.items[0];
+          return image;
+        })
+        .then((image) => {
+          const imageUrl = image.link;
+          routePlan.activities[index].imageUrl = imageUrl;
+          //console.log(routePlan.activities[index].imageUrl);
+        })
+        
+      }
+  
+      const createImagesUrls = async () => {
+        var counter = 0;
+        //Loop through the activities and put the url in the routePlan object
+        await routePlan.activities.forEach(async (item, index) => {
+          
+          if(index != 0) await getImageUrl(item.name + ',' + city,index);
+        
+          //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
+          counter++;
+          if(counter == 5){setImagesLoaded(true);}
+        });
+      }
+  
+      // Called when the screen is loaded
+      useEffect(() => {
+        // Only call the API if the field imageUrl doesn't exist
+        if(!routePlan.activities[1].imageUrl){
+          createImagesUrls();
+        }
+        else{
+          setImagesLoaded(true)
+        }
+        
+      }, []);
+  
+      
+      const openGoogleMaps = (activity) => {
+        const mapUrl = `https://www.google.com/maps/search/?api=1&query=${activity}`;
+    
+        Linking.openURL(mapUrl)
+          .catch(err => console.error('An error occurred', err));
+      };
+  
+      const openGoogle = (activity) => {
+          // Wikipedia URL for a specific page (example: React_Native)
+          const googlePageURL = `https://www.google.com/search?q=${activity}`;
+      
+          Linking.openURL(googlePageURL)
+            .then((supported) => {
+              if (!supported) {
+                console.error("Can't open Wikipedia page.");
+              }
+            })
+            .catch((err) => console.error('An error occurred: ', err));
+      };
+  
+      return routePlan.activities.map((item, index) => (   
+        
+        <View style={ActivitiesListStyles.square} key={index}>
+  
+          {/* Image at the top occupying 50% of the square */}
+          {imagesLoaded && <Image
+            source={{ uri: item.imageUrl }}
+            style={ActivitiesListStyles.image}
+          />}
+  
+          {!imagesLoaded &&  <ActivityIndicator 
+            size="small"
+          />}
+  
+          {/* Title and description */}
+          <View style={ActivitiesListStyles.textContainer}>
+            <Text style={ActivitiesListStyles.title}>{item.name}</Text>
+            <Text style={ActivitiesListStyles.description}>{item.description}</Text>
+          </View>
+  
+          {/* Buttons at the bottom */}
+          <View style={ActivitiesListStyles.buttonContainer}>
+            <TouchableOpacity  style={ActivitiesListStyles.button} onPress = { () => {openGoogleMaps(item.name)}}>
+                <Text style={ActivitiesListStyles.buttonText}>Maps</Text>
+            
+            </TouchableOpacity>
+            <TouchableOpacity style={ActivitiesListStyles.button} onPress = { () => {openGoogle(item.name)}}>
+           
+                <Text style={ActivitiesListStyles.buttonText}>+Info</Text>
+           
+            </TouchableOpacity>
+          </View>
+  
+        </View>
+      )) 
+    } 
+  
+    render(){
+  
+      const { route } = this.props;
+      const { routePlan, city, days } = route.params;
+      // Define the image variable and the associated function
+      
+      return (
+        <View style={ParentStyles.container}>
+          
+          {/* Logo */}
+          <View style = {{flexDirection: 'row', alignItems: 'center', marginBottom:5}}>
+            {/* Your Logo Component */}
+            <TouchableOpacity
+              onPress={() => this.props.navigation.goBack()}
+              style={{
+                width: 45,
+                height: 45,
+                borderRadius: 30,
+                backgroundColor: 'lightgrey',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginLeft:15
+              }}
+            >
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+  
+            
+            <View style={{ alignSelf: 'center'}}>
+            <Image
+            source={require('../Images/Logo.png')}
+              style = {LoadingScreenStyle.imageLogo}
+            />
+            </View>
+  
+          </View>
+  
+          {/* Scroll view of the list of activities for the specified day */}
+          <ScrollView style={{flex:1}}>
+  
+            {/* Title and description */}
+            <Text style={ParentStyles.listTitle}> Discover {city} </Text>
+            <Text style={ParentStyles.listSubtitle}> Here is the perfect route for {days} days </Text>
+  
+            {/* Specified Day */}
+            <Text style={ParentStyles.dayText}> {routePlan.day} </Text>
+            
+            {/* List of activities, description and, maps and info buttons */}
+            <View style={{alignItems:'center'}}>
+              <this.activities/>
+            </View>
+  
+          </ScrollView>
+        
+        </View>
+      );
+    }
+}
+
+
+
+
+/********************* Stylesheets ***********************/
+
+const ParentStyles = StyleSheet.create({
+    container: {
+      flex:1,
+      backgroundColor: '#FFFFFF',
+    },
+    imageBackground: {
+      width:'100%',
+      height:'30%',
+    },
+    header: {
+      borderBottomWidth: 1,
+      borderBottomColor: '#CCCCCC',
+      paddingBottom: 10,
+      marginBottom: 20,
+    },
+    containerLogoHeart: {
+      flexDirection: 'row', // Arrange children horizontally
+      alignItems: 'center', // Align items vertically
+      justifyContent: 'center', // Space evenly between children
+    },
+    containerLogo: {
+      flex:1,
+      marginRight: 10, // Adjust margin as needed
+    },
+    logo: {
+      width: '100%', // Adjust logo width as needed
+      height: '100%', // Adjust logo height as needed
+      resizeMode: 'contain', // Ensure the logo fits its container
+    },
+    iconContainer: {
+      // Style heart icon container if needed
+      paddingRight:10
+    },
+    listTitle: {
+      fontSize: 20,
+      fontWeight:'500',
+      marginTop:10,
+      textAlign: 'center',
+      
+    },
+    listSubtitle: {
+      fontSize: 20,
+      textAlign: 'center',
+      marginTop: 10, // Adjust margin top as needed to bring the list name down
+      marginBottom:20
+    },
+    dayText: {
+      fontSize: 30,
+      textAlign: 'center',
+    },
+    saveRouteButtom:{
+      borderColor:'#000',
+      borderWidth:1,
+      borderRadius: 30,
+      paddingVertical: 20,
+      paddingHorizontal: 60,
+      margin:10,
+      alignSelf:'center',
+    },
+    saveRouteText:{
+      fontSize: 30,
+      color:'#000'
+    },
+    title:{
+      marginLeft:10,
+      fontWeight:'500',
+      fontSize:40,
+      color:'#fff'
+    },
+    subtitle:{
+      marginLeft:10,
+      fontWeight:'500',
+      fontSize:20,
+      color:'#fff'
+    }
+});
+  
+const ActivitiesListStyles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    square: {
+      width: width * 0.9, // 90% of the device width
+      height: height * 0.4,
+      backgroundColor: 'lightgrey',
+      borderRadius: 10,
+      overflow: 'hidden',
+      elevation: 5, // Adds a shadow (Android)
+      shadowColor: '#000', // Adds a shadow (iOS)
+      shadowOffset: { width: 0, height: 2 }, // Adds a shadow (iOS)
+      shadowOpacity: 0.25, // Adds a shadow (iOS)
+      shadowRadius: 3.84, // Adds a shadow (iOS)
+      margin: 10,
+    },
+    image: {
+      width: '100%',
+      height: '50%', // Adjusted to 100% to fill the container
+    },
+    textContainer: {
+      padding: 10,
+      marginTop: 10, // Adjusted margin top for better spacing
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      marginBottom: 5,
+    },
+    description: {
+      fontSize: 14,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      padding: 10,
+    },
+    buttonText: {
+      color: 'white',
+      fontWeight: 'bold',
+    }
+});
+
+const LoadingScreenStyle = StyleSheet.create({
+  
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor:'#000'
+    },
+    imageLogo:{
+      top:'-5%',
+      width:'50%',
+      height:'30%',
+    },
+    titleText:{
+      fontSize: 20,
+      color:'#fff'
+    
+    },
+    subtitleText:{
+      fontSize: 15,
+      color:'#fff'
+    
+    },
+})
