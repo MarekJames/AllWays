@@ -7,7 +7,10 @@ import React, { useEffect, useRef } from 'react';
 import { getAuth } from 'firebase/auth';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 
-import {PlansScreen, DaysScreen, ActivitiesScreen, SavedRoutesScreen} from './Views/Plans.js'
+import {SearchScreen} from './Views/Search.js'
+import { ActivitiesScreen } from './Views/Activities.js';
+import { DaysScreen } from './Views/Days.js';
+import {SavedRoutesScreen} from './Views/SavedRoutes.js'
 import { LoginUserScreen, RegisterUserScreen } from './Views/User.js';
 import {ProfileScreen} from './Views/Profile.js'
 import {SettingsScreen} from './Views/Settings.js'
@@ -93,7 +96,7 @@ const StackRoutePlanNavigator = () => {
        options={{
         gestureEnabled: false,
         }} 
-        name="Plans" component={PlansScreen} />
+        name="Plans" component={SearchScreen} />
 
         <Stack.Screen
         options={{
