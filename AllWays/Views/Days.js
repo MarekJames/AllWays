@@ -280,11 +280,9 @@ const DaysListStyles = StyleSheet.create({
   },  
   daySubtitle: {
     fontSize: 15,
+    fontWeight:'400',
     color:'#000',
     paddingLeft:20,
-    paddingBottom:10,
-    width:'100%'
-
-  },
+  }
 
 });

@@ -141,7 +141,7 @@ export class SearchScreen extends React.Component {
           
           console.log(listsPlan2[0]);
           setLoading(false);
-          this.props.navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:45}});
+          this.props.navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:55}});
           navigation.navigate("Days", {
             savedRoutes: false,
             listsPlan : listsPlan2,

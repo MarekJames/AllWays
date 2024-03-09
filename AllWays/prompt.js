@@ -21,7 +21,7 @@ function generatePrompt (days, city) {
             
             Use the following json format mandatorily:  
 
-                [{  "day": "day1", 
+                [{  "day": "Day 1", 
                     "description: "day 1 description", 
                     "activities" : [
                         { "name": "activity name 1","description": "activity description"},
