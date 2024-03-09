@@ -54,7 +54,7 @@ export class SearchScreen extends React.Component {
     // Variables for storing purposes
     const [selectedCity, setSelectedCity] = useState(null);         // Contains the value of the selected city                                                                                                                     // Contains all the countries received from the API
     const [selectedNumber, setSelectedNumber] = useState('');       // Contains the value of the selected days
-    const [isValidInput, setValidInput] = useState('');               // Contains the error message if a non valid city is selected
+    const [isValidInput, setValidInput] = useState('');             // Contains the error message if a non valid city is selected
     var listsPlan2;                                                 // Contains the route plan after the AI is called
 
     // Variables for control purposes
@@ -70,21 +70,53 @@ export class SearchScreen extends React.Component {
     //_____ Functions related to the images API ____//
 
     // Calls the API with a parameter query and updates the listsplan
-    const getImageUrl = async (query,index) => {
+    const getImageUrl = async (query,index, counter) => {
+      // Call the google search engine here
+      const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
+      try{
+        await axios.get(url)
+        .then((response) => {
+          const image = response.data.items[0];
+          return image;
+        })
+        .then((image) => {
+          const imageUrl = image.link;
+          listsPlan2[index].activities[0].imageUrl = imageUrl;
+          listsPlan2[index].imageUrl = imageUrl;
+          console.log(imageUrl);
+        }) 
+      }catch(e){
+        console.log("Error getting image" + e.response.data)
+
+        // Only try three times, to not get an infinite loop
+        if(counter < 3) await getImageUrl(query, index, counter + 1);
+      }  
+    }
+
+    const getImageUrlOne = async (query, counter) => {
       // Call the google search engine here
       const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
 
-      await axios.get(url)
-      .then((response) => {
-        const image = response.data.items[0];
-        return image;
-      })
-      .then((image) => {
-        const imageUrl = image.link;
-        listsPlan2[index].activities[0].imageUrl = imageUrl;
-        listsPlan2[index].imageUrl = imageUrl;
-      })
-      
+      try{
+        await axios.get(url)
+        .then((response) => {
+          const image = response.data.items[0];
+          return image;
+        })
+        .then((image) => {
+          const imageUrl = image.link;
+          listsPlan2.imageUrl = imageUrl;
+        
+        })
+      }catch(e){
+        console.log("Error getting image");
+
+        //Try to get the image 3 times
+        if(counter < 3){
+          await getImageUrlOne(query, counter + 1)
+        }
+
+      }   
     }
 
     // Loops through the listsplan, calls the getImageUrl and navigates to the days list when finished
@@ -93,18 +125,23 @@ export class SearchScreen extends React.Component {
       var counter = 0;
       //Loop through the activities and put the url in the listsPlan object
       listsPlan2.forEach(async (item, index) => {
-        await getImageUrl(item.activities[0].name + ',' + city,index);
-      
+        await getImageUrl(item.activities[0].name + ',' + city,index,0);
+        
         //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
         counter++;
         if(counter == listsPlan2.length){
+
+          // Get an image for the route
+          await getImageUrlOne(city,0);
+
           //Reset animations for when the search screen is called again
           translation.setValue(0);
           fadeHow.setValue(0);
           fadeWhere.setValue(1);
- 
+          
+          console.log(listsPlan2[0]);
           setLoading(false);
-          this.props.navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:55}});
+          this.props.navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:45}});
           navigation.navigate("Days", {
             savedRoutes: false,
             listsPlan : listsPlan2,
@@ -227,17 +264,26 @@ export class SearchScreen extends React.Component {
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${apiKey}`,
+              Authorization: `Bearer ${apiKey}`
             },
           },
         )
         setReponse(true);
         listsPlan2 = JSON.parse(result.data.choices[0].text);
+        
         createImagesUrls(navigation, cityName);
 
       } catch (error) {
         console.error('Error fetching AI response:', error);
+
+        //Reset animations for when the search screen is called again
+        translation.setValue(0);
+        fadeHow.setValue(0);
+        fadeWhere.setValue(1);
+        setSelectedCity('');
+        setSelectedNumber('');
         setLoading(false);
+
         alert('There was an error with the AI response. \nPlease try again.')
       } 
     }
@@ -247,7 +293,7 @@ export class SearchScreen extends React.Component {
       
       return (
         <View style = {PlansScreenStyles.container}>
-          <ImageBackground style={{flex:1, width:'100%', height:'100%'}} source = {require('../Images/SearchBackground.png')}>
+          <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../Images/SearchBackground.png')}>
 
               {/* <View style = {{flex:1, width:'100%', justifyContent:'center', alignItems:'center'}}>
                 <Image  style = {PlansScreenStyles.imageLogo} source = {require('../Images/Logo.png')}/>
@@ -272,7 +318,7 @@ export class SearchScreen extends React.Component {
               <Text style = {{paddingLeft:30, fontSize:15, color:'red'}}>{isValidInput}</Text>
             )}
 
-            <View style = {{ flexDirection:'row', justifyContent:'space-between', margin:20, marginBottom:100}}>
+            <View style = {{ flexDirection:'row', justifyContent:'space-between', margin:20, marginBottom:80}}>
               {/* Country Dropdown */}
               
               {/* <View style = {{width:'80%', height:'100', marginRight:10}}> */}
@@ -351,8 +397,8 @@ export class SearchScreen extends React.Component {
     } 
     else{
       return ( 
-        <View style = {LoadingScreenStyle.container}>  
-          
+       
+        <ImageBackground source = {require('../Images/BackgroundHome.png')} style= {{justifyContent:'center', alignItems:'center',  width:'100%', height:'100%', resizeMode:'contain'}}>
           {/* Show Logo */}
           <Image
           source={require('../Images/Logo.png')}
@@ -383,7 +429,8 @@ export class SearchScreen extends React.Component {
 
           {/* Loading indicator */}
           <ActivityIndicator size="large"/>
-        </View>
+        </ImageBackground>
+       
       )
     }
   }
