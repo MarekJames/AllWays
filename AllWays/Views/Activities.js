@@ -165,10 +165,7 @@ export class ActivitiesScreen extends React.Component{
         
         {/* Logo */}
         <View style = {{height:'25%', flexDirection: 'row', alignItems: 'center', marginBottom:5}}>
-            
           <ImageBackground source={{ uri: listsPlan.imageUrl }}style={ActivitiesListStyles.imageBackground} >
-
-           
             <TouchableOpacity
               onPress={() => this.props.navigation.goBack()}
               style={{
@@ -184,15 +181,9 @@ export class ActivitiesScreen extends React.Component{
             >
               <Text><Ionicons name="arrow-back-outline" size={30} color="black" /></Text>
             </TouchableOpacity>
-
-          
             <Text style ={ParentStyles.title}>{newCity}</Text>
             <Text style ={ParentStyles.subtitle}>{routePlan.day}</Text>  
-    
-        
-          
           </ImageBackground>
-        
         </View>
 
         {/* Scroll view of the list of activities for the specified day */}
@@ -202,7 +193,7 @@ export class ActivitiesScreen extends React.Component{
           <View style={{alignItems:'center'}}>
             <this.activities/>
           </View>
-
+          
         </ScrollView>
       
       </View>
