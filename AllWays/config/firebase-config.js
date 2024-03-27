@@ -3,7 +3,7 @@
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 import { initializeApp, getApp } from "firebase/app";
-import { initializeAuth, getAuth, getReactNativePersistence, signOut, sendPasswordResetEmail } from 'firebase/auth';
+import { initializeAuth, getAuth, getReactNativePersistence, signOut, sendPasswordResetEmail} from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore, setDoc, doc, addDoc, collection, query, where, getDocs, deleteDoc, onSnapshot } from "firebase/firestore";
 import { useState, useEffect } from "react";
@@ -67,6 +67,19 @@ async function resetPassword(){
     .then(() => {
       // Password reset email sent successfully
       console.log('Password reset email sent successfully');
+    })
+    .catch((error) => {
+      // Handle errors
+      console.error('Error sending password reset email:', error.message);
+    });
+}
+
+async function resetPasswordNotLogged(email){
+ 
+  sendPasswordResetEmail(getAuth(), email)
+    .then(() => {
+      // Password reset email sent successfully
+      console.log('Password reset email sent successfully to ' + email);
     })
     .catch((error) => {
       // Handle errors
@@ -142,4 +155,4 @@ async function deleteUser(){
   }
 }
 
-export { getApp, getAuth, signOut, insertUser, insertRoute, getRoutes, deleteRoute, updateSavedRoutes, resetPassword, deleteUser};
+export { getApp, getAuth, signOut, insertUser, insertRoute, getRoutes, deleteRoute, updateSavedRoutes, resetPassword, resetPasswordNotLogged, deleteUser};
