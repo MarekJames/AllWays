@@ -12,13 +12,12 @@ User.js
 
 /******************** Imports Section ********************/ 
 
-import React, { useState} from 'react';
-import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground, Modal} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground} from 'react-native';
 import { CheckBox } from 'react-native-elements'; // Assuming react-native-elements
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { getAuth, resetPasswordNotLogged } from '../config/firebase-config';
+import { getAuth } from '../config/firebase-config';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
-import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 /******************* Global Variables ********************/
@@ -40,10 +39,7 @@ export class LoginUserScreen extends React.Component{
   LoginScreen = () => {
     
     const [email, setEmail] = useState('');
-    const [emailReset, setEmailReset] = useState('');
     const [password, setPassword] = useState('');
-    const [showCard, setShowCard] = useState(false);
-    
     const [invalidEmail, setInvalidEmail] = useState('');
     const [invalidPassword, setInvalidPassword] = useState('');
 
@@ -97,32 +93,7 @@ export class LoginUserScreen extends React.Component{
       }
     };
 
-    const handleFacebookLogin = async () => {
-     
-      // LoginManager.logInWithPermissions(["public_profile"]).then(
-      //   function(result) {
-      //     if (result.isCancelled) {
-      //       console.log("Login cancelled");
-      //     } else {
-      //       console.log(
-      //         "Login success with permissions: " +
-      //           result.grantedPermissions.toString()
-      //       );
-      //     }
-      //   },
-      //   function(error) {
-      //     console.log("Login fail with error: " + error);
-      //   }
-      // );
-    }
-
-    const handleCard = async () => {
-      setShowCard(!showCard);
-    }
-
     const handleForgotPassword = async () => {
-      setShowCard(!showCard);
-      resetPasswordNotLogged(emailReset);
     }
 
     return (
@@ -161,49 +132,9 @@ export class LoginUserScreen extends React.Component{
           secureTextEntry
         />
 
-        <TouchableOpacity onPress={handleCard}>
+        <TouchableOpacity onPress={ () => {this.props.navigation.navigate('ForgotPassword')}}>
           <Text style={LoginUserStyles.forgotPassword}>Forgot your password?</Text>
         </TouchableOpacity>
-
-        {showCard && (
-          <Modal
-          animationType='fade'
-          transparent={true}
-          visible={showCard}
-          >
-          <View style = {LoginUserStyles.forgotPasswordModal}>
-          <TouchableOpacity
-              onPress={() => {setShowCard(!showCard)}}
-              style={{
-                width: 35,
-                height: 35,
-                borderRadius: 30,
-                backgroundColor: '#fff',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginLeft:10,
-                alignSelf:'flex-start'
-              }}
-            >
-              <Text><Ionicons name="arrow-back-outline" size={20} color="black" /></Text>
-            </TouchableOpacity>
-            <Text style = {{ marginBottom:20, fontSize:22, color:'#626262'}}>Enter your email</Text>
-
-            <TextInput
-              style={LoginUserStyles.input}
-              placeholder="Email"
-              placeholderTextColor={'#626262'}
-              value={emailReset}
-              onChangeText={setEmailReset}
-            />
-            <TouchableOpacity 
-              style = {LoginUserStyles.signIn}
-              onPress={handleForgotPassword}>
-              <Text style={{fontSize:20, fontWeight:'600', color:'#FFFFFF', textAlign:'center'}}>Reset Password</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-        )}
 
         <TouchableOpacity style = {LoginUserStyles.signIn} onPress={handleSubmit}>
           <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Sign In</Text>
