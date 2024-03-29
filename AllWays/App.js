@@ -13,9 +13,10 @@ import { DaysScreen } from './Views/Days.js';
 import {SavedRoutesScreen} from './Views/SavedRoutes.js'
 import { LoginUserScreen, RegisterUserScreen } from './Views/User.js';
 import {ProfileScreen} from './Views/Profile.js'
-import {SettingsScreen} from './Views/Settings.js'
+import {AccountSettingsScreen} from './Views/AccountSettings.js'
 import { TermsConditionsScreen } from './Views/Terms&Conditions.js';
 import { ForgotPasswordScreen } from './Views/ForgotPassword.js';
+import { ChangeNameScreen } from './Views/ChangeName.js';
 
 const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
@@ -81,7 +82,6 @@ const StackNavigator = () => {
       <Stack.Screen name="Register" component={RegisterUserScreen} />
       <Stack.Screen name="TermsConditions" component={TermsConditionsScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-
     </Stack.Navigator>
   );
 }; 
@@ -122,7 +122,6 @@ const StackSavedNavigator = () => {
         headerShown: false,
       }}
     >
-  
       <Stack.Screen 
         options={{
           gestureEnabled: false,
@@ -155,9 +154,9 @@ const StackProfileNavigator = () => {
       }}
     >
       <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen name="AccountSettings" component={AccountSettingsScreen} />
       <Stack.Screen name="TermsConditions" component={TermsConditionsScreen} />
-
+      <Stack.Screen name="ChangeName" component={ChangeNameScreen} />
     </Stack.Navigator>
   );
 }; 

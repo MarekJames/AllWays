@@ -41,8 +41,17 @@ async function insertUser(uid, name){
 
 }
 
-async function insertRoute(route, city, days){
+async function updateUser(name){
+  updateProfile( getAuth().currentUser, {
+    displayName: name
+  }).then(() => {
+    console.log('Profile updated successfully.')
+  }).catch((error) => {
+    console.log('Error updating user name : ' + error);
+  });
+}
 
+async function insertRoute(route, city, days){
 
   // Add a new document with a generated id.
   try {
@@ -144,4 +153,4 @@ async function deleteUser(){
   }
 }
 
-export { getApp, getAuth, signOut, insertUser, insertRoute, getRoutes, deleteRoute, updateSavedRoutes, resetPassword, deleteUser};
+export { getApp, getAuth, signOut, insertUser, updateUser, insertRoute, getRoutes, deleteRoute, updateSavedRoutes, resetPassword, deleteUser};
