@@ -8,7 +8,6 @@ import {getAuth} from '../config/firebase-config';
 // Set of options for settings
 const optionsSettings = [
   { name: 'Account'},
-  { name: 'Notifications'},
 ];
 
 // Set of options for general
@@ -50,8 +49,8 @@ export class ProfileScreen extends React.Component{
                   <View key = {index}>
                     <TouchableOpacity onPress={()=> {
 
-                        if(option.name ==  'Account'){}
-                        if(option.name ==  'Notifications'){}
+                        if(option.name ==  'Account'){this.props.navigation.navigate('AccountSettings')}
+                       
 
                       }} style={styles.optionItem} key={index}>
                       <Text style={styles.optionName}>{option.name}</Text>

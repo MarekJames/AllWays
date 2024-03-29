@@ -36,7 +36,7 @@ export class ChangeNameScreen extends React.Component{
   
     const handleSubmit = async () => {
         
-        if(!email){
+        if(!name){
             setInvalidName('Please input your name');
         }
         else{
@@ -53,23 +53,24 @@ export class ChangeNameScreen extends React.Component{
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >
         
-        <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}
-              style={{
-                width: 45,
-                height: 45,
-                borderRadius: 30,
-                backgroundColor: '#fff',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop:40,
-                marginLeft:10
-              }}
-            >
-              <Text><Ionicons name="arrow-back-outline" size={30} color="black" /></Text>
-        </TouchableOpacity>
+        <View style = {{flexDirection:'row', marginTop:50, marginBottom:10}}>
+          <TouchableOpacity
+                onPress={() => this.props.navigation.goBack()}
+                style={{
+                  width: 45,
+                  height: 45,
+                  borderRadius: 30,
+                  backgroundColor: '#fff',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginLeft:10
+                }}
+              >
+                <Text><Ionicons name="arrow-back-outline" size={30} color="black" /></Text>
+          </TouchableOpacity>
 
-        <Text style={ChangeNameStyles.title}>Change Account Name</Text>
+          <Text style={ChangeNameStyles.title}>Change Name</Text>
+        </View>
 
         <Text style={ChangeNameStyles.subTitle}>Enter your name</Text>
 
@@ -88,14 +89,14 @@ export class ChangeNameScreen extends React.Component{
           <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Update</Text>
         </TouchableOpacity>
   
-      </ImageBackground>
+        </ImageBackground>
       </View>
     );
   };
 
   render() {  
     return (
-      <this.forgotPasswordScreen></this.forgotPasswordScreen>
+      <this.changeNameScreen></this.changeNameScreen>
     )    
   }
 }
@@ -120,10 +121,12 @@ const ChangeNameStyles = StyleSheet.create ({
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 10,
-    marginTop:80,
     color:'#23C2DF',
-    alignSelf:'center'
+    alignSelf:'center',
+    textAlign:'center',
+    flex:1,
+    marginRight:55
+
   },
   subTitle: {
     fontSize: 20,
