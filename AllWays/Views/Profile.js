@@ -70,7 +70,7 @@ export class ProfileScreen extends React.Component{
                   <View key = {index}>
                     <TouchableOpacity onPress={()=> {
 
-                        if(option.name ==  'Help Center'){}
+                        if(option.name ==  'Help Center'){this.props.navigation.navigate('HelpCenter')}
                         if(option.name ==  'Terms & Conditions'){this.props.navigation.navigate('TermsConditions')}
 
                       }} style={styles.optionItem} key={index}>
