@@ -17,6 +17,7 @@ import {AccountSettingsScreen} from './Views/AccountSettings.js'
 import { TermsConditionsScreen } from './Views/Terms&Conditions.js';
 import { ForgotPasswordScreen } from './Views/ForgotPassword.js';
 import { ChangeNameScreen } from './Views/ChangeName.js';
+import { HelpCenterScreen } from './Views/HelpCenter.js';
 
 const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
@@ -157,6 +158,7 @@ const StackProfileNavigator = () => {
       <Stack.Screen name="AccountSettings" component={AccountSettingsScreen} />
       <Stack.Screen name="TermsConditions" component={TermsConditionsScreen} />
       <Stack.Screen name="ChangeName" component={ChangeNameScreen} />
+      <Stack.Screen name="HelpCenter" component={HelpCenterScreen} />
     </Stack.Navigator>
   );
 }; 
