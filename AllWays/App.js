@@ -15,7 +15,7 @@ import { LoginUserScreen, RegisterUserScreen } from './Views/User.js';
 import {ProfileScreen} from './Views/Profile.js'
 import {SettingsScreen} from './Views/Settings.js'
 import { TermsConditionsScreen } from './Views/Terms&Conditions.js';
-
+import { ForgotPasswordScreen } from './Views/ForgotPassword.js';
 
 const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
@@ -80,6 +80,7 @@ const StackNavigator = () => {
       <Stack.Screen name="Login" component={LoginUserScreen} />
       <Stack.Screen name="Register" component={RegisterUserScreen} />
       <Stack.Screen name="TermsConditions" component={TermsConditionsScreen} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
 
     </Stack.Navigator>
   );

@@ -61,25 +61,14 @@ async function insertRoute(route, city, days){
 
 }
 
-async function resetPassword(){
- 
-  sendPasswordResetEmail(getAuth(), getAuth().currentUser.email)
+async function resetPassword(email){
+
+  var sendEmail = email != '' ? email : getAuth().currentUser.email;
+
+  sendPasswordResetEmail(getAuth(), sendEmail)
     .then(() => {
       // Password reset email sent successfully
       console.log('Password reset email sent successfully');
-    })
-    .catch((error) => {
-      // Handle errors
-      console.error('Error sending password reset email:', error.message);
-    });
-}
-
-async function resetPasswordNotLogged(email){
- 
-  sendPasswordResetEmail(getAuth(), email)
-    .then(() => {
-      // Password reset email sent successfully
-      console.log('Password reset email sent successfully to ' + email);
     })
     .catch((error) => {
       // Handle errors
@@ -155,4 +144,4 @@ async function deleteUser(){
   }
 }
 
-export { getApp, getAuth, signOut, insertUser, insertRoute, getRoutes, deleteRoute, updateSavedRoutes, resetPassword, resetPasswordNotLogged, deleteUser};
+export { getApp, getAuth, signOut, insertUser, insertRoute, getRoutes, deleteRoute, updateSavedRoutes, resetPassword, deleteUser};
