@@ -38,7 +38,7 @@ export class AccountSettingsScreen extends React.Component{
                     marginLeft:10
                   }}
                 >
-                  <Text><Ionicons name="arrow-back-outline" size={30} color="black" /></Text>
+                  <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
                 </TouchableOpacity>
                 <Text style={styles.userName}>Account</Text>
               </View>
@@ -55,7 +55,7 @@ export class AccountSettingsScreen extends React.Component{
 
                         if(option.name ==  'Change Account Name'){this.props.navigation.navigate('ChangeName')}
                         if(option.name ==  'Change Email'){}
-                        if(option.name ==  'Change Password'){}
+                        if(option.name ==  'Change Password'){this.props.navigation.navigate('ChangePassword')}
 
                       }} style={styles.optionItem} key={index}>
                       <Text style={styles.optionName}>{option.name}</Text>
