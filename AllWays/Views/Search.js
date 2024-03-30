@@ -302,7 +302,7 @@ export class SearchScreen extends React.Component {
               {isNext && 
                 <View style = {{flex:1, justifyContent:'flex-start', marginTop:30, paddingLeft:15}}>
                   <TouchableOpacity onPress={handleBack}>
-                    <Ionicons name="arrow-back-circle-outline" size={50} color="#23C2DF" />
+                    <Ionicons name="chevron-back-sharp" size={50} color="#23C2DF" />
                   </TouchableOpacity>
                 </View>
               }

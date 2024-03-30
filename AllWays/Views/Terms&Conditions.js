@@ -45,7 +45,7 @@ export class TermsConditionsScreen extends React.Component{
                 marginTop:40
                 }}
             >
-                <Ionicons name="arrow-back-outline" size={30} color="black" />
+                <Ionicons name="chevron-back-sharp" size={30} color="black" />
             </TouchableOpacity>
 
             {/* Scroll View with terms & conditions */}

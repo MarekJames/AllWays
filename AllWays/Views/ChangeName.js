@@ -66,7 +66,7 @@ export class ChangeNameScreen extends React.Component{
                   marginLeft:10
                 }}
               >
-                <Text><Ionicons name="arrow-back-outline" size={30} color="black" /></Text>
+                <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
           </TouchableOpacity>
 
           <Text style={ChangeNameStyles.title}>Change Name</Text>
@@ -121,7 +121,7 @@ const ChangeNameStyles = StyleSheet.create ({
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    color:'#23C2DF',
+    color:'#000000',
     alignSelf:'center',
     textAlign:'center',
     flex:1,

@@ -3,7 +3,7 @@
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 import { initializeApp, getApp } from "firebase/app";
-import { initializeAuth, getAuth, getReactNativePersistence, signOut, sendPasswordResetEmail} from 'firebase/auth';
+import { initializeAuth, getAuth, getReactNativePersistence, signOut, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore, setDoc, doc, addDoc, collection, query, where, getDocs, deleteDoc, onSnapshot } from "firebase/firestore";
 import { useState, useEffect } from "react";
@@ -49,6 +49,17 @@ async function updateUser(name){
   }).catch((error) => {
     console.log('Error updating user name : ' + error);
   });
+}
+
+async function changePassword(oldPassword, password){
+  try {
+    await updatePassword(getAuth().currentUser, password);
+    console.log('Password updated successfully.');
+    return 'success';
+  } catch (error) {
+    console.log('An error has occurred : ' + error.code);
+    return error.code;
+  }
 }
 
 async function insertRoute(route, city, days){
@@ -153,4 +164,18 @@ async function deleteUser(){
   }
 }
 
-export { getApp, getAuth, signOut, insertUser, updateUser, insertRoute, getRoutes, deleteRoute, updateSavedRoutes, resetPassword, deleteUser};
+async function reauthenticateUser(password){
+
+  const credential = EmailAuthProvider.credential(getAuth().currentUser.email, password);
+
+  try{
+    await reauthenticateWithCredential(getAuth().currentUser, credential);
+    console.log('User authenticated successfully.');
+    return 'success';
+  }
+  catch(error){
+    console.log('An error has occurred : ' + error);
+    return error.code;
+  };
+}
+export { getApp, getAuth, signOut, insertUser, updateUser, changePassword, insertRoute, getRoutes, deleteRoute, updateSavedRoutes, resetPassword, deleteUser, reauthenticateUser };

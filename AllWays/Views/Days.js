@@ -117,7 +117,7 @@ export class DaysScreen extends React.Component {
                   margin:20
                 }}
               >
-                <Text><Ionicons name="arrow-back-outline" size={30} color="black" /></Text>
+                <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
               </TouchableOpacity>
               )}
 

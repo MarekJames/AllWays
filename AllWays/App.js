@@ -1,23 +1,25 @@
 
-import { StyleSheet, Text,  TouchableOpacity, View, ImageBackground, Animated} from 'react-native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
-import React, { useEffect, useRef } from 'react';
 import { getAuth } from 'firebase/auth';
+import React, { useEffect, useRef } from 'react';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Animated } from 'react-native';
 
-import {SearchScreen} from './Views/Search.js'
-import { ActivitiesScreen } from './Views/Activities.js';
+// Import Views
 import { DaysScreen } from './Views/Days.js';
-import {SavedRoutesScreen} from './Views/SavedRoutes.js'
-import { LoginUserScreen, RegisterUserScreen } from './Views/User.js';
-import {ProfileScreen} from './Views/Profile.js'
-import {AccountSettingsScreen} from './Views/AccountSettings.js'
-import { TermsConditionsScreen } from './Views/Terms&Conditions.js';
-import { ForgotPasswordScreen } from './Views/ForgotPassword.js';
+import { SearchScreen } from './Views/Search.js';
+import { ProfileScreen } from './Views/Profile.js';
+import { ActivitiesScreen } from './Views/Activities.js';
 import { ChangeNameScreen } from './Views/ChangeName.js';
 import { HelpCenterScreen } from './Views/HelpCenter.js';
+import { SavedRoutesScreen } from './Views/SavedRoutes.js';
+import { ForgotPasswordScreen } from './Views/ForgotPassword.js';
+import { ChangePasswordScreen } from './Views/ChangePassword.js';
+import { AccountSettingsScreen } from './Views/AccountSettings.js';
+import { TermsConditionsScreen } from './Views/Terms&Conditions.js';
+import { LoginUserScreen, RegisterUserScreen } from './Views/User.js';
 
 const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
@@ -34,33 +36,32 @@ const BottomTabNavigator = () => {
         },
         tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:55},
         tabBarIconStyle: {marginTop:5},
-     
       }} 
-  
     >
       <Tab.Screen 
-        name="StackRoutePlanNavigator" 
-        component={StackRoutePlanNavigator}
-        options={{
-          title: 'Search',
-          tabBarIcon: ({size,focused,color}) => { return ( <Ionicons name={'search-outline'} size={size} color={color} />)},
+        name = "StackRoutePlanNavigator" 
+        component = {StackRoutePlanNavigator}
+        options = {{
+          title : 'Search',
+          tabBarIcon : ({size,focused,color}) => {return(<Ionicons name={'search-outline'} size={size} color={color}/>)},
         }}
-    
       /> 
+
       <Tab.Screen 
-        name="StackSavedNavigator" 
-        component={StackSavedNavigator}
-        options={{
-          title: 'Saved',
-          tabBarIcon: ({size,focused,color}) => { return (<Ionicons name={'heart-outline'} size={size} color={color} />)},
+        name = "StackSavedNavigator" 
+        component = {StackSavedNavigator}
+        options = {{
+          title : 'Saved',
+          tabBarIcon : ({size,focused,color}) => {return(<Ionicons name={'heart-outline'} size={size} color={color}/>)},
         }}
       />
+
       <Tab.Screen 
-        name="StackProfileNavigator" 
-        component={StackProfileNavigator} 
-        options= {{
-          title: 'Profile',
-          tabBarIcon: ({size,focused,color}) => { return ( <Ionicons name={'person-circle-outline'} size={size} color={color} />)}
+        name = "StackProfileNavigator" 
+        component = {StackProfileNavigator} 
+        options = {{
+          title : 'Profile',
+          tabBarIcon : ({size,focused,color}) => {return(<Ionicons name={'person-circle-outline'} size={size} color={color}/>)}
         }} 
       />
     </Tab.Navigator>
@@ -70,95 +71,46 @@ const BottomTabNavigator = () => {
 const Stack = createNativeStackNavigator();
 const StackNavigator = () => {
   return (
-    <Stack.Navigator
-      initialRouteName = "Home"
-      screenOptions={{
-        headerShown: false,
-        gestureEnabled: false,
-      }}
-    >
-      <Stack.Screen name="Home" component={HomeScreen}/>
-      <Stack.Screen name="Tabs" component={BottomTabNavigator} />
-      <Stack.Screen name="Login" component={LoginUserScreen} />
-      <Stack.Screen name="Register" component={RegisterUserScreen} />
-      <Stack.Screen name="TermsConditions" component={TermsConditionsScreen} />
-      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+    <Stack.Navigator initialRouteName = "Home" screenOptions = {{ headerShown: false, gestureEnabled: false }}>
+      <Stack.Screen name = "Home" component = {HomeScreen}/>
+      <Stack.Screen name = "Login" component = {LoginUserScreen}/>
+      <Stack.Screen name = "Tabs" component = {BottomTabNavigator}/>
+      <Stack.Screen name = "Register" component = {RegisterUserScreen}/>
+      <Stack.Screen name = "ForgotPassword" component = {ForgotPasswordScreen}/>
+      <Stack.Screen name = "TermsConditions" component = {TermsConditionsScreen}/>
     </Stack.Navigator>
   );
 }; 
 
 const StackRoutePlanNavigator = () => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen 
-       options={{
-        gestureEnabled: false,
-        }} 
-        name="Plans" component={SearchScreen} />
-
-        <Stack.Screen
-        options={{
-          gestureEnabled: false,
-        }} 
-        name="Days" component={DaysScreen} />
-
-      <Stack.Screen 
-        options={{
-          gestureEnabled: true,
-        }}
-        name="Activities" component={ActivitiesScreen} />
-
+    <Stack.Navigator initialRouteName = 'Plans' screenOptions = {{ headerShown: false }}>
+      <Stack.Screen options = {{ gestureEnabled: false }} name = "Days" component = {DaysScreen}/>
+      <Stack.Screen options = {{ gestureEnabled: false }} name = "Plans" component = {SearchScreen}/>
+      <Stack.Screen options = {{ gestureEnabled: true }} name = "Activities" component = {ActivitiesScreen} />
     </Stack.Navigator>
   );
 }; 
 
 const StackSavedNavigator = () => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen 
-        options={{
-          gestureEnabled: false,
-        }}
-        name="SavedRoutes" component={SavedRoutesScreen}/>
-
-      <Stack.Screen
-        options={{
-          gestureEnabled: false,
-        }} 
-        name="Days" component={DaysScreen} />
-
-      <Stack.Screen 
-        options={{
-          gestureEnabled: true,
-        }}
-        name="Activities" component={ActivitiesScreen} />
-
-     
+    <Stack.Navigator initialRouteName = 'SavedRoutes' screenOptions = {{ headerShown: false }}>
+      <Stack.Screen options = {{ gestureEnabled: false }} name = "Days" component = {DaysScreen}/>
+      <Stack.Screen options = {{ gestureEnabled: true }} name = "Activities" component = {ActivitiesScreen}/>
+      <Stack.Screen options = {{ gestureEnabled: false }} name = "SavedRoutes" component = {SavedRoutesScreen}/>
     </Stack.Navigator>
   );
 }; 
 
 const StackProfileNavigator = () => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        gestureEnabled: false,
-      }}
-    >
-      <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="AccountSettings" component={AccountSettingsScreen} />
-      <Stack.Screen name="TermsConditions" component={TermsConditionsScreen} />
-      <Stack.Screen name="ChangeName" component={ChangeNameScreen} />
-      <Stack.Screen name="HelpCenter" component={HelpCenterScreen} />
+    <Stack.Navigator screenOptions={{ headerShown: false, gestureEnabled: false }}>
+      <Stack.Screen name = "Profile" component = {ProfileScreen}/>
+      <Stack.Screen name = "HelpCenter" component = {HelpCenterScreen}/>
+      <Stack.Screen name = "ChangeName" component = {ChangeNameScreen}/>
+      <Stack.Screen name = "ChangePassword" component = {ChangePasswordScreen}/>
+      <Stack.Screen name = "AccountSettings" component = {AccountSettingsScreen}/>
+      <Stack.Screen name = "TermsConditions" component = {TermsConditionsScreen}/>
     </Stack.Navigator>
   );
 }; 
@@ -182,10 +134,8 @@ class HomeScreen extends React.Component {
     },);
   
     return ( 
-      <View
-       style = {{height:'100%', width:'100%'}}
-       > 
-      {/* <View style={stylesHomeScreen.container}> */}
+      <View style = {{height:'100%', width:'100%'}}> 
+      
       {/* Background Image */}
       <ImageBackground
         source={require('./Images/BackgroundHome.jpg')} // Replace with your image path
@@ -215,14 +165,12 @@ class HomeScreen extends React.Component {
         </Animated.View>
 
       </ImageBackground>
-    {/* </View> */}
     </View>
     );      
   }
 
   // Screen components
   render() { 
-
     return (<this.HomeScreen/>)
   }  
 }
