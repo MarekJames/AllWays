@@ -17,7 +17,7 @@ import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableO
 import axios from 'axios';
 import "react-native-url-polyfill/auto"
 import { Ionicons } from '@expo/vector-icons';
-import { customSearchKey, searchEngineId} from '../config/keys-config'
+import { customSearchKey, searchEngineId} from '../../config/keys-config'
 
 
 

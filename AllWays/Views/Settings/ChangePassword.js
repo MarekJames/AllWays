@@ -13,7 +13,7 @@ ChangePassword.js
 
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Alert, Modal } from 'react-native';
-import { changePassword, getAuth, reauthenticateUser } from '../config/firebase-config';
+import { changePassword, getAuth, reauthenticateUser } from '../../config/firebase-config';
 import { Ionicons } from '@expo/vector-icons';
 
 
@@ -104,7 +104,7 @@ export class ChangePasswordScreen extends React.Component{
       <View style={ChangePasswordStyles.container}>
 
         <ImageBackground
-          source={require('../Images/LoginBackground.png')} // Replace with your image path
+          source={require('../../Images/LoginBackground.png')} // Replace with your image path
           style={ChangePasswordStyles.imageBackground}
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >

@@ -54,7 +54,7 @@ export class AccountSettingsScreen extends React.Component{
                     <TouchableOpacity onPress={()=> {
 
                         if(option.name ==  'Change Account Name'){this.props.navigation.navigate('ChangeName')}
-                        if(option.name ==  'Change Email'){}
+                        if(option.name ==  'Change Email'){this.props.navigation.navigate('ChangeEmail')}
                         if(option.name ==  'Change Password'){this.props.navigation.navigate('ChangePassword')}
 
                       }} style={styles.optionItem} key={index}>

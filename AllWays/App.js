@@ -8,18 +8,19 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Animated } from 'react-native';
 
 // Import Views
-import { DaysScreen } from './Views/Days.js';
-import { SearchScreen } from './Views/Search.js';
-import { ProfileScreen } from './Views/Profile.js';
-import { ActivitiesScreen } from './Views/Activities.js';
-import { ChangeNameScreen } from './Views/ChangeName.js';
-import { HelpCenterScreen } from './Views/HelpCenter.js';
-import { SavedRoutesScreen } from './Views/SavedRoutes.js';
-import { ForgotPasswordScreen } from './Views/ForgotPassword.js';
-import { ChangePasswordScreen } from './Views/ChangePassword.js';
-import { AccountSettingsScreen } from './Views/AccountSettings.js';
-import { TermsConditionsScreen } from './Views/Terms&Conditions.js';
-import { LoginUserScreen, RegisterUserScreen } from './Views/User.js';
+import { DaysScreen } from './Views/Search/Days.js';
+import { SearchScreen } from './Views/Search/Search.js';
+import { ProfileScreen } from './Views/Settings/Profile.js';
+import { ActivitiesScreen } from './Views/Search/Activities.js';
+import { ChangeNameScreen } from './Views/Settings/ChangeName.js';
+import { HelpCenterScreen } from './Views/Settings/HelpCenter.js';
+import { SavedRoutesScreen } from './Views/Search/SavedRoutes.js';
+import { ChangeEmailScreen } from './Views/Settings/ChangeEmail.js';
+import { ForgotPasswordScreen } from './Views/Login/ForgotPassword.js';
+import { ChangePasswordScreen } from './Views/Settings/ChangePassword.js';
+import { AccountSettingsScreen } from './Views/Settings/AccountSettings.js';
+import { TermsConditionsScreen } from './Views/Settings/Terms&Conditions.js';
+import { LoginUserScreen, RegisterUserScreen } from './Views/Login/User.js';
 
 const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
@@ -108,6 +109,7 @@ const StackProfileNavigator = () => {
       <Stack.Screen name = "Profile" component = {ProfileScreen}/>
       <Stack.Screen name = "HelpCenter" component = {HelpCenterScreen}/>
       <Stack.Screen name = "ChangeName" component = {ChangeNameScreen}/>
+      <Stack.Screen name = "ChangeEmail" component = {ChangeEmailScreen}/>
       <Stack.Screen name = "ChangePassword" component = {ChangePasswordScreen}/>
       <Stack.Screen name = "AccountSettings" component = {AccountSettingsScreen}/>
       <Stack.Screen name = "TermsConditions" component = {TermsConditionsScreen}/>

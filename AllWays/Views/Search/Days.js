@@ -16,7 +16,7 @@ import React, {useState} from 'react';
 import {Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView, ImageBackground} from 'react-native'; 
 import "react-native-url-polyfill/auto"
 import { Ionicons } from '@expo/vector-icons';
-import {insertRoute, deleteRoute} from '../config/firebase-config'
+import {insertRoute, deleteRoute} from '../../config/firebase-config'
 
 
 

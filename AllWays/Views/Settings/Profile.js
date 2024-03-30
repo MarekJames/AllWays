@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 import UserAvatar from 'react-native-user-avatar';
 
-import {getAuth} from '../config/firebase-config';
+import {getAuth} from '../../config/firebase-config';
 
 // Set of options for settings
 const optionsSettings = [
@@ -21,22 +21,27 @@ export class ProfileScreen extends React.Component{
 
     Profile = () => {
 
-        const userFullName = getAuth().currentUser.displayName;
+        const [userFullName, setUserFullName] = useState(getAuth().currentUser.displayName);
+        const nameParts = userFullName.split(" ");
+        const firstName = nameParts[0];
+        const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
         const userEmail = getAuth().currentUser.email;
 
         const handleLogout =  () => {
             getAuth().signOut();
         }
 
+        useEffect( () =>{setUserFullName(getAuth().currentUser.displayName)}, [getAuth().currentUser.displayName]);
+
         return (
           
-          <ImageBackground source = {require('../Images/BackgroundHome.png')} style = {{ backgroundColor:'#fff',flex:1, width:'100%',height:'13%'}}>
+          <ImageBackground source = {require('../../Images/BackgroundHome.png')} style = {{ backgroundColor:'#fff',flex:1, width:'100%',height:'13%'}}>
 
               {/* Avatar Name and Email */}
               <View style={styles.profileContainer}>
 
                 <UserAvatar borderRadius={100} size={100} name={userFullName} bgColors={['#A0A0A0']}/>  
-                <Text style={styles.userName}>{userFullName}</Text>
+                <Text style={styles.userName}>{firstName} {lastName}</Text>
                 <Text style={styles.email}>{userEmail}</Text>
   
               </View>

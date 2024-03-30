@@ -22,9 +22,9 @@ import {Animated} from 'react-native';
 import "react-native-url-polyfill/auto"
 import { Ionicons } from '@expo/vector-icons';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { apiKey, googleKey, customSearchKey, searchEngineId} from '../config/keys-config'
-import { listsPlan, savedRoutes, routeNewYork, routeParis } from '../testVariables';
-import { generatePrompt } from '../prompt';
+import { apiKey, googleKey, customSearchKey, searchEngineId} from '../../config/keys-config'
+import { listsPlan, savedRoutes, routeNewYork, routeParis } from '../../testVariables';
+import { generatePrompt } from '../../prompt';
 
 
 
@@ -293,7 +293,7 @@ export class SearchScreen extends React.Component {
       
       return (
         <View style = {PlansScreenStyles.container}>
-          <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../Images/SearchBackground.png')}>
+          <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../../Images/SearchBackground.png')}>
 
               {/* <View style = {{flex:1, width:'100%', justifyContent:'center', alignItems:'center'}}>
                 <Image  style = {PlansScreenStyles.imageLogo} source = {require('../Images/Logo.png')}/>
@@ -398,10 +398,10 @@ export class SearchScreen extends React.Component {
     else{
       return ( 
        
-        <ImageBackground source = {require('../Images/BackgroundHome.png')} style= {{justifyContent:'center', alignItems:'center',  width:'100%', height:'100%', resizeMode:'contain'}}>
+        <ImageBackground source = {require('../../Images/BackgroundHome.png')} style= {{justifyContent:'center', alignItems:'center',  width:'100%', height:'100%', resizeMode:'contain'}}>
           {/* Show Logo */}
           <Image
-          source={require('../Images/Logo.png')}
+          source={require('../../Images/Logo.png')}
           style = {LoadingScreenStyle.imageLogo}
           resizeMode='contain'
           />

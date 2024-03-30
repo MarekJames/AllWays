@@ -13,7 +13,7 @@ ForgotPassword.js
 
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground } from 'react-native';
-import { resetPassword } from '../config/firebase-config';
+import { resetPassword } from '../../config/firebase-config';
 
 
 
@@ -48,7 +48,7 @@ export class ForgotPasswordScreen extends React.Component{
       <View style={ForgotPasswordStyles.container}>
 
         <ImageBackground
-          source={require('../Images/LoginBackground.png')} // Replace with your image path
+          source={require('../../Images/LoginBackground.png')} // Replace with your image path
           style={ForgotPasswordStyles.imageBackground}
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >

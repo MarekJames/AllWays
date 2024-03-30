@@ -13,7 +13,7 @@ ChangeName.js
 
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
-import { updateUser } from '../config/firebase-config';
+import { updateUser } from '../../config/firebase-config';
 import { Ionicons } from '@expo/vector-icons';
 
 
@@ -39,8 +39,11 @@ export class ChangeNameScreen extends React.Component{
         if(!name){
             setInvalidName('Please input your name');
         }
-        else{
-            updateUser(name);
+        if(name && invalidName){
+          setInvalidName('');
+        }
+        if(name){
+          await updateUser(name);
         }
     }
 
@@ -48,7 +51,7 @@ export class ChangeNameScreen extends React.Component{
       <View style={ChangeNameStyles.container}>
 
         <ImageBackground
-          source={require('../Images/LoginBackground.png')} // Replace with your image path
+          source={require('../../Images/LoginBackground.png')} // Replace with your image path
           style={ChangeNameStyles.imageBackground}
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >
