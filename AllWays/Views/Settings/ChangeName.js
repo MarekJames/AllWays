@@ -15,7 +15,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
 import { updateUser } from '../../config/firebase-config';
 import { Ionicons } from '@expo/vector-icons';
-
+import { getAuth } from '../../config/firebase-config';
 
 
 /*********************** Classes *************************/
@@ -34,7 +34,7 @@ export class ChangeNameScreen extends React.Component{
     const [name, setName] = useState('');
     const [invalidName, setInvalidName] = useState('');
   
-    const handleSubmit = async () => {
+    const handleSubmit = async (navigator) => {
         
         if(!name){
             setInvalidName('Please input your name');
@@ -44,6 +44,7 @@ export class ChangeNameScreen extends React.Component{
         }
         if(name){
           await updateUser(name);
+          navigator.replace('Profile', {userName : name});
         }
     }
 
@@ -88,7 +89,7 @@ export class ChangeNameScreen extends React.Component{
           onChangeText={setName}
         />
 
-        <TouchableOpacity style = {ChangeNameStyles.recover} onPress={handleSubmit}>
+        <TouchableOpacity style = {ChangeNameStyles.recover} onPress={() => {handleSubmit(this.props.navigation)}}>
           <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Update</Text>
         </TouchableOpacity>
   

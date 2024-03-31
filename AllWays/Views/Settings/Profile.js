@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 import UserAvatar from 'react-native-user-avatar';
+import { getAuth, onIdTokenChanged } from 'firebase/auth';
+import { Firestore } from 'firebase/firestore';
 
-import {getAuth} from '../../config/firebase-config';
 
 // Set of options for settings
 const optionsSettings = [
@@ -21,17 +22,33 @@ export class ProfileScreen extends React.Component{
 
     Profile = () => {
 
-        const [userFullName, setUserFullName] = useState(getAuth().currentUser.displayName);
-        const nameParts = userFullName.split(" ");
-        const firstName = nameParts[0];
-        const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
+      const { route } = this.props;
+      const [userFullName, setUserFullName] = useState('');
+      var nameParts;
+      var firstName;
+      var lastName; 
+      const [fullName, setFullName] = useState('');
+
         const userEmail = getAuth().currentUser.email;
 
         const handleLogout =  () => {
             getAuth().signOut();
         }
 
-        useEffect( () =>{setUserFullName(getAuth().currentUser.displayName)}, [getAuth().currentUser.displayName]);
+        useEffect(() => {
+          var name = getAuth().currentUser.displayName;
+          if(route.params != undefined) { 
+            const { userName } = route.params; 
+            setUserFullName(userName);
+          }
+          else { 
+            setUserFullName(name);
+          }
+          nameParts = userFullName.split(" ");
+          firstName = nameParts[0];
+          lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
+          setFullName(firstName + " " + lastName);
+        }, []);
 
         return (
           
@@ -40,8 +57,8 @@ export class ProfileScreen extends React.Component{
               {/* Avatar Name and Email */}
               <View style={styles.profileContainer}>
 
-                <UserAvatar borderRadius={100} size={100} name={userFullName} bgColors={['#A0A0A0']}/>  
-                <Text style={styles.userName}>{firstName} {lastName}</Text>
+                <UserAvatar borderRadius={100} size={100} name={fullName} bgColors={['#A0A0A0']}/>  
+                <Text style={styles.userName}>{fullName}</Text>
                 <Text style={styles.email}>{userEmail}</Text>
   
               </View>
