@@ -13,7 +13,7 @@ ChangeEmail.js
 
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
-import { updateEmail } from '../../config/firebase-config';
+import { updateUserEmail } from '../../config/firebase-config';
 import { Ionicons } from '@expo/vector-icons';
 
 
@@ -36,7 +36,7 @@ export class ChangeEmailScreen extends React.Component{
     const [confirmEmail, setConfirmEmail] = useState('');
     const [invalidConfirmEmail, setInvalidConfirmEmail] = useState('');
   
-    const handleSubmit = async () => {
+    const handleSubmit = async (navigator) => {
         
         if(!email){
             setInvalidEmail('Please input your email');
@@ -54,7 +54,11 @@ export class ChangeEmailScreen extends React.Component{
             setInvalidConfirmEmail('');
         }
         if(email && confirmEmail && email == confirmEmail){
-            updateEmail(email);
+          console.log(email);
+            const result = await updateUserEmail(email);
+            if(result == 'success'){
+              navigator.replace('Profile', {email : email});
+            }
         }
     }
 
@@ -110,7 +114,7 @@ export class ChangeEmailScreen extends React.Component{
           onChangeText={setConfirmEmail}
         />
 
-        <TouchableOpacity style = {ChangeEmailStyles.recover} onPress={handleSubmit}>
+        <TouchableOpacity style = {ChangeEmailStyles.recover} onPress={() => {handleSubmit(this.props.navigation)}}>
           <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Update</Text>
         </TouchableOpacity>
   

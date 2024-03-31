@@ -43,8 +43,10 @@ export class ChangeNameScreen extends React.Component{
           setInvalidName('');
         }
         if(name){
-          await updateUser(name);
-          navigator.replace('Profile', {userName : name});
+          const result = await updateUser(name);
+          if(result == 'success') {
+            navigator.replace('Profile', {userName : name});
+          }
         }
     }
 
