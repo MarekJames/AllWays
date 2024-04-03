@@ -85,11 +85,22 @@ export class DaysScreen extends React.Component {
       };
     
       return (
-        <TouchableOpacity onPress={toggleSave}>
+        <TouchableOpacity  
+          onPress = {toggleSave}
+          style={{
+          width: 45,
+          height: 45,
+          borderRadius: 30,
+          backgroundColor: '#fff',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop:40,
+          marginLeft:20
+          }}
+        >
           <View>
             {!isSaved && <Ionicons name="heart-outline" size={30} color="black" /> }
             {isSaved && <Ionicons name="heart" size={30} color="black" /> }
-            
           </View>
         </TouchableOpacity>
       );
@@ -104,41 +115,24 @@ export class DaysScreen extends React.Component {
           
           <ImageBackground source={{ uri: imageRoute }}style={DaysListStyles.imageBackground} >
 
-            <View style ={{flexDirection:'row', justifyContent:'space-between'}} >
+            <View>
+            <View style ={{justifyContent:'flex-start'}} >
               {savedRoutes && (<TouchableOpacity
                 onPress={() => this.props.navigation.navigate('SavedRoutes')}
-                style={{
-                  width: 45,
-                  height: 45,
-                  borderRadius: 30,
-                  backgroundColor: '#fff',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  margin:20
-                }}
+               
               >
-                <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
-              </TouchableOpacity>
-              )}
-
-              {/* HeartIcon component */}
-              {!savedRoutes && (<TouchableOpacity
-                onPress={() => this.props.navigation.navigate('SavedRoutes')}
-                style={{
-                  width: 45,
-                  height: 45,
-                  borderRadius: 30,
-                  backgroundColor: '#fff',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  margin:20
-                }}
-              >
-                <HeartIcon/>
+                <Ionicons name="chevron-back-sharp" size={30} color="black" />
               </TouchableOpacity>
               )}
             </View>
-
+            <View style ={{justifyContent:'flex-end'}} >
+          
+              {/* HeartIcon component */}
+              {!savedRoutes && (
+                <HeartIcon/>
+              )}
+            </View>
+            </View>
             <View style = {{flex:1, justifyContent:'flex-end',marginBottom:30}}>
               <Text style ={ParentStyles.title}>{newCity}</Text>
               <Text style ={ParentStyles.subtitle}>{days} Days</Text>  
@@ -247,7 +241,7 @@ const ParentStyles = StyleSheet.create({
 const DaysListStyles = StyleSheet.create({
   dayContainer: {
       width: width * 0.9, // 90% of the device width
-      height: height * 0.12,
+      height: height * 0.15,
       backgroundColor: '#EEF6FB',
       borderRadius: 25,
       overflow: 'hidden',
