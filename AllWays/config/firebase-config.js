@@ -3,7 +3,7 @@
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 import { initializeApp, getApp } from "firebase/app";
-import { initializeAuth, getAuth, getReactNativePersistence, signOut, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
+import { initializeAuth, getAuth, getReactNativePersistence, signOut, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore, setDoc, doc, addDoc, collection, query, where, getDocs, deleteDoc, onSnapshot } from "firebase/firestore";
 import { useState, useEffect } from "react";
@@ -42,16 +42,27 @@ async function insertUser(uid, name){
 }
 
 async function updateUser(name){
-  updateProfile( getAuth().currentUser, {
-    displayName: name
-  }).then(() => {
-    console.log('Profile updated successfully.')
-  }).catch((error) => {
+  try{
+    await updateProfile( getAuth().currentUser, {displayName: name});
+    console.log('Profile updated successfully.');
+    return 'success';
+  }
+  catch(error){
     console.log('Error updating user name : ' + error);
-  });
+    return error.code;
+  };
 }
 
-async function changePassword(oldPassword, password){
+async function updateUserEmail(userEmail){
+  try{
+    await updateEmail(getAuth().currentUser, userEmail);
+    console.log('Profile updated successfully.');
+  }catch(error){
+    console.log('Error updating user email : ' + error);
+  };
+}
+
+async function changePassword(password){
   try {
     await updatePassword(getAuth().currentUser, password);
     console.log('Password updated successfully.');
@@ -62,7 +73,7 @@ async function changePassword(oldPassword, password){
   }
 }
 
-async function insertRoute(route, city, days){
+async function insertRoute(route, imageRoute, city, days){
 
   // Add a new document with a generated id.
   try {
@@ -70,6 +81,7 @@ async function insertRoute(route, city, days){
       city: city,
       days: days,
       route: route,
+      imageUrl: imageRoute,
       userId: getAuth().currentUser.uid
     });
 
@@ -178,4 +190,20 @@ async function reauthenticateUser(password){
     return error.code;
   };
 }
-export { getApp, getAuth, signOut, insertUser, updateUser, changePassword, insertRoute, getRoutes, deleteRoute, updateSavedRoutes, resetPassword, deleteUser, reauthenticateUser };
+
+export {  
+          getApp, 
+          getAuth, 
+          signOut, 
+          getRoutes, 
+          insertUser, 
+          deleteUser, 
+          updateUser, 
+          updateUserEmail, 
+          insertRoute, 
+          deleteRoute, 
+          resetPassword, 
+          changePassword, 
+          updateSavedRoutes, 
+          reauthenticateUser 
+        };

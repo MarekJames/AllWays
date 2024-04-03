@@ -16,7 +16,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground} from 'react-native';
 import { CheckBox } from 'react-native-elements'; // Assuming react-native-elements
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { getAuth } from '../config/firebase-config';
+import { getAuth } from '../../config/firebase-config';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
@@ -100,7 +100,7 @@ export class LoginUserScreen extends React.Component{
       <View style={LoginUserStyles.container}>
 
         <ImageBackground
-          source={require('../Images/LoginBackground.png')} // Replace with your image path
+          source={require('../../Images/LoginBackground.png')} // Replace with your image path
           style={RegisterUserStyles.imageBackground}
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >
@@ -284,7 +284,7 @@ export class RegisterUserScreen extends React.Component{
     return (
       <View style={RegisterUserStyles.container}>
        <ImageBackground
-          source={require('../Images/LoginBackground.png')} // Replace with your image path
+          source={require('../../Images/LoginBackground.png')} // Replace with your image path
           style={RegisterUserStyles.imageBackground}
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >

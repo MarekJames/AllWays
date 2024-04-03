@@ -22,9 +22,9 @@ import {Animated} from 'react-native';
 import "react-native-url-polyfill/auto"
 import { Ionicons } from '@expo/vector-icons';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { apiKey, googleKey, customSearchKey, searchEngineId} from '../config/keys-config'
-import { listsPlan, savedRoutes, routeNewYork, routeParis } from '../testVariables';
-import { generatePrompt } from '../prompt';
+import { apiKey, googleKey, customSearchKey, searchEngineId} from '../../config/keys-config'
+import { listsPlan, savedRoutes, routeNewYork, routeParis } from '../../testVariables';
+import { generatePrompt } from '../../prompt';
 
 
 
@@ -55,7 +55,7 @@ export class SearchScreen extends React.Component {
     const [selectedCity, setSelectedCity] = useState(null);         // Contains the value of the selected city                                                                                                                     // Contains all the countries received from the API
     const [selectedNumber, setSelectedNumber] = useState('');       // Contains the value of the selected days
     const [isValidInput, setValidInput] = useState('');             // Contains the error message if a non valid city is selected
-    var listsPlan2;                                                 // Contains the route plan after the AI is called
+    var listsPlan2 = [];                                            // Contains the route plan after the AI is called
 
     // Variables for control purposes
     const [loading, setLoading] = useState(false);                  // Controls if Search/Loading page is shown
@@ -83,7 +83,6 @@ export class SearchScreen extends React.Component {
           const imageUrl = image.link;
           listsPlan2[index].activities[0].imageUrl = imageUrl;
           listsPlan2[index].imageUrl = imageUrl;
-          console.log(imageUrl);
         }) 
       }catch(e){
         console.log("Error getting image" + e.response.data)
@@ -106,7 +105,6 @@ export class SearchScreen extends React.Component {
         .then((image) => {
           const imageUrl = image.link;
           listsPlan2.imageUrl = imageUrl;
-        
         })
       }catch(e){
         console.log("Error getting image");
@@ -139,14 +137,15 @@ export class SearchScreen extends React.Component {
           fadeHow.setValue(0);
           fadeWhere.setValue(1);
           
-          console.log(listsPlan2[0]);
+          //console.log(listsPlan2);
           setLoading(false);
           this.props.navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:55}});
           navigation.navigate("Days", {
             savedRoutes: false,
             listsPlan : listsPlan2,
             city: selectedCity,
-            days: selectedNumber
+            days: selectedNumber,
+            imageRoute: listsPlan2.imageUrl
           }) 
         }
       });
@@ -270,7 +269,8 @@ export class SearchScreen extends React.Component {
         )
         setReponse(true);
         listsPlan2 = JSON.parse(result.data.choices[0].text);
-        
+        //console.log(listsPlan2);
+
         createImagesUrls(navigation, cityName);
 
       } catch (error) {
@@ -293,7 +293,7 @@ export class SearchScreen extends React.Component {
       
       return (
         <View style = {PlansScreenStyles.container}>
-          <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../Images/SearchBackground.png')}>
+          <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../../Images/SearchBackground.png')}>
 
               {/* <View style = {{flex:1, width:'100%', justifyContent:'center', alignItems:'center'}}>
                 <Image  style = {PlansScreenStyles.imageLogo} source = {require('../Images/Logo.png')}/>
@@ -301,9 +301,20 @@ export class SearchScreen extends React.Component {
 
               {isNext && 
                 <View style = {{flex:1, justifyContent:'flex-start', marginTop:30, paddingLeft:15}}>
-                  <TouchableOpacity onPress={handleBack}>
-                    <Ionicons name="chevron-back-sharp" size={50} color="#23C2DF" />
-                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {handleBack()}}
+                    style={{
+                    width: 45,
+                    height: 45,
+                    borderRadius: 30,
+                    backgroundColor: '#FFFFFF',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginLeft:15,
+                    }}
+                >
+                    <Ionicons name="chevron-back-sharp" size={30} color="black" />
+                </TouchableOpacity>
                 </View>
               }
 
@@ -398,10 +409,10 @@ export class SearchScreen extends React.Component {
     else{
       return ( 
        
-        <ImageBackground source = {require('../Images/BackgroundHome.png')} style= {{justifyContent:'center', alignItems:'center',  width:'100%', height:'100%', resizeMode:'contain'}}>
+        <ImageBackground source = {require('../../Images/BackgroundHome.png')} style= {{justifyContent:'center', alignItems:'center',  width:'100%', height:'100%', resizeMode:'contain'}}>
           {/* Show Logo */}
           <Image
-          source={require('../Images/Logo.png')}
+          source={require('../../Images/Logo.png')}
           style = {LoadingScreenStyle.imageLogo}
           resizeMode='contain'
           />

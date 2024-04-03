@@ -16,7 +16,7 @@ import React, {useState} from 'react';
 import {Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView, ImageBackground} from 'react-native'; 
 import "react-native-url-polyfill/auto"
 import { Ionicons } from '@expo/vector-icons';
-import {insertRoute, deleteRoute} from '../config/firebase-config'
+import {insertRoute, deleteRoute} from '../../config/firebase-config'
 
 
 
@@ -45,10 +45,10 @@ export class DaysScreen extends React.Component {
   lists = () => {
     
     const { route } = this.props;
-    const { savedRoutes, listsPlan, city, days} = route.params;
+    const { savedRoutes, listsPlan, city, days, imageRoute} = route.params;
    
     return listsPlan.map((item, index) => (
-      <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {this.props.navigation.navigate('Activities', {savedRoutes: savedRoutes, listsPlan:listsPlan, routePlan:listsPlan[index], city: city, days:days})}}>
+      <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {this.props.navigation.navigate('Activities', {savedRoutes: savedRoutes, listsPlan:listsPlan, routePlan:listsPlan[index], city: city, days:days, imageRoute: imageRoute})}}>
           {/* Image at the top occupying 50% of the square */}
           <Image
             source={{ uri: item.imageUrl }}
@@ -68,7 +68,7 @@ export class DaysScreen extends React.Component {
   // Renders the screen
   render() {
     const { route } = this.props;
-    const { savedRoutes, city, days, listsPlan } = route.params;
+    const { savedRoutes, city, days, listsPlan, imageRoute } = route.params;
     var newCity = city.split(',')[0];
     // Const that gets the images for the specific activities
     // Also defines what is shown in the specific day route plan screen
@@ -78,7 +78,7 @@ export class DaysScreen extends React.Component {
       const [routeId, setRouteId] = useState('');
 
       const toggleSave = () => {
-        if(!isSaved) insertRoute(listsPlan,city,days).then((id) => setRouteId(id));
+        if(!isSaved) insertRoute(listsPlan, listsPlan.imageUrl, city, days).then((id) => setRouteId(id));
         else deleteRoute(routeId);
 
         setIsSaved(!isSaved);
@@ -102,7 +102,7 @@ export class DaysScreen extends React.Component {
         
         <View style={ParentStyles.imageBackground}>
           
-          <ImageBackground source={{ uri: listsPlan.imageUrl }}style={DaysListStyles.imageBackground} >
+          <ImageBackground source={{ uri: imageRoute }}style={DaysListStyles.imageBackground} >
 
             <View style ={{flexDirection:'row', justifyContent:'space-between'}} >
               {savedRoutes && (<TouchableOpacity
@@ -150,7 +150,7 @@ export class DaysScreen extends React.Component {
 
       
           {/* Scroll view with the list of days */}
-        <ScrollView style={{flex:1, marginBottom:45}}>
+        <ScrollView style={{flex:1, marginBottom:65}}>
             {/* Title and description */}
           <Text style={ParentStyles.listTitle}> Select a day to discover your journey</Text>
          
@@ -171,7 +171,6 @@ const ParentStyles = StyleSheet.create({
   container: {
     flex:1,
     backgroundColor: '#FFFFFF',
-    
   },
   imageBackground: {
     width:'100%',
@@ -206,7 +205,6 @@ const ParentStyles = StyleSheet.create({
     fontWeight:'500',
     marginTop:10,
     textAlign: 'center',
-    
   },
   listSubtitle: {
     fontSize: 20,
@@ -236,7 +234,6 @@ const ParentStyles = StyleSheet.create({
     fontWeight:'500',
     fontSize:64,
     color:'#fff',
-
   },
   subtitle:{
     marginLeft:10,

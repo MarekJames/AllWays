@@ -1,8 +1,8 @@
 /*
 
-ChangeName.js 
+ChangeEmail.js 
 
-  -> Handles update of the users name
+  -> Handles update of the users email
 
 */
 
@@ -13,7 +13,7 @@ ChangeName.js
 
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
-import { updateUser } from '../config/firebase-config';
+import { updateUserEmail } from '../../config/firebase-config';
 import { Ionicons } from '@expo/vector-icons';
 
 
@@ -22,34 +22,52 @@ import { Ionicons } from '@expo/vector-icons';
 
 /* 
 
-  Change name screen of the app
-  Allows the user to update their name
+  Change email screen of the app
+  Allows the user to update their email
 
 */
 
-export class ChangeNameScreen extends React.Component{
+export class ChangeEmailScreen extends React.Component{
   
-  changeNameScreen = () => {
+  changeEmailScreen = () => {
     
-    const [name, setName] = useState('');
-    const [invalidName, setInvalidName] = useState('');
+    const [email, setEmail] = useState('');
+    const [invalidEmail, setInvalidEmail] = useState('');
+    const [confirmEmail, setConfirmEmail] = useState('');
+    const [invalidConfirmEmail, setInvalidConfirmEmail] = useState('');
   
-    const handleSubmit = async () => {
+    const handleSubmit = async (navigator) => {
         
-        if(!name){
-            setInvalidName('Please input your name');
+        if(!email){
+            setInvalidEmail('Please input your email');
         }
-        else{
-            updateUser(name);
+        if(!confirmEmail){
+            setInvalidConfirmEmail('Please input your email again');
+        }
+        if(email != confirmEmail){
+            setConfirmEmail('The inserted emails don\'t match');
+        }
+        if(email && invalidEmail){
+            setInvalidEmail('');
+        }
+        if(confirmEmail && invalidConfirmEmail){
+            setInvalidConfirmEmail('');
+        }
+        if(email && confirmEmail && email == confirmEmail){
+          console.log(email);
+            const result = await updateUserEmail(email);
+            if(result == 'success'){
+              navigator.replace('Profile', {email : email});
+            }
         }
     }
 
     return (
-      <View style={ChangeNameStyles.container}>
+      <View style={ChangeEmailStyles.container}>
 
         <ImageBackground
-          source={require('../Images/LoginBackground.png')} // Replace with your image path
-          style={ChangeNameStyles.imageBackground}
+          source={require('../../Images/LoginBackground.png')} // Replace with your image path
+          style={ChangeEmailStyles.imageBackground}
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >
         
@@ -69,23 +87,34 @@ export class ChangeNameScreen extends React.Component{
                 <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
           </TouchableOpacity>
 
-          <Text style={ChangeNameStyles.title}>Change Name</Text>
+          <Text style={ChangeEmailStyles.title}>Change Email</Text>
         </View>
 
-        <Text style={ChangeNameStyles.subTitle}>Enter your name</Text>
+        <Text style={ChangeEmailStyles.subTitle}>Enter your email</Text>
 
-        {invalidName !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidName}</Text>
+        {invalidEmail !== null && ( // Checking if the variable is not null
+          <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidEmail}</Text>
         )}
         <TextInput
-          style={ChangeNameStyles.input}
-          placeholder="Name"
+          style={ChangeEmailStyles.input}
+          placeholder="Email"
           placeholderTextColor={'#626262'}
-          value={name}
-          onChangeText={setName}
+          value={email}
+          onChangeText={setEmail}
         />
 
-        <TouchableOpacity style = {ChangeNameStyles.recover} onPress={handleSubmit}>
+        {invalidConfirmEmail !== null && ( // Checking if the variable is not null
+          <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidConfirmEmail}</Text>
+        )}
+        <TextInput
+          style={ChangeEmailStyles.input}
+          placeholder="Confirm Email"
+          placeholderTextColor={'#626262'}
+          value={confirmEmail}
+          onChangeText={setConfirmEmail}
+        />
+
+        <TouchableOpacity style = {ChangeEmailStyles.recover} onPress={() => {handleSubmit(this.props.navigation)}}>
           <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Update</Text>
         </TouchableOpacity>
   
@@ -96,7 +125,7 @@ export class ChangeNameScreen extends React.Component{
 
   render() {  
     return (
-      <this.changeNameScreen></this.changeNameScreen>
+      <this.changeEmailScreen></this.changeEmailScreen>
     )    
   }
 }
@@ -107,7 +136,7 @@ export class ChangeNameScreen extends React.Component{
 
 /********************* Stylesheets ***********************/
 
-const ChangeNameStyles = StyleSheet.create ({
+const ChangeEmailStyles = StyleSheet.create ({
   container: {
     flex: 1,
     alignItems: 'center',
@@ -139,23 +168,16 @@ const ChangeNameStyles = StyleSheet.create ({
     width: '80%',
     height: 50,
     paddingLeft: 20,
-    marginVertical: 30,
+    marginVertical: 20,
     borderRadius:30,
     alignSelf:'center',
     backgroundColor:'#F1F4FF'
-  },
-  alreadyHaveAccount: {
-    textAlign: 'center',
-    fontSize: 14,
-    marginTop: 20,
-    fontWeight:'600',
-    color:'#494949'
   },
   recover: {
     width: '80%',
     height: 50,
     backgroundColor:'#23C2DF',
-    marginTop:10,
+    marginTop:40,
     marginBottom: 10,
     borderRadius:30,
     alignSelf:'center',

@@ -57,7 +57,7 @@ export class HelpCenterScreen extends React.Component{
       <View style={HelpCenterStyles.container}>
 
         <ImageBackground
-          source={require('../Images/LoginBackground.png')} // Replace with your image path
+          source={require('../../Images/LoginBackground.png')} // Replace with your image path
           style={HelpCenterStyles.imageBackground}
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >
