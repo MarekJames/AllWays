@@ -291,7 +291,7 @@ const ActivitiesListStyles = StyleSheet.create({
     alignItems: 'center',
   },
   square: {
-    width: width * 0.85, // 90% of the device width
+    width: width * 0.90, // 90% of the device width
     height: height * 0.35,
     backgroundColor: '#EEF6FB',
     borderRadius: 30,

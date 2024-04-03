@@ -293,7 +293,7 @@ export class SearchScreen extends React.Component {
       
       return (
         <View style = {PlansScreenStyles.container}>
-          <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../../Images/SearchBackground.png')}>
+          <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../../Images/SearchBackground.jpg')}>
 
               {/* <View style = {{flex:1, width:'100%', justifyContent:'center', alignItems:'center'}}>
                 <Image  style = {PlansScreenStyles.imageLogo} source = {require('../Images/Logo.png')}/>
