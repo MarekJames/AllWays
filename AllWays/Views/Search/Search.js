@@ -239,9 +239,9 @@ export class SearchScreen extends React.Component {
     }
 
     const handleBack = () => {
-      setSelectedCity(null);
+      setSelectedCity('');
       setSelectedNumber(null);
-      setValidInput(null);
+      setValidInput('');
       fadeOutHow();
     }
 
