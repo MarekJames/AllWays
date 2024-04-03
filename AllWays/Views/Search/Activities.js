@@ -61,7 +61,6 @@ export class ActivitiesScreen extends React.Component{
         .then((image) => {
           const imageUrl = image.link;
           routePlan.activities[index].imageUrl = imageUrl;
-          console.log(routePlan.activities[index].imageUrl);
         })
       }catch(e){
         console.log(e.response.data)
@@ -74,7 +73,6 @@ export class ActivitiesScreen extends React.Component{
       var counter = 0;
       //Loop through the activities and put the url in the routePlan object
       await routePlan.activities.forEach(async (item, index) => {
-        console.log(item.name + ', ' + city);
         if(index != 0) await getImageUrl(item.name + ', ' + city,index,0);
       
         //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
