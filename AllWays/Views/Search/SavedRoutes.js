@@ -50,11 +50,11 @@ export class SavedRoutesScreen extends React.Component{
         return userRoutes._j.map((item, index) => (   
         
           <TouchableOpacity style={SavedRoutesStyles.square} key={index} onLongPress = {() => {alert('Route Deleted'); deleteRoute(item.id)}} onPress={() =>  {
-             this.props.navigation.navigate('Days', {savedRoutes: true, listsPlan: item.route, city: item.city, days: item.days})
+             console.log(item.route); this.props.navigation.navigate('Days', {savedRoutes: true, listsPlan: item.route, city: item.city, days: item.days, imageRoute: item.imageUrl})
             }}>
   
             <Image
-              source={{ uri: item.route[0].imageUrl }}
+              source={{ uri: item.imageUrl }}
               style={SavedRoutesStyles.image}
             />
   
@@ -99,13 +99,8 @@ export class SavedRoutesScreen extends React.Component{
           </View>
         
           {/* Scroll view of the list of activities for the specified day */}
-          <ScrollView style = {{flex:1}}>
-            
-            {/* List of activities, description and, maps and info buttons */}
-            <View style={{alignItems:'center'}}>
-              <this.savedRoutes/>
-            </View>
-  
+          <ScrollView style = {{flex:1, marginBottom:65}}>
+            <this.savedRoutes/>
           </ScrollView>
         
         </View>
@@ -121,7 +116,6 @@ export class SavedRoutesScreen extends React.Component{
 const SavedRoutesStyles = StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: '#FFFFFF'
     },
@@ -129,11 +123,15 @@ const SavedRoutesStyles = StyleSheet.create({
       width:'100%',
       height:'15%',
     },
+    dayContainer: {
+      width: width * 0.9, // 90% of the device width
+      height: height * 0.12,
+    },
     square: {
       width: width * 0.9, // 90% of the device width
       height: 200,
-      backgroundColor: 'lightgrey',
-      borderRadius: 10,
+      backgroundColor: '#EEF6FB',
+      borderRadius: 25,
       overflow: 'hidden',
       elevation: 5, // Adds a shadow (Android)
       shadowColor: '#000', // Adds a shadow (iOS)
@@ -162,9 +160,9 @@ const SavedRoutesStyles = StyleSheet.create({
     },
     titleSquare: {
         fontSize: 20,
-        fontWeight: '600',
+        fontWeight: 'bold',
         marginBottom: 10,
-        color:'#FFFFFF'
+        color:'#000000'
       },
     description: {
       fontSize: 16,

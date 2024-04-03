@@ -73,7 +73,7 @@ async function changePassword(password){
   }
 }
 
-async function insertRoute(route, city, days){
+async function insertRoute(route, imageRoute, city, days){
 
   // Add a new document with a generated id.
   try {
@@ -81,6 +81,7 @@ async function insertRoute(route, city, days){
       city: city,
       days: days,
       route: route,
+      imageUrl: imageRoute,
       userId: getAuth().currentUser.uid
     });
 

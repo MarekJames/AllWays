@@ -156,7 +156,7 @@ export class ActivitiesScreen extends React.Component{
   render(){
 
     const { route } = this.props;
-    const { savedRoutes, routePlan, city, listsPlan } = route.params;
+    const { routePlan, city, imageRoute } = route.params;
     // Define the image variable and the associated function
     
     var newCity = city.split(',')[0];
@@ -165,7 +165,7 @@ export class ActivitiesScreen extends React.Component{
         
         {/* Logo */}
         <View style = {{height:'25%', flexDirection: 'row', alignItems: 'center', marginBottom:5}}>
-          <ImageBackground source={{ uri: listsPlan.imageUrl }}style={ActivitiesListStyles.imageBackground} >
+          <ImageBackground source={{ uri: imageRoute }}style={ActivitiesListStyles.imageBackground} >
             <TouchableOpacity
               onPress={() => this.props.navigation.goBack()}
               style={{
@@ -187,7 +187,7 @@ export class ActivitiesScreen extends React.Component{
         </View>
 
         {/* Scroll view of the list of activities for the specified day */}
-        <ScrollView style={{flex:1, marginBottom:45}}>
+        <ScrollView style={{flex:1, marginBottom:65}}>
 
           {/* List of activities, description and, maps and info buttons */}
           <View style={{alignItems:'center'}}>
