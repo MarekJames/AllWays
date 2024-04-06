@@ -55,7 +55,7 @@ export class DaysScreen extends React.Component {
             style={DaysListStyles.image}
           />
 
-          <View style = {{flexDirection:'column', justifyContent:'center', alignItems:'flex-start'}}>
+          <View style = {{flex:1, alignItems:'left', justifyContent:'center', margin:10}}>
             <Text style = {DaysListStyles.dayTitle}>{item.day}</Text>
             <Text style = {DaysListStyles.daySubtitle}>{item.description}</Text>
           </View>
@@ -267,13 +267,13 @@ const DaysListStyles = StyleSheet.create({
     fontSize: 30,
     fontWeight:'500',
     color:'#000',
-    paddingLeft:20,
+    paddingLeft:10,
   },  
   daySubtitle: {
     fontSize: 15,
     fontWeight:'400',
     color:'#000',
-    paddingLeft:20,
+    paddingLeft:10,
   }
 
 });
