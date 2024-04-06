@@ -14,7 +14,7 @@ SavedRoutes.js
 import React from 'react';  
 import {Image, StyleSheet, View, Text, TouchableOpacity, Dimensions, ScrollView, ImageBackground} from 'react-native'; 
 import {deleteRoute, updateSavedRoutes} from '../../config/firebase-config'
-
+import { Ionicons } from '@expo/vector-icons';
 
 
 
@@ -70,13 +70,7 @@ export class SavedRoutesScreen extends React.Component{
       }
       else{
         return ( 
-          <View style = {{alignItems:'center'}}>
-            <Text style = {{marginTop: 70, marginHorizontal:30, marginBottom:10, fontSize:25, textAlign:'center'}}>You haven't saved a route yet!</Text>
-            <Text style = {{fontSize:15}}>Be sure to do so in the Search Tab</Text>
-            <View style = {{width:300, height:300,borderRadius:30, margin:50}}> 
-              <Image source={require('../../Images/SavedRoutesEmpty.png')}style={{resizeMode:'contain', width:'100%', height:'100%', borderRadius:100}}/>
-            </View>
-          </View>
+            <Text style = {{verticalAlign:'middle', fontSize:15, textAlignVertical:'center', textAlign:'center'}}>Click on the <Ionicons name="heart-outline" size={30} color="black"/> on the routes to save them here</Text>
         )
       }
     }
@@ -88,9 +82,9 @@ export class SavedRoutesScreen extends React.Component{
   
           <View style={SavedRoutesStyles.imageBackground}>
             
-            <ImageBackground source={require('../../Images/BackgroundHome.jpg')} style={SavedRoutesStyles.imageTitle} >
+            <ImageBackground source={require('../../Images/BackgroundSaved.png')} style={SavedRoutesStyles.imageTitle} >
   
-              <View style = {{flex:1, justifyContent:'flex-end', alignItems:'center', marginBottom:30}}>
+              <View style = {{flex:1, justifyContent:'flex-end', alignItems:'left', marginBottom:10, marginLeft:20}}>
                 <Text style ={SavedRoutesStyles.title}>Saved Routes</Text> 
               </View>
              
@@ -102,7 +96,6 @@ export class SavedRoutesScreen extends React.Component{
           <ScrollView style = {{flex:1, marginBottom:65}}>
             <this.savedRoutes/>
           </ScrollView>
-        
         </View>
       );
     } 
@@ -116,12 +109,11 @@ export class SavedRoutesScreen extends React.Component{
 const SavedRoutesStyles = StyleSheet.create({
     container: {
       flex: 1,
-      alignItems: 'center',
       backgroundColor: '#FFFFFF'
     },
     imageBackground: {
       width:'100%',
-      height:'15%',
+      height:'20%',
     },
     dayContainer: {
       width: width * 0.9, // 90% of the device width
