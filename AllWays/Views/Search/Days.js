@@ -267,13 +267,10 @@ const DaysListStyles = StyleSheet.create({
     fontSize: 30,
     fontWeight:'500',
     color:'#000',
-    paddingLeft:10,
   },  
   daySubtitle: {
     fontSize: 15,
     fontWeight:'400',
     color:'#000',
-    paddingLeft:10,
   }
-
 });
