@@ -3,7 +3,7 @@
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 import { initializeApp, getApp } from "firebase/app";
-import { initializeAuth, getAuth, getReactNativePersistence, signOut, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
+import { initializeAuth, getAuth, getReactNativePersistence, signOut, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, sendEmailVerification, verifyBeforeUpdateEmail } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore, setDoc, doc, addDoc, collection, query, where, getDocs, deleteDoc, onSnapshot } from "firebase/firestore";
 import { useState, useEffect } from "react";
@@ -57,8 +57,27 @@ async function updateUserEmail(userEmail){
   try{
     await updateEmail(getAuth().currentUser, userEmail);
     console.log('Profile updated successfully.');
+    return 'success';
   }catch(error){
-    console.log('Error updating user email : ' + error);
+    if(error.code == 'auth/invalid-email'){
+      console.log('Error updating user email : ' + error);
+      return error.code;
+    }
+    if(error.code == 'auth/email-already-in-use'){
+      console.log('Error updating user email : ' + error);
+      return error.code;
+    }
+    if(error.code == 'auth/requires-recent-login'){
+      console.log('Error updating user email : ' + error);
+      return error.code;
+    }
+    if(error.code == 'auth/operation-not-allowed'){
+      console.log('Error updating user email : ' + error);
+      return error.code;
+    }
+    else{
+      console.log(error);
+    }
   };
 }
 
@@ -191,6 +210,25 @@ async function reauthenticateUser(password){
   };
 }
 
+async function sendValidationEmail(){
+  const auth = getAuth();
+  try{
+    await sendEmailVerification(auth.currentUser);
+    console.log('Verification Email Sent!');
+  }catch(error){
+    console.log(error);
+  }  
+}
+
+async function verifyBeforeUpdate(email){
+  try{
+    verifyBeforeUpdateEmail(getAuth().currentUser, email);
+    console.log('Verification Email Sent!');
+  }catch(error){
+    console.log(error);
+  } 
+}
+
 export {  
           getApp, 
           getAuth, 
@@ -199,11 +237,13 @@ export {
           insertUser, 
           deleteUser, 
           updateUser, 
-          updateUserEmail, 
           insertRoute, 
           deleteRoute, 
           resetPassword, 
           changePassword, 
+          updateUserEmail, 
           updateSavedRoutes, 
-          reauthenticateUser 
+          reauthenticateUser, 
+          verifyBeforeUpdate,
+          sendValidationEmail,
         };

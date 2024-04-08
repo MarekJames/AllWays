@@ -11,9 +11,9 @@ ChangeEmail.js
 
 /******************** Imports Section ********************/ 
 
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
-import { updateUserEmail } from '../../config/firebase-config';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Modal } from 'react-native';
+import { updateUserEmail, getAuth, verifyBeforeUpdate } from '../../config/firebase-config';
 import { Ionicons } from '@expo/vector-icons';
 
 
@@ -35,7 +35,9 @@ export class ChangeEmailScreen extends React.Component{
     const [invalidEmail, setInvalidEmail] = useState('');
     const [confirmEmail, setConfirmEmail] = useState('');
     const [invalidConfirmEmail, setInvalidConfirmEmail] = useState('');
-  
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
+
     const handleSubmit = async (navigator) => {
         
         if(!email){
@@ -45,7 +47,7 @@ export class ChangeEmailScreen extends React.Component{
             setInvalidConfirmEmail('Please input your email again');
         }
         if(email != confirmEmail){
-            setConfirmEmail('The inserted emails don\'t match');
+            setInvalidConfirmEmail('The inserted emails don\'t match');
         }
         if(email && invalidEmail){
             setInvalidEmail('');
@@ -54,16 +56,60 @@ export class ChangeEmailScreen extends React.Component{
             setInvalidConfirmEmail('');
         }
         if(email && confirmEmail && email == confirmEmail){
-          console.log(email);
             const result = await updateUserEmail(email);
             if(result == 'success'){
               navigator.replace('Profile', {email : email});
             }
+            if(result == 'auth/invalid-email'){
+              setInvalidEmail('Invalid email, try again');
+              console.log(result);
+            }
+            if(result == 'auth/email-already-in-use'){
+              setInvalidEmail('Email already in use, try again');
+              console.log(result);
+            }
+            if(result == 'auth/requires-recent-login'){
+              console.log(result);
+            }
+            if(result == 'auth/operation-not-allowed'){
+              
+              // Send verify email to new email
+              await verifyBeforeUpdate(email);
+              
+              // Show modal with error
+              setIsModalVisible(true);
+              console.log(result);
+            }
         }
     }
 
+    useEffect(() => {
+      const listener = getAuth().onIdTokenChanged(user => {
+        if (user && user.emailVerified) {
+          setIsEmailVerified(true);
+          setIsModalVisible(false);
+          // Handle email verification success
+        }
+      });
+  
+      return () => listener();
+    }, []);
+
     return (
       <View style={ChangeEmailStyles.container}>
+
+        <Modal
+          visible={isModalVisible}
+          onRequestClose={() => setIsModalVisible(false)}
+        >
+          <View style={{ padding: 20 }}>
+            {isEmailVerified ? (
+              <Text>Email verified successfully!</Text>
+            ) : (
+              <Text>Please verify your new email by clicking the link sent to you.</Text>
+            )}
+          </View>
+        </Modal>
 
         <ImageBackground
           source={require('../../Images/LoginBackground.png')} // Replace with your image path
