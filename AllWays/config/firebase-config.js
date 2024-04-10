@@ -59,6 +59,7 @@ async function updateUserEmail(userEmail){
     console.log('Profile updated successfully.');
     return 'success';
   }catch(error){
+    console.log('WW: ' + error);
     if(error.code == 'auth/invalid-email'){
       console.log('Error updating user email : ' + error);
       return error.code;
@@ -222,10 +223,12 @@ async function sendValidationEmail(){
 
 async function verifyBeforeUpdate(email){
   try{
-    verifyBeforeUpdateEmail(getAuth().currentUser, email);
-    console.log('Verification Email Sent!');
+    await verifyBeforeUpdateEmail(getAuth().currentUser, email);
+    console.log('Verification Email Sent to '+ email + " -> User : " + getAuth().currentUser.email);
+    return 'success';
   }catch(error){
     console.log(error);
+    return error.code;
   } 
 }
 
