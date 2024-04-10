@@ -186,7 +186,6 @@ export default function App() {
   React.useEffect( () =>{
 
     const unsubscribe = getAuth().onAuthStateChanged(userp => {
-      console.log('ad');
       setUser(userp);
       setLoading(false);
     })
