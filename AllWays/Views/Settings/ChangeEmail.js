@@ -12,9 +12,16 @@ ChangeEmail.js
 /******************** Imports Section ********************/ 
 
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
-import { updateUserEmail } from '../../config/firebase-config';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Modal, ActivityIndicator, Dimensions } from 'react-native';
+import { updateUserEmail, getAuth, verifyBeforeUpdate, reauthenticateUser } from '../../config/firebase-config';
 import { Ionicons } from '@expo/vector-icons';
+
+
+
+/******************* Global Variables ********************/
+
+const width = Dimensions.get('window').width   // Get width of the user screen
+
 
 
 
@@ -34,8 +41,56 @@ export class ChangeEmailScreen extends React.Component{
     const [email, setEmail] = useState('');
     const [invalidEmail, setInvalidEmail] = useState('');
     const [confirmEmail, setConfirmEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [invalidConfirmEmail, setInvalidConfirmEmail] = useState('');
-  
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isRecentLogin, setIsRecentLogin] = useState(false);
+   
+    const handleLogin = async () => {
+
+      // Reauthenticate user with provided password
+      const resultReauthenticate = await reauthenticateUser(password);
+      
+      // If success close modal
+      if(resultReauthenticate == 'success'){
+        setIsModalVisible(!isModalVisible);
+        setIsRecentLogin(!isRecentLogin);
+      }
+    }
+
+    const handleComplete = async () => {
+      // Check user
+      await getAuth().currentUser.reload();
+      const user = getAuth().currentUser;
+      // Check email verified
+
+      if(user.email == email && user.emailVerified){
+        console.log(user.email + ":" + user.emailVerified);
+       
+        // Log user out
+        try {
+          await getAuth().signOut();
+        }
+        catch(error){
+          console.log('Error Sign Out: ' + error);
+        }
+      }
+      else{
+        console.log(user.email + ":" + user.emailVerified);
+      }
+    }
+
+    const handleVerifyEmailError = async (error) => {
+      if(error == 'auth/requires-recent-login'){
+        
+        // Show modal
+        setIsModalVisible(!isModalVisible);
+
+        // Set recent login
+        setIsRecentLogin(!isRecentLogin);
+      }
+    }
+
     const handleSubmit = async (navigator) => {
         
         if(!email){
@@ -45,7 +100,7 @@ export class ChangeEmailScreen extends React.Component{
             setInvalidConfirmEmail('Please input your email again');
         }
         if(email != confirmEmail){
-            setConfirmEmail('The inserted emails don\'t match');
+            setInvalidConfirmEmail('The inserted emails don\'t match');
         }
         if(email && invalidEmail){
             setInvalidEmail('');
@@ -54,16 +109,89 @@ export class ChangeEmailScreen extends React.Component{
             setInvalidConfirmEmail('');
         }
         if(email && confirmEmail && email == confirmEmail){
-          console.log(email);
             const result = await updateUserEmail(email);
             if(result == 'success'){
               navigator.replace('Profile', {email : email});
+            }
+            if(result == 'auth/invalid-email'){
+              setInvalidEmail('Invalid email, try again');
+              console.log(result);
+            }
+            if(result == 'auth/email-already-in-use'){
+              setInvalidEmail('Email already in use, try again');
+              console.log(result);
+            }
+            if(result == 'auth/requires-recent-login'){
+              console.log(result);
+            }
+            if(result == 'auth/operation-not-allowed'){
+              
+              // Send verify email to new email
+              const resultVerify = await verifyBeforeUpdate(email);
+              
+              // If email is sent successfully
+              if(resultVerify == 'success'){
+                
+                // Show modal 
+                setIsModalVisible(true);
+              }
+              else{
+
+                // Send to Error handler
+                handleVerifyEmailError(resultVerify);
+              }
             }
         }
     }
 
     return (
       <View style={ChangeEmailStyles.container}>
+
+        <Modal
+          visible={isModalVisible}
+          onRequestClose={() => setIsModalVisible(false)}
+        >
+          <View style = {{flex:1, justifyContent:'center', alignItems:'center', padding: 20}}>
+
+            {/* Show email validation OR Login reauthenticate */}
+            {!isRecentLogin ? (
+              <View>
+                <Text style = {{margin:40, fontWeight:'bold', fontSize: 20, textAlign:'center'}}>Please verify your new email</Text>
+                <Text style = {{fontSize: 15, textAlign:'center'}}>An email has been sent to your new email</Text>
+                <Text style = {{fontSize: 15, textAlign:'center'}}>Verify it and click complete.</Text>
+                
+                <ActivityIndicator style = {{margin:30}}>
+                </ActivityIndicator>
+                <TouchableOpacity 
+                  style = {ChangeEmailStyles.modalButtom}
+                  onPress={() => {handleComplete()}}
+                >
+                  <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Complete</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View>
+                <Text style = {{margin:40, fontWeight:'bold', fontSize: 20, textAlign:'center'}}>You have been logged for too long</Text>
+                <Text style = {{fontSize: 15, textAlign:'center'}}>For sensitive operations it is required to reauthenticate</Text>
+                <Text style = {{fontSize: 15, textAlign:'center'}}>Please input your password</Text>
+                <TextInput
+                  style={ChangeEmailStyles.modalInput}
+                  placeholder="Password"
+                  placeholderTextColor={'#626262'}
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry
+                />
+                <TouchableOpacity 
+                  style = {ChangeEmailStyles.modalButtom}
+                  onPress={() => {handleLogin()}}
+                >
+                  <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Login</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        </Modal>
 
         <ImageBackground
           source={require('../../Images/LoginBackground.png')} // Replace with your image path
@@ -189,6 +317,25 @@ const ChangeEmailStyles = StyleSheet.create ({
     color:'#23C2DF',
     fontWeight:'600',
     marginTop:30
+  },
+  modalButtom:{
+    width: width * 0.8,
+    height: 50,
+    backgroundColor:'#23C2DF',
+    marginTop:40,
+    marginBottom: 10,
+    borderRadius:30,
+    alignSelf:'center',
+    justifyContent:'center'
+  },
+  modalInput: {
+    width: width*0.8,
+    height: 50,
+    paddingLeft: 20,
+    marginVertical: 20,
+    borderRadius:30,
+    alignSelf:'center',
+    backgroundColor:'#F1F4FF'
   },
   icons:{
     alignItems:'center', 

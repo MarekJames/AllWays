@@ -16,7 +16,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground} from 'react-native';
 import { CheckBox } from 'react-native-elements'; // Assuming react-native-elements
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { getAuth } from '../../config/firebase-config';
+import { getAuth, sendValidationEmail } from '../../config/firebase-config';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
@@ -209,6 +209,9 @@ export class RegisterUserScreen extends React.Component{
               // Handle errors related to updating user profile
               console.error('Error updating user profile:', error.message);
             });
+
+            // Send verification email to user
+            sendValidationEmail();
           })
           .catch(error => {
             if(error.code == 'auth/invalid-email'){

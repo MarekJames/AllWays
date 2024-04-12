@@ -107,6 +107,7 @@ const StackProfileNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false, gestureEnabled: false }}>
       <Stack.Screen name = "Profile" component = {ProfileScreen}/>
+      <Stack.Screen name = "Login" component = {LoginUserScreen}/>
       <Stack.Screen name = "HelpCenter" component = {HelpCenterScreen}/>
       <Stack.Screen name = "ChangeName" component = {ChangeNameScreen}/>
       <Stack.Screen name = "ChangeEmail" component = {ChangeEmailScreen}/>

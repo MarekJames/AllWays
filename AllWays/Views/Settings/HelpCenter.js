@@ -12,7 +12,7 @@ HelpCenter.js
 /******************** Imports Section ********************/ 
 
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Textarea } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 
@@ -33,7 +33,16 @@ export class HelpCenterScreen extends React.Component{
     const [invalidName, setInvalidName] = useState('');
     const [message, setMessage] = useState('');
     const [invalidMessage, setInvalidMessage] = useState('');
-  
+    
+    const handleEmailPress = () => {
+      const email = 'abreu.hugo50@gmail.com';
+      const subject = 'This is the subject';
+      const body = 'This is the body of the email';
+    
+      const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+      Linking.openURL(mailtoLink);
+    };
+
     const handleSubmit = async () => {
         
         if(!name){
@@ -62,7 +71,7 @@ export class HelpCenterScreen extends React.Component{
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >
         
-        <View style = {{flexDirection:'row', marginTop:50, marginBottom:10}}>
+        <View style = {{flexDirection:'row', marginTop:50, marginBottom:50}}>
           <TouchableOpacity
                 onPress={() => this.props.navigation.goBack()}
                 style={{
@@ -81,35 +90,12 @@ export class HelpCenterScreen extends React.Component{
           <Text style={HelpCenterStyles.title}>Help Center</Text>
         </View>
 
-        <Text style={HelpCenterStyles.subTitle}>Send us a question</Text>
-
-        {invalidName !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidName}</Text>
-        )}
-        <TextInput
-          style={HelpCenterStyles.input}
-          placeholder="Name"
-          placeholderTextColor={'#626262'}
-          value={name}
-          onChangeText={setName}
-        />
-
-        {invalidMessage !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidMessage}</Text>
-        )}
-        <TextInput
-          style={HelpCenterStyles.inputTextArea}
-          placeholder="Write yout message here..."
-          placeholderTextColor={'#626262'}
-          multiline={true}
-          value={message}
-          onChangeText={setMessage}
-        />
-
-        <TouchableOpacity style = {HelpCenterStyles.recover} onPress={handleSubmit}>
-          <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Send</Text>
+        <Text style={HelpCenterStyles.subTitle}>Send Us A Question / Suggestion</Text>
+        
+        <TouchableOpacity onPress={handleEmailPress}>
+          <Text style={HelpCenterStyles.email}>allways@gmail.com</Text>
         </TouchableOpacity>
-  
+
         </ImageBackground>
       </View>
     );
@@ -147,14 +133,21 @@ const HelpCenterStyles = StyleSheet.create ({
     textAlign:'center',
     flex:1,
     marginRight:55
-
   },
   subTitle: {
     fontSize: 20,
-    marginBottom: 40,
+    marginBottom: 30,
     color:'#494949',
     fontWeight:'600',
-    textAlign:'center'
+    marginLeft:25
+  },
+  email: {
+    fontSize: 20,
+    fontWeight:'600',
+    textAlign:'left',
+    color:'#2100E8',
+    marginLeft:25,
+    textDecorationLine:'underline'
   },
   input: {
     width: '80%',

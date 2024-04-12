@@ -14,7 +14,7 @@ SavedRoutes.js
 import React from 'react';  
 import {Image, StyleSheet, View, Text, TouchableOpacity, Dimensions, ScrollView, ImageBackground} from 'react-native'; 
 import {deleteRoute, updateSavedRoutes} from '../../config/firebase-config'
-
+import { Ionicons } from '@expo/vector-icons';
 
 
 
@@ -37,72 +37,77 @@ const height = Dimensions.get('window').height // Get height of the user screen
 */
 export class SavedRoutesScreen extends React.Component{
 
-    // Need to wait for the query to finish
-    // Show loading page while waiting
-  
-    savedRoutes =  () => {
-     
+    // Check if user has saved routes
+    checkRoutes = () => {
       // Only call the API if the field imageUrl doesn't exist
       var userRoutes = updateSavedRoutes();
       
       if(userRoutes._j.length != 0){
-  
-        return userRoutes._j.map((item, index) => (   
-        
-          <TouchableOpacity style={SavedRoutesStyles.square} key={index} onLongPress = {() => {alert('Route Deleted'); deleteRoute(item.id)}} onPress={() =>  {
-             console.log(item.route); this.props.navigation.navigate('Days', {savedRoutes: true, listsPlan: item.route, city: item.city, days: item.days, imageRoute: item.imageUrl})
-            }}>
-  
-            <Image
-              source={{ uri: item.imageUrl }}
-              style={SavedRoutesStyles.image}
-            />
-  
-            {/* Title and description */}
-            <View style={SavedRoutesStyles.textContainer}>
-              <Text style={SavedRoutesStyles.titleSquare}>{item.city}</Text>
-              <Text style={SavedRoutesStyles.description}>{item.days} Days </Text>
-            </View>
-            
-          </TouchableOpacity> 
-  
-        ))
-      }
-      else{
         return ( 
-          <View style = {{alignItems:'center'}}>
-            <Text style = {{marginTop: 70, marginHorizontal:30, marginBottom:10, fontSize:25, textAlign:'center'}}>You haven't saved a route yet!</Text>
-            <Text style = {{fontSize:15}}>Be sure to do so in the Search Tab</Text>
-            <View style = {{width:300, height:300,borderRadius:30, margin:50}}> 
-              <Image source={require('../../Images/SavedRoutesEmpty.png')}style={{resizeMode:'contain', width:'100%', height:'100%', borderRadius:100}}/>
-            </View>
+          <View>
+            <Text style = {{fontSize:20, fontWeight:'500', margin:10}}>Your saved routes, ready to explore!</Text>
+            <ScrollView style = {{marginBottom:65}}>
+              {this.savedRoutes(userRoutes)}
+            </ScrollView>
           </View>
         )
       }
+      else{
+        return ( 
+            <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
+              <Text style = {{textAlign:'center', fontSize:15}}>Click on the <Ionicons name="heart-outline" size={30} color="black"/> on the routes to save them here</Text>
+            </View>
+        )
+      }
+    }
+
+    // Show saved routes
+    savedRoutes =  (userRoutes) => {
+      return userRoutes._j.map((item, index) => (   
+        <TouchableOpacity style={SavedRoutesStyles.square} key={index} onPress={() =>  {
+          this.props.navigation.navigate('Days', {  savedRoutes: true, 
+                                                    listsPlan: item.route, 
+                                                    city: item.city, 
+                                                    days: item.days, 
+                                                    imageRoute: item.imageUrl
+                                                  })
+        }}>
+
+          {/* Image */}
+          <Image
+            source={{ uri: item.imageUrl }}
+            style={SavedRoutesStyles.image}
+          />
+
+          {/* Title and description */}
+          <View style={SavedRoutesStyles.textContainer}>
+            <Text style={SavedRoutesStyles.titleSquare}>{item.city}</Text>
+            <Text style={SavedRoutesStyles.description}>{item.days} Days </Text>
+          </View>
+
+          {/* Delete Option */}
+          <TouchableOpacity style={SavedRoutesStyles.deleteContainer} onPress={()=> {deleteRoute(item.id)}}>
+            <Ionicons name="trash-outline" size={20} color="#3B3B3B"/>
+          </TouchableOpacity>
+        </TouchableOpacity> 
+      )) 
     }
   
+    // Show header and call check routes
     render(){
-  
       return (
         <View style={SavedRoutesStyles.container}>
-  
-          <View style={SavedRoutesStyles.imageBackground}>
-            
-            <ImageBackground source={require('../../Images/BackgroundHome.jpg')} style={SavedRoutesStyles.imageTitle} >
-  
-              <View style = {{flex:1, justifyContent:'flex-end', alignItems:'center', marginBottom:30}}>
+          
+          {/* Title and background image */}
+          <View style={SavedRoutesStyles.imageBackground}> 
+            <ImageBackground source={require('../../Images/BackgroundSaved.png')} style={SavedRoutesStyles.imageTitle} >
+              <View style = {{flex:1, justifyContent:'flex-end', alignItems:'left', marginBottom:10, marginLeft:20}}>
                 <Text style ={SavedRoutesStyles.title}>Saved Routes</Text> 
               </View>
-             
-            </ImageBackground>
-            
+            </ImageBackground> 
           </View>
         
-          {/* Scroll view of the list of activities for the specified day */}
-          <ScrollView style = {{flex:1, marginBottom:65}}>
-            <this.savedRoutes/>
-          </ScrollView>
-        
+          <this.checkRoutes/>
         </View>
       );
     } 
@@ -116,20 +121,21 @@ export class SavedRoutesScreen extends React.Component{
 const SavedRoutesStyles = StyleSheet.create({
     container: {
       flex: 1,
-      alignItems: 'center',
-      backgroundColor: '#FFFFFF'
+      backgroundColor: '#FFFFFF',
+      alignItems:'center'
     },
     imageBackground: {
       width:'100%',
-      height:'15%',
+      height:'20%',
     },
     dayContainer: {
       width: width * 0.9, // 90% of the device width
       height: height * 0.12,
     },
     square: {
+      flexDirection:'row',
       width: width * 0.9, // 90% of the device width
-      height: 200,
+      height: height * 0.15,
       backgroundColor: '#EEF6FB',
       borderRadius: 25,
       overflow: 'hidden',
@@ -141,26 +147,33 @@ const SavedRoutesStyles = StyleSheet.create({
       margin: 10,
     },
     image: {
-      width: '100%',
-      height: '60%', // Adjusted to 100% to fill the container
+      width: '30%',
+      height: '100%', // Adjusted to 100% to fill the container
     },
     imageTitle: {
         width: '100%',
         height: '100%', // Adjusted to 100% to fill the container
       },
     textContainer: {
-      marginTop: 10, // Adjusted margin top for better spacing
-      alignItems:'center'
+      flex:1,
+      alignItems:'left',
+      justifyContent:'center',
+      margin:10
+    },
+    deleteContainer: {
+      alignSelf:'stretch',
+      justifyContent:'center',
+      margin:10
     },
     title: {
-      fontSize: 35,
+      fontSize: 40,
       fontWeight: '600',
       marginBottom: 10,
       color:'#FFFFFF'
     },
     titleSquare: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 27,
+        fontWeight: '500',
         marginBottom: 10,
         color:'#000000'
       },

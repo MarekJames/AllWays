@@ -3,7 +3,7 @@
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 import { initializeApp, getApp } from "firebase/app";
-import { initializeAuth, getAuth, getReactNativePersistence, signOut, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
+import { initializeAuth, getAuth, getReactNativePersistence, signOut, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, sendEmailVerification, verifyBeforeUpdateEmail } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore, setDoc, doc, addDoc, collection, query, where, getDocs, deleteDoc, onSnapshot } from "firebase/firestore";
 import { useState, useEffect } from "react";
@@ -57,16 +57,43 @@ async function updateUserEmail(userEmail){
   try{
     await updateEmail(getAuth().currentUser, userEmail);
     console.log('Profile updated successfully.');
+    return 'success';
   }catch(error){
-    console.log('Error updating user email : ' + error);
+    console.log('WW: ' + error);
+    if(error.code == 'auth/invalid-email'){
+      console.log('Error updating user email : ' + error);
+      return error.code;
+    }
+    if(error.code == 'auth/email-already-in-use'){
+      console.log('Error updating user email : ' + error);
+      return error.code;
+    }
+    if(error.code == 'auth/requires-recent-login'){
+      console.log('Error updating user email : ' + error);
+      return error.code;
+    }
+    if(error.code == 'auth/operation-not-allowed'){
+      console.log('Error updating user email : ' + error);
+      return error.code;
+    }
+    else{
+      console.log(error);
+    }
   };
 }
 
-async function changePassword(password){
+async function changePassword(oldPassword, newPassword){
   try {
-    await updatePassword(getAuth().currentUser, password);
-    console.log('Password updated successfully.');
-    return 'success';
+    const result = await reauthenticateUser(oldPassword);
+    if(result == 'success'){
+      await updatePassword(getAuth().currentUser, newPassword);
+      console.log('Password updated successfully.');
+      return 'success';
+    }
+    else{
+      console.log(result);
+      return result;
+    }
   } catch (error) {
     console.log('An error has occurred : ' + error.code);
     return error.code;
@@ -191,6 +218,27 @@ async function reauthenticateUser(password){
   };
 }
 
+async function sendValidationEmail(){
+  const auth = getAuth();
+  try{
+    await sendEmailVerification(auth.currentUser);
+    console.log('Verification Email Sent!');
+  }catch(error){
+    console.log(error);
+  }  
+}
+
+async function verifyBeforeUpdate(email){
+  try{
+    await verifyBeforeUpdateEmail(getAuth().currentUser, email);
+    console.log('Verification Email Sent to '+ email + " -> User : " + getAuth().currentUser.email);
+    return 'success';
+  }catch(error){
+    console.log(error);
+    return error.code;
+  } 
+}
+
 export {  
           getApp, 
           getAuth, 
@@ -199,11 +247,13 @@ export {
           insertUser, 
           deleteUser, 
           updateUser, 
-          updateUserEmail, 
           insertRoute, 
           deleteRoute, 
           resetPassword, 
           changePassword, 
+          updateUserEmail, 
           updateSavedRoutes, 
-          reauthenticateUser 
+          reauthenticateUser, 
+          verifyBeforeUpdate,
+          sendValidationEmail,
         };

@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 import UserAvatar from 'react-native-user-avatar';
-import { getAuth, onIdTokenChanged } from 'firebase/auth';
-import { Firestore } from 'firebase/firestore';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { getAuth } from 'firebase/auth';
 
 
 // Set of options for settings
