@@ -82,11 +82,18 @@ async function updateUserEmail(userEmail){
   };
 }
 
-async function changePassword(password){
+async function changePassword(oldPassword, newPassword){
   try {
-    await updatePassword(getAuth().currentUser, password);
-    console.log('Password updated successfully.');
-    return 'success';
+    const result = await reauthenticateUser(oldPassword);
+    if(result == 'success'){
+      await updatePassword(getAuth().currentUser, newPassword);
+      console.log('Password updated successfully.');
+      return 'success';
+    }
+    else{
+      console.log(result);
+      return result;
+    }
   } catch (error) {
     console.log('An error has occurred : ' + error.code);
     return error.code;

@@ -72,13 +72,19 @@ export class ChangePasswordScreen extends React.Component{
       if(validateInputs()){
           const result = await changePassword(oldPassword, newPassword);
           
+          if(result == 'auth/invalid-credential'){
+            setInvalidOldPassword('Incorrect password');
+          }
+          if(result == 'auth/too-many-requests'){
+            setInvalidOldPassword('Too many requests, try again later');
+          }
           if(result == 'auth/weak-password'){
             setInvalidConfirmPassword('Invalid password, should be at least 6 characters');
           }
           if(result == 'auth/requires-recent-login'){
             const result = await reauthenticateUser(oldPassword);
             if(result == 'auth/too-many-requests'){
-              console.log(result);
+              setInvalidOldPassword('Too many requests, try again later');
             }
             else if (result == 'success'){
               handleSubmit();
@@ -138,6 +144,7 @@ export class ChangePasswordScreen extends React.Component{
           placeholderTextColor={'#626262'}
           value={oldPassword}
           onChangeText={setOldPassword}
+          secureTextEntry
         />
 
         {invalidNewPassword !== null && ( // Checking if the variable is not null
@@ -149,6 +156,7 @@ export class ChangePasswordScreen extends React.Component{
           placeholderTextColor={'#626262'}
           value={newPassword}
           onChangeText={setNewPassword}
+          secureTextEntry
         />
 
         {invalidConfirmPassword !== null && ( // Checking if the variable is not null
@@ -160,6 +168,7 @@ export class ChangePasswordScreen extends React.Component{
           placeholderTextColor={'#626262'}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
+          secureTextEntry
         />
 
       <Modal
