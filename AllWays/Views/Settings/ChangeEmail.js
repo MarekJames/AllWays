@@ -12,9 +12,16 @@ ChangeEmail.js
 /******************** Imports Section ********************/ 
 
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Modal, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Modal, ActivityIndicator, Dimensions } from 'react-native';
 import { updateUserEmail, getAuth, verifyBeforeUpdate, reauthenticateUser } from '../../config/firebase-config';
 import { Ionicons } from '@expo/vector-icons';
+
+
+
+/******************* Global Variables ********************/
+
+const width = Dimensions.get('window').width   // Get width of the user screen
+
 
 
 
@@ -38,8 +45,7 @@ export class ChangeEmailScreen extends React.Component{
     const [invalidConfirmEmail, setInvalidConfirmEmail] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isRecentLogin, setIsRecentLogin] = useState(false);
-    const [isEmailVerified, setIsEmailVerified] = useState(false);
-
+   
     const handleLogin = async () => {
 
       // Reauthenticate user with provided password
@@ -145,17 +151,19 @@ export class ChangeEmailScreen extends React.Component{
           visible={isModalVisible}
           onRequestClose={() => setIsModalVisible(false)}
         >
-          <View style={{ padding: 20 }}>
+          <View style = {{flex:1, justifyContent:'center', alignItems:'center', padding: 20}}>
 
             {/* Show email validation OR Login reauthenticate */}
             {!isRecentLogin ? (
               <View>
-                <Text>Please verify your new email</Text>
-                <Text>An email has been sent to your new email. Verify it and click to complete.</Text>
-                <ActivityIndicator>
+                <Text style = {{margin:40, fontWeight:'bold', fontSize: 20, textAlign:'center'}}>Please verify your new email</Text>
+                <Text style = {{fontSize: 15, textAlign:'center'}}>An email has been sent to your new email</Text>
+                <Text style = {{fontSize: 15, textAlign:'center'}}>Verify it and click complete.</Text>
+                
+                <ActivityIndicator style = {{margin:30}}>
                 </ActivityIndicator>
                 <TouchableOpacity 
-                  style = {ChangeEmailStyles.recover}
+                  style = {ChangeEmailStyles.modalButtom}
                   onPress={() => {handleComplete()}}
                 >
                   <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Complete</Text>
@@ -163,11 +171,11 @@ export class ChangeEmailScreen extends React.Component{
               </View>
             ) : (
               <View>
-                <Text>You have been logged for too long</Text>
-                <Text>For sensitive operations it is required to reauthenticate.</Text>
-                <Text>Please input your password</Text>
+                <Text style = {{margin:40, fontWeight:'bold', fontSize: 20, textAlign:'center'}}>You have been logged for too long</Text>
+                <Text style = {{fontSize: 15, textAlign:'center'}}>For sensitive operations it is required to reauthenticate</Text>
+                <Text style = {{fontSize: 15, textAlign:'center'}}>Please input your password</Text>
                 <TextInput
-                  style={ChangeEmailStyles.input}
+                  style={ChangeEmailStyles.modalInput}
                   placeholder="Password"
                   placeholderTextColor={'#626262'}
                   value={password}
@@ -175,7 +183,7 @@ export class ChangeEmailScreen extends React.Component{
                   secureTextEntry
                 />
                 <TouchableOpacity 
-                  style = {ChangeEmailStyles.recover}
+                  style = {ChangeEmailStyles.modalButtom}
                   onPress={() => {handleLogin()}}
                 >
                   <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Login</Text>
@@ -309,6 +317,25 @@ const ChangeEmailStyles = StyleSheet.create ({
     color:'#23C2DF',
     fontWeight:'600',
     marginTop:30
+  },
+  modalButtom:{
+    width: width * 0.8,
+    height: 50,
+    backgroundColor:'#23C2DF',
+    marginTop:40,
+    marginBottom: 10,
+    borderRadius:30,
+    alignSelf:'center',
+    justifyContent:'center'
+  },
+  modalInput: {
+    width: width*0.8,
+    height: 50,
+    paddingLeft: 20,
+    marginVertical: 20,
+    borderRadius:30,
+    alignSelf:'center',
+    backgroundColor:'#F1F4FF'
   },
   icons:{
     alignItems:'center', 
