@@ -13,18 +13,16 @@ Search.js
 
 /******************** Imports Section ********************/ 
 
-// Imports for the react components add buttons, images, text, etc
-import React, {useState, useRef} from 'react';  
-import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TextInput, TouchableOpacity, ImageBackground} from 'react-native'; 
 import axios from 'axios';
 import {Animated} from 'react-native';
-
-import "react-native-url-polyfill/auto"
+import "react-native-url-polyfill/auto";
+import React, {useState, useRef} from 'react';  
 import { Ionicons } from '@expo/vector-icons';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { apiKey, googleKey, customSearchKey, searchEngineId} from '../../config/keys-config'
-import { listsPlan, savedRoutes, routeNewYork, routeParis } from '../../testVariables';
 import { generatePrompt } from '../../prompt';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { apiKey, googleKey, customSearchKey, searchEngineId} from '../../config/keys-config';
+import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TextInput, TouchableOpacity, ImageBackground} from 'react-native'; 
+
 
 
 
@@ -52,20 +50,20 @@ export class SearchScreen extends React.Component {
   pontosScreen = () => {
     
     // Variables for storing purposes
-    const [selectedCity, setSelectedCity] = useState(null);         // Contains the value of the selected city                                                                                                                     // Contains all the countries received from the API
-    const [selectedNumber, setSelectedNumber] = useState('');       // Contains the value of the selected days
-    const [isValidInput, setValidInput] = useState('');             // Contains the error message if a non valid city is selected
     var listsPlan2 = [];                                            // Contains the route plan after the AI is called
+    const [isValidInput, setValidInput] = useState('');             // Contains the error message if a non valid city is selected
+    const [selectedCity, setSelectedCity] = useState('');           // Contains the value of the selected city                                                                                                                     // Contains all the countries received from the API
+    const [selectedNumber, setSelectedNumber] = useState('');       // Contains the value of the selected days
 
     // Variables for control purposes
-    const [loading, setLoading] = useState(false);                  // Controls if Search/Loading page is shown
     const [isNext, setNext] = useState(false);                      // Controls if City/Number of days input is shown
+    const [loading, setLoading] = useState(false);                  // Controls if Search/Loading page is shown
     const [isResponse, setReponse] =useState(false);                // Controls which text appears in the loading page (waiting for Ai or loading images)
     
     // Variables for animation purposes
-    const translation = useRef(new Animated.Value(0)).current;
-    const fadeWhere = useRef(new Animated.Value(1)).current;
     const fadeHow = useRef(new Animated.Value(0)).current;
+    const fadeWhere = useRef(new Animated.Value(1)).current;
+    const translation = useRef(new Animated.Value(0)).current;
 
     //_____ Functions related to the images API ____//
 
@@ -218,10 +216,11 @@ export class SearchScreen extends React.Component {
           setValidInput('')
           setLoading(true); 
           this.props.navigation.getParent().setOptions({tabBarStyle: {display: 'none'}});
-          getPlan(this.props.navigation, selectedCity, selectedNumber);
+          await getPlan(this.props.navigation, selectedCity, selectedNumber);
           setNext(false);
-          setValidInput(null);
-          setSelectedCity(null);
+          setValidInput('');
+          setSelectedCity('');
+          setSelectedNumber('');
         }
         else{
           setValidInput('Please select a valid number (1 to 10)')
@@ -238,6 +237,7 @@ export class SearchScreen extends React.Component {
       }
     }
 
+    // Handles back button
     const handleBack = () => {
       setSelectedCity('');
       setSelectedNumber(null);
@@ -269,9 +269,8 @@ export class SearchScreen extends React.Component {
         )
         setReponse(true);
         listsPlan2 = JSON.parse(result.data.choices[0].text);
-        //console.log(listsPlan2);
-
-        createImagesUrls(navigation, cityName);
+    
+        await createImagesUrls(navigation, cityName);
 
       } catch (error) {
         console.error('Error fetching AI response:', error);
@@ -290,33 +289,28 @@ export class SearchScreen extends React.Component {
 
     // Defines the screen components
     if(!loading){
-      
       return (
         <View style = {PlansScreenStyles.container}>
           <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../../Images/SearchBackground.jpg')}>
 
-              {/* <View style = {{flex:1, width:'100%', justifyContent:'center', alignItems:'center'}}>
-                <Image  style = {PlansScreenStyles.imageLogo} source = {require('../Images/Logo.png')}/>
-              </View> */}
-
-              {isNext && 
-                <View style = {{flex:1, justifyContent:'flex-start', marginTop:30, paddingLeft:15}}>
-                  <TouchableOpacity
-                    onPress={() => {handleBack()}}
-                    style={{
-                    width: 45,
-                    height: 45,
-                    borderRadius: 30,
-                    backgroundColor: '#FFFFFF',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginLeft:15,
-                    }}
+            {isNext && 
+              <View style = {{flex:1, justifyContent:'flex-start', marginTop:30, paddingLeft:15}}>
+                <TouchableOpacity
+                  onPress={() => {handleBack()}}
+                  style={{
+                  width: 45,
+                  height: 45,
+                  borderRadius: 30,
+                  backgroundColor: '#FFFFFF',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginLeft:15,
+                  }}
                 >
-                    <Ionicons name="chevron-back-sharp" size={30} color="black" />
+                  <Ionicons name="chevron-back-sharp" size={30} color="black" />
                 </TouchableOpacity>
-                </View>
-              }
+              </View>
+            }
 
             <View style = {{ flex:1, justifyContent:'flex-end'}}>
               <View style = {{alignSelf:'flex-start', justifyContent:'center', width:'80%', paddingLeft:20}}>
@@ -325,135 +319,106 @@ export class SearchScreen extends React.Component {
                 {isNext && <Animated.Text style = {{fontSize:42, fontWeight:'600', color:'#fff', opacity: fadeHow}}>How many days of exploration?</Animated.Text>}
               </View>
             
-            {isValidInput != null && (
-              <Text style = {{paddingLeft:30, fontSize:15, color:'red'}}>{isValidInput}</Text>
-            )}
-
-            <View style = {{ flexDirection:'row', justifyContent:'space-between', margin:20, marginBottom:80}}>
-              {/* Country Dropdown */}
-              
-              {/* <View style = {{width:'80%', height:'100', marginRight:10}}> */}
-              {!isNext && ( 
-                
-                <GooglePlacesAutocomplete
-                  placeholder = "City"
-                  styles={{
-                    container: {
-                      flex:1,
-                      width: '100%',
-                      height:'100%',
-
-                    },
-                    textInput: {
-                      textAlign: 'left',
-                      paddingLeft:30,
-                      height: 50,
-                      borderRadius: 30,
-                      fontSize: 15,
-                      backgroundColor: '#F1F4FF',
-                    },
-                    separator: {
-                      height: 1,
-                      backgroundColor: '#23C2DF',
-                    },
-                    row: {
-                      backgroundColor: '#F1F4FF',
-                      padding: 13,
-                      height: 44,
-                      flexDirection: 'row',
-                    },
-                  }}
-                  enablePoweredByContainer = {false}
-                  minLength={2}
-                  debounce={500}
-                  onPress={ (data) => {setSelectedCity(data.description)}}
-                  query={{ key: googleKey, language: 'en', types : '(cities)'}}
-                  onFail={(error) => console.error(error)}
-                  onNotFound={() => console.log('no results')}
-                />
-
+              {isValidInput != null && (
+                <Text style = {{paddingLeft:30, fontSize:15, color:'red'}}>{isValidInput}</Text>
               )}
 
-              {/*  </View> */}
-
-              {/* <View style = {{width:'80%', height:'100', marginRight:10}}> */}
+              <View style = {{ flexDirection:'row', justifyContent:'space-between', margin:20, marginBottom:80}}>
               
-              {isNext && ( 
+                {/* Country Dropdown */}
+                {!isNext && ( 
+                  <GooglePlacesAutocomplete
+                    placeholder = "City"
+                    styles={{
+                      container: {
+                        flex:1,
+                        width: '100%',
+                        height:'100%',
+                      },
+                      textInput: {
+                        textAlign: 'left',
+                        paddingLeft:30,
+                        height: 50,
+                        borderRadius: 30,
+                        fontSize: 15,
+                        backgroundColor: '#F1F4FF',
+                      },
+                      separator: {
+                        height: 1,
+                        backgroundColor: '#23C2DF',
+                      },
+                      row: {
+                        backgroundColor: '#F1F4FF',
+                        padding: 13,
+                        height: 44,
+                        flexDirection: 'row',
+                      },
+                    }}
+                    enablePoweredByContainer = {false}
+                    minLength={2}
+                    debounce={500}
+                    onPress={ (data) => {setSelectedCity(data.description)}}
+                    query={{ key: googleKey, language: 'en', types : '(cities)'}}
+                    onFail={(error) => console.error(error)}
+                    onNotFound={() => console.log('no results')}
+                  />
+                )}
 
-                <TouchableOpacity style = {{width:'87%',justifyContent:'center', borderRadius:30, height:50, backgroundColor: '#F1F4FF'}}>
-                    <TextInput
-                      style = {{textAlign:'left', fontSize:15, paddingLeft:30}}
-                      onChangeText={setSelectedNumber}
-                      value={selectedNumber}
-                      placeholder="Number of days"
-                    />
-                </TouchableOpacity> 
-
-              )}
-
-              {/*  </View> */}
-
-              {/* Route Up button */}
-            
-              <TouchableOpacity onPress={() => {handleNext()}}>
-                <Ionicons name="arrow-forward-circle-outline" size={50} color="#23C2DF" />
-              </TouchableOpacity>
-          
+                {isNext && ( 
+                  <TouchableOpacity style = {{width:'87%',justifyContent:'center', borderRadius:30, height:50, backgroundColor: '#F1F4FF'}}>
+                      <TextInput
+                        style = {{textAlign:'left', fontSize:15, paddingLeft:30}}
+                        onChangeText={setSelectedNumber}
+                        value={selectedNumber}
+                        placeholder="Number of days"
+                      />
+                  </TouchableOpacity> 
+                )}
+               
+                {/* Route Up button */}
+                <TouchableOpacity onPress={() => {handleNext()}}>
+                  <Ionicons name="arrow-forward-circle-outline" size={50} color="#23C2DF" />
+                </TouchableOpacity>
+              </View>
             </View>
-            </View>
-
           </ImageBackground>
         </View>
       );
     } 
     else{
       return ( 
-       
         <ImageBackground source = {require('../../Images/BackgroundHome.png')} style= {{justifyContent:'center', alignItems:'center',  width:'100%', height:'100%', resizeMode:'contain'}}>
+          
           {/* Show Logo */}
           <Image
-          source={require('../../Images/Logo.png')}
-          style = {LoadingScreenStyle.imageLogo}
-          resizeMode='contain'
+            source={require('../../Images/Logo.png')}
+            style = {LoadingScreenStyle.imageLogo}
+            resizeMode='contain'
           />
 
-          {/* Title and subtitle */}
-          {!isResponse &&
-            <Text style = {LoadingScreenStyle.titleText}> Generating your response</Text>
-           
-          }
-          {!isResponse &&
-            <Text style = {LoadingScreenStyle.subtitleText}> Wait a moment</Text>
-          }
+          {/* Title and subtitle - Waiting for ChatGPT */}
+          {!isResponse && <Text style = {LoadingScreenStyle.titleText}> Generating your response</Text>}
 
-          {isResponse &&
-            <Text style = {LoadingScreenStyle.titleText}> AI response generated</Text>
-           
-          }
-          {isResponse &&
-            <Text 
-            style = {LoadingScreenStyle.subtitleText}>  
-             Loading images...</Text>
-          }
+          {!isResponse && <Text style = {LoadingScreenStyle.subtitleText}> Wait a moment</Text>}
+
+          {/* Title and subtitle - Waiting for Images */}
+          {isResponse && <Text style = {LoadingScreenStyle.titleText}> AI response generated</Text>}
+
+          {isResponse && <Text style = {LoadingScreenStyle.subtitleText}>Loading images...</Text>}
           
-          <Text> {" "}</Text>
-
           {/* Loading indicator */}
-          <ActivityIndicator size="large"/>
+          <ActivityIndicator size="large" style={{margin:20}}/>
         </ImageBackground>
-       
       )
     }
   }
 
   // Renders the screen components defined in the pontosScreen function
   render() { 
-   
     return (
       <this.pontosScreen></this.pontosScreen>
     ) 
   }
-   
 }
 
 

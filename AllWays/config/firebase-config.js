@@ -2,11 +2,11 @@
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
-import { initializeApp, getApp } from "firebase/app";
-import { initializeAuth, getAuth, getReactNativePersistence, signOut, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, sendEmailVerification, verifyBeforeUpdateEmail } from 'firebase/auth';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import { getFirestore, setDoc, doc, addDoc, collection, query, where, getDocs, deleteDoc, onSnapshot } from "firebase/firestore";
 import { useState, useEffect } from "react";
+import { initializeApp, getApp } from "firebase/app";
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { getFirestore, setDoc, doc, addDoc, collection, query, where, getDocs, deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import { initializeAuth, getAuth, getReactNativePersistence, signOut, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, sendEmailVerification, verifyBeforeUpdateEmail } from 'firebase/auth';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDgn7Iudefpu_5lHWg5Jb-TMk6ZN5MsLcs",
@@ -117,7 +117,6 @@ async function insertRoute(route, imageRoute, city, days){
   } catch (e) {
     console.error("Error adding document: ", e);
   }
-
 }
 
 async function resetPassword(email){
@@ -239,6 +238,22 @@ async function verifyBeforeUpdate(email){
   } 
 }
 
+async function updateRoute(id, route){
+  // Add a new document with a generated id.
+  try {
+
+    // Get reference
+    const docRef = doc(db, "routes", id);
+
+    // Perform the update
+    await updateDoc(docRef, {route: route});
+    console.log('Route updated successfully');
+
+  } catch (e) {
+    console.error("Error updating route: ", e);
+  }
+}
+
 export {  
           getApp, 
           getAuth, 
@@ -247,7 +262,8 @@ export {
           insertUser, 
           deleteUser, 
           updateUser, 
-          insertRoute, 
+          insertRoute,
+          updateRoute, 
           deleteRoute, 
           resetPassword, 
           changePassword, 

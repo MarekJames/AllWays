@@ -12,12 +12,13 @@ Activities.js
 /******************** Imports Section ********************/ 
 
 // Imports for the react components add buttons, images, text, etc
-import React, {useState, useEffect} from 'react';  
-import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, Linking, ImageBackground} from 'react-native'; 
 import axios from 'axios';
 import "react-native-url-polyfill/auto"
 import { Ionicons } from '@expo/vector-icons';
-import { customSearchKey, searchEngineId} from '../../config/keys-config'
+import React, {useState, useEffect} from 'react';
+import { updateRoute } from '../../config/firebase-config';  
+import { customSearchKey, searchEngineId } from '../../config/keys-config'
+import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, Linking, ImageBackground} from 'react-native'; 
 
 
 
@@ -44,9 +45,8 @@ export class ActivitiesScreen extends React.Component{
   activities = () => {
 
     const { route } = this.props;
-    const { routePlan, city } = route.params;
-  
     const [imagesLoaded, setImagesLoaded] = useState(false);
+    const { listsPlan, routePlan, city, savedRoutes, routeId } = route.params;
     
     const getImageUrl = async (query,index, counter) => {
       // Call the google search engine here
@@ -71,18 +71,29 @@ export class ActivitiesScreen extends React.Component{
 
     const createImagesUrls = async () => {
       var counter = 0;
-      //Loop through the activities and put the url in the routePlan object
-      await routePlan.activities.forEach(async (item, index) => {
-        if(index != 0) await getImageUrl(item.name + ', ' + city,index,0);
       
-        //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
+      // Loop through the activities and put the url in the routePlan object
+      await routePlan.activities.forEach(async (item, index) => {
+        if(index != 0) await getImageUrl(item.name + ', ' + city,index, 0);
+      
+        // Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
         counter++;
-        if(counter == 5){setImagesLoaded(true);}
+        if(counter == 5){
+
+          // Activities loaded from a saved route
+          if(savedRoutes){
+
+            // Update route in DB
+            updateRoute(routeId, listsPlan);
+          }
+          setImagesLoaded(true);
+        }
       });
     }
 
     // Called when the screen is loaded
     useEffect(() => {
+      
       // Only call the API if the field imageUrl doesn't exist
       if(!routePlan.activities[1].imageUrl){
         createImagesUrls();

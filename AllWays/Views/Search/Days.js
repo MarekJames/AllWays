@@ -45,10 +45,10 @@ export class DaysScreen extends React.Component {
   lists = () => {
     
     const { route } = this.props;
-    const { savedRoutes, listsPlan, city, days, imageRoute} = route.params;
-   
+    const { savedRoutes, listsPlan, city, days, imageRoute, routeId } = route.params;
+
     return listsPlan.map((item, index) => (
-      <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {this.props.navigation.navigate('Activities', {savedRoutes: savedRoutes, listsPlan:listsPlan, routePlan:listsPlan[index], city: city, days:days, imageRoute: imageRoute})}}>
+      <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {this.props.navigation.navigate('Activities', { savedRoutes: savedRoutes, listsPlan:listsPlan, routePlan:listsPlan[index], city: city, days:days, imageRoute: imageRoute, routeId: routeId != null ? routeId : 0 })}}>
           {/* Image at the top occupying 50% of the square */}
           <Image
             source={{ uri: item.imageUrl }}
