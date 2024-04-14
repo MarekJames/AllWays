@@ -1,7 +1,9 @@
 
+import { useFonts } from 'expo-font';
 import { getAuth } from 'firebase/auth';
-import React, { useEffect, useRef } from 'react';
+import * as SplashScreen from 'expo-splash-screen';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -21,6 +23,8 @@ import { ChangePasswordScreen } from './Views/Settings/ChangePassword.js';
 import { AccountSettingsScreen } from './Views/Settings/AccountSettings.js';
 import { TermsConditionsScreen } from './Views/Settings/Terms&Conditions.js';
 import { LoginUserScreen, RegisterUserScreen } from './Views/Login/User.js';
+
+SplashScreen.preventAutoHideAsync();
 
 const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
@@ -123,7 +127,25 @@ class HomeScreen extends React.Component {
   HomeScreen = () => {
 
     const fade = useRef(new Animated.Value(0)).current;
-   
+    const [fontsLoaded, fontError] = useFonts({
+      'Poppins-Light': require('./Fonts/Poppins-Light.ttf'),
+      'Poppins-SemiBold': require('./Fonts/Poppins-SemiBold.ttf'),
+      'Poppins-Bold': require('./Fonts/Poppins-Bold.ttf'),
+      'Poppins-Medium': require('./Fonts/Poppins-Medium.ttf'),
+    });
+  
+    const onLayoutRootView = useCallback(async () => {
+      
+      fadeIn(); 
+      if (fontsLoaded || fontError) {
+        await SplashScreen.hideAsync();
+      }
+    }, [fontsLoaded, fontError]);
+  
+    if (!fontsLoaded && !fontError) {
+      return null;
+    }
+
     const fadeIn = () => {
       Animated.timing(fade, {
         toValue: 1,
@@ -132,12 +154,8 @@ class HomeScreen extends React.Component {
       }).start();
     };
 
-    useEffect(() => {
-       fadeIn();  
-    },);
-  
     return ( 
-      <View style = {{height:'100%', width:'100%'}}> 
+      <View style = {{height:'100%', width:'100%'}} onLayout={onLayoutRootView}> 
       
       {/* Background Image */}
       <ImageBackground
@@ -150,7 +168,7 @@ class HomeScreen extends React.Component {
           
           <Animated.Image
           source = {require('./Images/Logo.png')}
-          style = {{width:'80%', height:'20%', top:'40%', opacity:fade}}
+          style = {{width:'70%', height:'20%', top:'40%', opacity:fade}}
           resizeMode='contain'
           />
         </View>
@@ -184,26 +202,20 @@ export default function App() {
   const [loading, setLoading] = React.useState(true);
  
   React.useEffect( () =>{
-
     const unsubscribe = getAuth().onAuthStateChanged(userp => {
       setUser(userp);
       setLoading(false);
     })
-
     return unsubscribe;
-    
   }, []);
 
-
   return (
-  
       <NavigationContainer>
-
-            {/* Rest of your app code */}
-            { !loading && (user  ? <BottomTabNavigator /> : <StackNavigator />)}
+        
+        {/* Rest of your app code */}
+        { !loading && (user  ? <BottomTabNavigator /> : <StackNavigator />)}
             
       </NavigationContainer>
-  
   );   
 }
 
@@ -211,41 +223,37 @@ const stylesHomeScreen = StyleSheet.create({
   startText: {
     fontSize: 20,
     fontWeight:'500',
-    display: 'flex',
     color: '#000000',
+    textAlign:'center',
+    fontFamily:'Poppins-SemiBold',
   },
   imageBackground: {
-    width: '100%', // You can adjust width and height as needed
+    width: '100%',
     height: '100%',
   },
   containerLogo:{
     flex:1,
+    resizeMode:'cover',
     alignItems:'center',
-    resizeMode:'cover'
   },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-  },
-
   createButton: {
-    backgroundColor:'#23C2DF',
-    alignSelf: 'center',
     margin:10,
     height: 60,
     width:'80%',
     borderRadius:30,
+    alignItems:'center',
+    alignSelf: 'center',
     justifyContent:'center',
-    alignItems:'center'
+    backgroundColor:'#23C2DF',
   },
   loginButton: {
-    backgroundColor:'#FFFFFF',
-    alignSelf: 'center',
     margin:10,
     height: 60,
     width:'80%',
     borderRadius:30,
+    alignItems:'center',
+    alignSelf: 'center',
     justifyContent:'center',
-    alignItems:'center'
+    backgroundColor:'#FFFFFF',
   },
 });

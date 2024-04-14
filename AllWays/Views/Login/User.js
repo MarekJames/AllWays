@@ -18,7 +18,6 @@ import { CheckBox } from 'react-native-elements'; // Assuming react-native-eleme
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { getAuth, sendValidationEmail } from '../../config/firebase-config';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
-//import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 /******************* Global Variables ********************/
 
@@ -92,9 +91,6 @@ export class LoginUserScreen extends React.Component{
         alert('Something went wrong, please try again');
       }
     };
-
-    const handleForgotPassword = async () => {
-    }
 
     return (
       <View style={LoginUserStyles.container}>
@@ -410,11 +406,11 @@ const LoginUserStyles = StyleSheet.create ({
 },
   title: {
     fontSize: 30,
-    fontWeight: 'bold',
     marginBottom: 20,
     marginTop:100,
     color:'#23C2DF',
-    alignSelf:'center'
+    alignSelf:'center',
+    fontFamily:'Poppins-Bold',
   },
   subTitle:{
     fontSize: 20,
@@ -423,7 +419,8 @@ const LoginUserStyles = StyleSheet.create ({
     color:'#494949',
     textAlign:'center',
     width:'50%',
-    alignSelf:'center'
+    alignSelf:'center',
+    fontFamily:'Poppins-SemiBold',
   },
   input: {
     width: '80%',
@@ -432,7 +429,8 @@ const LoginUserStyles = StyleSheet.create ({
     marginBottom: 20,
     borderRadius:30,
     alignSelf:'center',
-    backgroundColor:'#F1F4FF'
+    backgroundColor:'#F1F4FF',
+    fontFamily:'Poppins-Medium',
   },
   forgotPassword: {
     textAlign: 'center',
@@ -440,7 +438,8 @@ const LoginUserStyles = StyleSheet.create ({
     marginTop: 20,
     fontSize: 14,
     fontWeight: '600',
-    color:'#23C2DF'
+    color:'#23C2DF',
+    fontFamily:'Poppins-SemiBold',
   },
   forgotPasswordModal:{
     backgroundColor:'rgba(220, 220, 220, 0.95)',
@@ -460,6 +459,7 @@ const LoginUserStyles = StyleSheet.create ({
     fontSize:14,
     color:'#494949',
     fontWeight: '600',
+    fontFamily:'Poppins-SemiBold',
   },
   socialLogin: {
     marginTop: 20,
@@ -469,7 +469,8 @@ const LoginUserStyles = StyleSheet.create ({
     fontSize:14,
     color:'#23C2DF',
     fontWeight:'600',
-    marginTop:50
+    marginTop:50,
+    fontFamily:'Poppins-SemiBold',
   },
   signIn: {
     width: '80%',
@@ -478,7 +479,8 @@ const LoginUserStyles = StyleSheet.create ({
     padding: 10,
     marginBottom: 20,
     borderRadius:30,
-    alignSelf:'center'
+    alignSelf:'center',
+    fontFamily:'Poppins-SemiBold',
   },
   icons:{
     alignItems:'center', 

@@ -12,8 +12,9 @@ HelpCenter.js
 /******************** Imports Section ********************/ 
 
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Linking } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+
 
 
 
@@ -28,39 +29,15 @@ import { Ionicons } from '@expo/vector-icons';
 export class HelpCenterScreen extends React.Component{
   
   helpCenterScreen = () => {
-    
-    const [name, setName] = useState('');
-    const [invalidName, setInvalidName] = useState('');
-    const [message, setMessage] = useState('');
-    const [invalidMessage, setInvalidMessage] = useState('');
-    
+     
     const handleEmailPress = () => {
-      const email = 'abreu.hugo50@gmail.com';
-      const subject = 'This is the subject';
-      const body = 'This is the body of the email';
+      const email = 'app.allways@gmail.com';
+      const subject = '<Your subject here>';
+      const body = '<Your question/suggestion here>';
     
       const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
       Linking.openURL(mailtoLink);
     };
-
-    const handleSubmit = async () => {
-        
-        if(!name){
-            setInvalidName('Please input your name');
-        }
-        if(!message){
-            setInvalidMessage('Please write your question');
-        }
-        if(name && invalidName){
-            setInvalidName('');
-        }
-        if(message && invalidMessage){
-            setInvalidMessage('');
-        }
-        else{
-        
-        }
-    }
 
     return (
       <View style={HelpCenterStyles.container}>
@@ -91,9 +68,9 @@ export class HelpCenterScreen extends React.Component{
         </View>
 
         <Text style={HelpCenterStyles.subTitle}>Send Us A Question / Suggestion</Text>
-        
+
         <TouchableOpacity onPress={handleEmailPress}>
-          <Text style={HelpCenterStyles.email}>allways@gmail.com</Text>
+          <Text style={HelpCenterStyles.email}>app.allways@gmail.com</Text>
         </TouchableOpacity>
 
         </ImageBackground>
@@ -121,86 +98,32 @@ const HelpCenterStyles = StyleSheet.create ({
     backgroundColor:'white'
   },
   imageBackground:{
-      flex: 1,
-      width: '100%', // You can adjust width and height as needed
-      height: '100%',
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   title: {
+    flex:1,
     fontSize: 30,
-    fontWeight: 'bold',
+    marginRight:55,
     color:'#000000',
     alignSelf:'center',
     textAlign:'center',
-    flex:1,
-    marginRight:55
+    fontWeight: 'bold',
   },
   subTitle: {
     fontSize: 20,
-    marginBottom: 30,
+    marginLeft:25,
     color:'#494949',
+    marginBottom: 30,
     fontWeight:'600',
-    marginLeft:25
   },
   email: {
     fontSize: 20,
+    marginLeft:25,
+    color:'#2100E8',
     fontWeight:'600',
     textAlign:'left',
-    color:'#2100E8',
-    marginLeft:25,
     textDecorationLine:'underline'
   },
-  input: {
-    width: '80%',
-    height: 50,
-    paddingHorizontal: 20,
-    marginVertical: 10,
-    borderRadius:30,
-    alignSelf:'center',
-    backgroundColor:'#F1F4FF'
-  },
-  inputTextArea: {
-    width: '80%',
-    padding: 20,
-    marginVertical: 10,
-    borderRadius:30,
-    alignSelf:'center',
-    backgroundColor:'#F1F4FF',
-    height:'40%',
-    textAlignVertical: 'top'
-    
-  },
-  alreadyHaveAccount: {
-    textAlign: 'center',
-    fontSize: 14,
-    marginTop: 20,
-    fontWeight:'600',
-    color:'#494949'
-  },
-  recover: {
-    width: '80%',
-    height: 50,
-    backgroundColor:'#23C2DF',
-    marginTop:10,
-    marginBottom: 10,
-    borderRadius:30,
-    alignSelf:'center',
-    justifyContent:'center'
-  },
-  continueWith:{
-    textAlign:'center',
-    fontSize:14,
-    color:'#23C2DF',
-    fontWeight:'600',
-    marginTop:30
-  },
-  icons:{
-    alignItems:'center', 
-    justifyContent:'center', 
-    width:60, 
-    height:50, 
-    borderRadius: 10, 
-    backgroundColor:'#ECECEC',
-    marginHorizontal:10
-  }
- 
 })

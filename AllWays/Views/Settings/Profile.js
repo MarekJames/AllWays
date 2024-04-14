@@ -85,7 +85,7 @@ export class ProfileScreen extends React.Component{
     );
 
     return (
-      <ImageBackground source = {require('../../Images/BackgroundHome.png')} style = {{ backgroundColor:'#fff',flex:1, width:'100%',height:'13%'}}>
+      <ImageBackground source = {require('../../Images/BackgroundHome.jpg')} style = {{ backgroundColor:'#fff',flex:1, width:'100%',height:'13%'}}>
 
           {/* Avatar Name and Email */}
           <View style={ProfileScreenStyles.profileContainer}>
