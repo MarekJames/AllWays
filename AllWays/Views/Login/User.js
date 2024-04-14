@@ -18,7 +18,6 @@ import { CheckBox } from 'react-native-elements'; // Assuming react-native-eleme
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { getAuth, sendValidationEmail } from '../../config/firebase-config';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
-//import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 /******************* Global Variables ********************/
 

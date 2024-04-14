@@ -387,7 +387,7 @@ export class SearchScreen extends React.Component {
     } 
     else{
       return ( 
-        <ImageBackground source = {require('../../Images/BackgroundHome.png')} style= {{justifyContent:'center', alignItems:'center',  width:'100%', height:'100%', resizeMode:'contain'}}>
+        <ImageBackground source = {require('../../Images/BackgroundHome.jpg')} style= {{justifyContent:'center', alignItems:'center',  width:'100%', height:'100%', resizeMode:'contain'}}>
           
           {/* Show Logo */}
           <Image
