@@ -103,7 +103,7 @@ export class SavedRoutesScreen extends React.Component{
         
         {/* Title and background image */}
         <View style={SavedRoutesStyles.imageBackground}> 
-          <ImageBackground source={require('../../Images/BackgroundSaved.png')} style={SavedRoutesStyles.imageTitle} >
+          <ImageBackground source={require('../../Images/BackgroundSaved.jpg')} style={SavedRoutesStyles.imageTitle} >
             <View style = {{flex:1, justifyContent:'flex-end', alignItems:'left', marginBottom:10, marginLeft:20}}>
               <Text style ={SavedRoutesStyles.title}>Saved Routes</Text> 
             </View>
