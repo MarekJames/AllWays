@@ -14,14 +14,16 @@ Search.js
 /******************** Imports Section ********************/ 
 
 import axios from 'axios';
+import { useFonts } from 'expo-font';
 import {Animated} from 'react-native';
 import "react-native-url-polyfill/auto";
-import React, {useState, useRef} from 'react';  
-import { Ionicons } from '@expo/vector-icons';
 import { generatePrompt } from '../../prompt';
+import * as SplashScreen from 'expo-splash-screen';
+import { Ionicons, Feather } from '@expo/vector-icons';
+import React, {useState, useRef, useCallback} from 'react';  
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { apiKey, googleKey, customSearchKey, searchEngineId} from '../../config/keys-config';
-import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TextInput, TouchableOpacity, ImageBackground} from 'react-native'; 
+import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ImageBackground, Switch} from 'react-native'; 
 
 
 
@@ -64,6 +66,24 @@ export class SearchScreen extends React.Component {
     const fadeHow = useRef(new Animated.Value(0)).current;
     const fadeWhere = useRef(new Animated.Value(1)).current;
     const translation = useRef(new Animated.Value(0)).current;
+    const [fontsLoaded, fontError] = useFonts({
+      'Poppins-Light': require('../../Fonts/Poppins-Light.ttf'),
+      'Poppins-SemiBold': require('../../Fonts/Poppins-SemiBold.ttf'),
+      'Poppins-Bold': require('../../Fonts/Poppins-Bold.ttf'),
+      'Poppins-Medium': require('../../Fonts/Poppins-Medium.ttf'),
+    });
+    const [isEnabled, setIsEnabled] = useState(false);
+    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+    const onLayoutRootView = useCallback(async () => {
+      if (fontsLoaded || fontError) {
+        await SplashScreen.hideAsync();
+      }
+    }, [fontsLoaded, fontError]);
+  
+    if (!fontsLoaded && !fontError) {
+      return null;
+    }
 
     //_____ Functions related to the images API ____//
 
@@ -237,14 +257,11 @@ export class SearchScreen extends React.Component {
       }
     }
 
-    // Handles back button
-    const handleBack = () => {
+    const handleClear = () => {
       setSelectedCity('');
-      setSelectedNumber(null);
+      setSelectedNumber('');
       setValidInput('');
-      fadeOutHow();
     }
-
     //_____ Functions related to the AI ____//
 
     // Calls the AI 
@@ -290,96 +307,101 @@ export class SearchScreen extends React.Component {
     // Defines the screen components
     if(!loading){
       return (
-        <View style = {PlansScreenStyles.container}>
+        <View style = {PlansScreenStyles.container} onLayout={onLayoutRootView}>
           <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../../Images/SearchBackground.jpg')}>
 
-            {isNext && 
-              <View style = {{flex:1, justifyContent:'flex-start', marginTop:30, paddingLeft:15}}>
-                <TouchableOpacity
-                  onPress={() => {handleBack()}}
-                  style={{
-                  width: 45,
-                  height: 45,
-                  borderRadius: 30,
-                  backgroundColor: '#FFFFFF',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft:15,
-                  }}
-                >
-                  <Ionicons name="chevron-back-sharp" size={30} color="black" />
-                </TouchableOpacity>
-              </View>
-            }
+            <View style = {{ justifyContent:'center', alignItems:'center'}}>
 
-            <View style = {{ flex:1, justifyContent:'flex-end'}}>
-              <View style = {{alignSelf:'flex-start', justifyContent:'center', width:'80%', paddingLeft:20}}>
-                <Text style = {{fontSize:20, color:'#fff', fontWeight:'200'}}>Welcome to AllWays</Text>
-                {!isNext && <Animated.Text style = {{fontSize:42, fontWeight:'600', color:'#fff',transform:[{translateX:translation }], opacity: fadeWhere }}>Where do you want to go?</Animated.Text>}
-                {isNext && <Animated.Text style = {{fontSize:42, fontWeight:'600', color:'#fff', opacity: fadeHow}}>How many days of exploration?</Animated.Text>}
+             <Image
+                source={require('../../Images/Logo.png')}
+                style = {LoadingScreenStyle.imageLogo}
+                resizeMode='contain'
+              />
+          
+              <View style = {{alignSelf:'flex-start', justifyContent:'center', width:width*0.8, paddingLeft: width*0.075}}>
+               <Animated.Text style = {{fontSize:42, fontFamily:'Poppins-SemiBold', color:'#fff',transform:[{translateX:translation }], opacity: fadeWhere }}>Where and when to go?</Animated.Text>
               </View>
             
               {isValidInput != null && (
                 <Text style = {{paddingLeft:30, fontSize:15, color:'red'}}>{isValidInput}</Text>
               )}
 
-              <View style = {{ flexDirection:'row', justifyContent:'space-between', margin:20, marginBottom:80}}>
+                {/* Where ? Button */}
+                <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#F1F4FF', margin:5}}>
+                  <View style = {{flexDirection:'row', alignItems:'center'}}>
+                    <Feather name="map-pin" size={20} color="#1B115C" style = {{margin:15}}/>
+                    <View>
+                      <Text style = {{color:'#1B115C', fontSize:14, fontFamily:'Poppins-Medium'}}>Search</Text>
+                      <Text style = {{color:'#585858', fontSize:14, fontFamily:'Poppins-Medium'}}>Select City</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity> 
+                {/*
+                <GooglePlacesAutocomplete
+                  placeholder = "City"
+                  styles={{
+                    container: {
+                      flex:1,
+                      width: '100%',
+                      height:'100%',
+                    },
+                    textInput: {
+                      textAlign: 'left',
+                      paddingLeft:30,
+                      height: 50,
+                      borderRadius: 30,
+                      fontSize: 15,
+                      backgroundColor: '#F1F4FF',
+                    },
+                    separator: {
+                      height: 1,
+                      backgroundColor: '#23C2DF',
+                    },
+                    row: {
+                      backgroundColor: '#F1F4FF',
+                      padding: 13,
+                      height: 44,
+                      flexDirection: 'row',
+                    },
+                  }}
+                  enablePoweredByContainer = {false}
+                  minLength={2}
+                  debounce={500}
+                  onPress={ (data) => {setSelectedCity(data.description)}}
+                  query={{ key: googleKey, language: 'en', types : '(cities)'}}
+                  onFail={(error) => console.error(error)}
+                  onNotFound={() => console.log('no results')}
+                /> */}
               
-                {/* Country Dropdown */}
-                {!isNext && ( 
-                  <GooglePlacesAutocomplete
-                    placeholder = "City"
-                    styles={{
-                      container: {
-                        flex:1,
-                        width: '100%',
-                        height:'100%',
-                      },
-                      textInput: {
-                        textAlign: 'left',
-                        paddingLeft:30,
-                        height: 50,
-                        borderRadius: 30,
-                        fontSize: 15,
-                        backgroundColor: '#F1F4FF',
-                      },
-                      separator: {
-                        height: 1,
-                        backgroundColor: '#23C2DF',
-                      },
-                      row: {
-                        backgroundColor: '#F1F4FF',
-                        padding: 13,
-                        height: 44,
-                        flexDirection: 'row',
-                      },
-                    }}
-                    enablePoweredByContainer = {false}
-                    minLength={2}
-                    debounce={500}
-                    onPress={ (data) => {setSelectedCity(data.description)}}
-                    query={{ key: googleKey, language: 'en', types : '(cities)'}}
-                    onFail={(error) => console.error(error)}
-                    onNotFound={() => console.log('no results')}
+                {/* When ?  Button*/}
+                <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#F1F4FF', margin:5}}>
+                  <View style = {{flexDirection:'row', alignItems:'center'}}>
+                    <Feather name="calendar" size={20} color="#1B115C" style = {{margin:15}}/>
+                    <View>
+                      <Text style = {{color:'#1B115C', fontSize:14, fontFamily:'Poppins-Medium'}}>When</Text>
+                      <Text style = {{color:'#585858', fontSize:14, fontFamily:'Poppins-Medium'}}>Select Dates</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity> 
+                
+                <View style = {{flexDirection:'row', justifyContent:'left', width:width, paddingLeft: width*0.075}}>
+                  <Switch
+                    trackColor={{false: '#767577', true: '#FFFFFF'}}
+                    thumbColor={isEnabled ? '#23C2DF' : '#f4f3f4'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={toggleSwitch}
+                    value={isEnabled}
                   />
-                )}
+                  <Text style = {{textAlignVertical:'center', fontFamily:'Poppins-SemiBold', fontSize:16, color:'#fff'}}>Include food sugestions</Text>
+                </View>
 
-                {isNext && ( 
-                  <TouchableOpacity style = {{width:'87%',justifyContent:'center', borderRadius:30, height:50, backgroundColor: '#F1F4FF'}}>
-                      <TextInput
-                        style = {{textAlign:'left', fontSize:15, paddingLeft:30}}
-                        onChangeText={setSelectedNumber}
-                        value={selectedNumber}
-                        placeholder="Number of days"
-                      />
-                  </TouchableOpacity> 
-                )}
-               
-                {/* Route Up button */}
-                <TouchableOpacity onPress={() => {handleNext()}}>
-                  <Ionicons name="arrow-forward-circle-outline" size={50} color="#23C2DF" />
+                <TouchableOpacity onPress={() => {handleNext()}} style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#23C2DF', margin:5}}>
+                  <Text style = {{textAlign:'center', fontSize:24, color:'#fff', fontFamily:'Poppins-Medium'}}>Go</Text>
+                </TouchableOpacity> 
+
+                <TouchableOpacity style = {{margin:20}} onPress={() => {handleClear()}}>
+                  <Text style = {{fontFamily:'Poppins-Medium', fontSize:16, textAlign:'center', color:'#fff'}}>Clear Search</Text>
                 </TouchableOpacity>
-              </View>
             </View>
           </ImageBackground>
         </View>
