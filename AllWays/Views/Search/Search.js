@@ -19,11 +19,11 @@ import {Animated} from 'react-native';
 import "react-native-url-polyfill/auto";
 import { generatePrompt } from '../../prompt';
 import * as SplashScreen from 'expo-splash-screen';
-import { Ionicons, Feather } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import React, {useState, useRef, useCallback} from 'react';  
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { apiKey, googleKey, customSearchKey, searchEngineId} from '../../config/keys-config';
-import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ImageBackground, Switch} from 'react-native'; 
+import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ImageBackground, Switch, Modal} from 'react-native'; 
 
 
 
@@ -47,7 +47,7 @@ const height = Dimensions.get('window').height // Get height of the user screen
 */
 
 export class SearchScreen extends React.Component {  
-    
+  
   // pontosScreen Function that configs what is displayed in this class
   pontosScreen = () => {
     
@@ -55,8 +55,10 @@ export class SearchScreen extends React.Component {
     var listsPlan2 = [];                                            // Contains the route plan after the AI is called
     const [isValidInput, setValidInput] = useState('');             // Contains the error message if a non valid city is selected
     const [selectedCity, setSelectedCity] = useState('');           // Contains the value of the selected city                                                                                                                     // Contains all the countries received from the API
+    const [isModalCity, setIsModalCity] = useState(false);
+    const [isModalDates, setIsModalDates] = useState(false);
     const [selectedNumber, setSelectedNumber] = useState('');       // Contains the value of the selected days
-
+    
     // Variables for control purposes
     const [isNext, setNext] = useState(false);                      // Controls if City/Number of days input is shown
     const [loading, setLoading] = useState(false);                  // Controls if Search/Loading page is shown
@@ -203,29 +205,6 @@ export class SearchScreen extends React.Component {
       }).start();
     };
 
-    // Fades out the how text
-    const fadeOutHow = () => {
-
-      Animated.timing(fadeHow, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver:true
-      }).start(({finished}) => {
-        if(finished) {setNext(false); translation.setValue(0); fadeInWhere();}
-      });
-    };
-
-    // Fades in the where text
-    const fadeInWhere = () => {
-
-      Animated.timing(fadeWhere, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver:true
-      }).start();
-
-    };
-
     //_____ Functions related to the button handlers ____//
 
     // Handles the next button on the right of city and number inputs
@@ -308,35 +287,13 @@ export class SearchScreen extends React.Component {
     if(!loading){
       return (
         <View style = {PlansScreenStyles.container} onLayout={onLayoutRootView}>
-          <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../../Images/SearchBackground.jpg')}>
 
-            <View style = {{ justifyContent:'center', alignItems:'center'}}>
-
-             <Image
-                source={require('../../Images/Logo.png')}
-                style = {LoadingScreenStyle.imageLogo}
-                resizeMode='contain'
-              />
-          
-              <View style = {{alignSelf:'flex-start', justifyContent:'center', width:width*0.8, paddingLeft: width*0.075}}>
-               <Animated.Text style = {{fontSize:42, fontFamily:'Poppins-SemiBold', color:'#fff',transform:[{translateX:translation }], opacity: fadeWhere }}>Where and when to go?</Animated.Text>
-              </View>
-            
-              {isValidInput != null && (
-                <Text style = {{paddingLeft:30, fontSize:15, color:'red'}}>{isValidInput}</Text>
-              )}
-
-                {/* Where ? Button */}
-                <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#F1F4FF', margin:5}}>
-                  <View style = {{flexDirection:'row', alignItems:'center'}}>
-                    <Feather name="map-pin" size={20} color="#1B115C" style = {{margin:15}}/>
-                    <View>
-                      <Text style = {{color:'#1B115C', fontSize:14, fontFamily:'Poppins-Medium'}}>Search</Text>
-                      <Text style = {{color:'#585858', fontSize:14, fontFamily:'Poppins-Medium'}}>Select City</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity> 
-                {/*
+          {isModalCity && 
+            <Modal
+              visible={isModalCity}
+              onRequestClose={() => setIsModalCity(false)}
+            >
+              <View style = {{flex:1, justifyContent:'center', alignItems:'center', padding: 20}}>
                 <GooglePlacesAutocomplete
                   placeholder = "City"
                   styles={{
@@ -371,7 +328,39 @@ export class SearchScreen extends React.Component {
                   query={{ key: googleKey, language: 'en', types : '(cities)'}}
                   onFail={(error) => console.error(error)}
                   onNotFound={() => console.log('no results')}
-                /> */}
+                /> 
+              </View>
+
+            </Modal>
+          }
+          <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../../Images/SearchBackground.jpg')}>
+
+            <View style = {{ justifyContent:'center', alignItems:'center'}}>
+
+              <Image
+                source={require('../../Images/Logo.png')}
+                style = {LoadingScreenStyle.imageLogo}
+                resizeMode='contain'
+              />
+          
+              <View style = {{alignSelf:'flex-start', justifyContent:'center', width:width*0.8, paddingLeft: width*0.075}}>
+               <Animated.Text style = {{fontSize:42, fontFamily:'Poppins-SemiBold', color:'#fff',transform:[{translateX:translation }], opacity: fadeWhere }}>Where and when to go?</Animated.Text>
+              </View>
+            
+              {isValidInput != null && (
+                <Text style = {{paddingLeft:30, fontSize:15, color:'red'}}>{isValidInput}</Text>
+              )}
+
+                {/* Where ? Button */}
+                <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#F1F4FF', margin:5}} onPress={() => {setIsModalCity(true)}}>
+                  <View style = {{flexDirection:'row', alignItems:'center'}}>
+                    <Feather name="map-pin" size={20} color="#1B115C" style = {{margin:15}}/>
+                    <View>
+                      <Text style = {{color:'#1B115C', fontSize:14, fontFamily:'Poppins-Medium'}}>Search</Text>
+                      <Text style = {{color:'#585858', fontSize:14, fontFamily:'Poppins-Medium'}}>Select City</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity> 
               
                 {/* When ?  Button*/}
                 <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#F1F4FF', margin:5}}>
