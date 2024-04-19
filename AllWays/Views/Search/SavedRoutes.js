@@ -41,14 +41,15 @@ export class SavedRoutesScreen extends React.Component{
   // Check if user has saved routes
   checkRoutes = () => {
     
-    // Only call the API if the field imageUrl doesn't exist
+    // Get Saved Routes
     var userRoutes = updateSavedRoutes();
     
+    // Loop through saved routes
     if(userRoutes._j.length != 0){
       return ( 
         <View style = {{flex:1}}>
-          <Text style = {{fontSize:20, fontWeight:'500', margin:10}}>Your saved routes, ready to explore!</Text>
-          <ScrollView style = {{marginBottom:65}}>
+          <Text style = {SavedRoutesStyles.subtitle}>Your saved routes, ready to explore!</Text>
+          <ScrollView style = {SavedRoutesStyles.scrollView}>
             {this.savedRoutes(userRoutes)}
           </ScrollView>
         </View>
@@ -56,8 +57,8 @@ export class SavedRoutesScreen extends React.Component{
     }
     else{
       return ( 
-        <View style = {{flex:1, alignItems:'center', justifyContent:'center'}}>
-          <Text style = {{textAlign:'center', fontSize:15}}>Click on the <Ionicons name="heart-outline" size={30} color="black"/> on the routes to save them here</Text>
+        <View style = {SavedRoutesStyles.noRoutesContainer}>
+          <Text style = {SavedRoutesStyles.noRoutesText}>Click on the <Ionicons name="heart-outline" size={30} color="black"/> on the routes to save them here</Text>
         </View>
       )
     }
@@ -104,7 +105,7 @@ export class SavedRoutesScreen extends React.Component{
         {/* Title and background image */}
         <View style={SavedRoutesStyles.imageBackground}> 
           <ImageBackground source={require('../../Images/BackgroundSaved.jpg')} style={SavedRoutesStyles.imageTitle} >
-            <View style = {{flex:1, justifyContent:'flex-end', alignItems:'left', marginBottom:10, marginLeft:20}}>
+            <View style = {SavedRoutesStyles.headerTitleContainer}>
               <Text style ={SavedRoutesStyles.title}>Saved Routes</Text> 
             </View>
           </ImageBackground> 
@@ -128,9 +129,28 @@ const SavedRoutesStyles = StyleSheet.create({
     alignItems:'center',
     backgroundColor: '#FFFFFF',
   },
+  headerTitleContainer: {
+    flex:1, 
+    marginLeft:20,
+    marginBottom:10, 
+    alignItems:'left', 
+    justifyContent:'flex-end', 
+  },
+  noRoutesContainer:{
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  noRoutesText:{
+    fontSize:15,
+    textAlign:'center',
+  },
   imageBackground: {
     width:'100%',
     height:'20%',
+  },
+  scrollView: {
+    marginBottom:65
   },
   square: {
     margin: 10,
@@ -170,6 +190,11 @@ const SavedRoutesStyles = StyleSheet.create({
     color:'#FFFFFF',
     marginBottom: 10,
     fontWeight: '600',
+  },
+  subtitle: {
+    margin:10,
+    fontSize:20, 
+    fontWeight:'500', 
   },
   titleSquare: {
     fontSize: 27,

@@ -1,6 +1,16 @@
+/*
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+firebase-config.js 
+  
+  -> Has all functions related to Firebase
+  -> All screens if needed call functions from this file
+
+*/
+
+
+
+
+/******************** Imports Section ********************/ 
 
 import { useState, useEffect } from "react";
 import { initializeApp, getApp } from "firebase/app";
@@ -8,6 +18,12 @@ import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore, setDoc, doc, addDoc, collection, query, where, getDocs, deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { initializeAuth, getAuth, getReactNativePersistence, signOut, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, sendEmailVerification, verifyBeforeUpdateEmail } from 'firebase/auth';
 
+
+
+
+/******************** Global Variables *******************/ 
+
+// Define config for Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDgn7Iudefpu_5lHWg5Jb-TMk6ZN5MsLcs",
     authDomain: "allways-2e097.firebaseapp.com",
@@ -19,28 +35,21 @@ const firebaseConfig = {
     measurementId: "G-RQJXTFMB3L"
 };
 
-// initialize Firebase App
+// Initialize Firebase App
 const app = initializeApp(firebaseConfig);
-// initialize Firebase Auth for that app immediately
-initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-});
 
+// Initialize Firebase Auth for that app immediately
+initializeAuth(app, {persistence: getReactNativePersistence(ReactNativeAsyncStorage)});
+
+// Initialize DB reference
 const db = getFirestore(app);
 
-async function insertUser(uid, name){
 
-  try {                  
-    console.log(uid);
-    const docRef = await setDoc(doc(db, "users", uid), {
-      name: name,
-    });
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
 
-}
 
+/*********************** Functions ***********************/ 
+
+// Update User Profile
 async function updateUser(name){
   try{
     await updateProfile( getAuth().currentUser, {displayName: name});
@@ -53,6 +62,7 @@ async function updateUser(name){
   };
 }
 
+// Update User Email
 async function updateUserEmail(userEmail){
   try{
     await updateEmail(getAuth().currentUser, userEmail);
@@ -82,6 +92,7 @@ async function updateUserEmail(userEmail){
   };
 }
 
+// Change User Password
 async function changePassword(oldPassword, newPassword){
   try {
     const result = await reauthenticateUser(oldPassword);
@@ -100,6 +111,7 @@ async function changePassword(oldPassword, newPassword){
   }
 }
 
+// Insert Route in DB
 async function insertRoute(route, imageRoute, city, days){
 
   // Add a new document with a generated id.
@@ -119,6 +131,7 @@ async function insertRoute(route, imageRoute, city, days){
   }
 }
 
+// Reset User Password
 async function resetPassword(email){
 
   var sendEmail = email != '' ? email : getAuth().currentUser.email;
@@ -134,25 +147,14 @@ async function resetPassword(email){
     });
 }
 
-async function getRoutes(){
-
-  const q = query(collection(db, "routes"), where("userId", "==", getAuth().currentUser.uid));
-
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
- 
-    deleteRoute(doc.id)
-    
-  });
-
-}
-
+// Delete Selected Route
 async function deleteRoute(routeId){
 
   await deleteDoc(doc(db, "routes", routeId));
 
 }
 
+// Get User Saved Routes Real Time
 async function updateSavedRoutes() {
   const [data, setData] = useState([]);
 
@@ -183,6 +185,7 @@ async function updateSavedRoutes() {
   
 };
 
+// Delete User
 async function deleteUser(){
 
   let user = getAuth().currentUser;
@@ -202,6 +205,7 @@ async function deleteUser(){
   }
 }
 
+// Reauthenticate User
 async function reauthenticateUser(password){
 
   const credential = EmailAuthProvider.credential(getAuth().currentUser.email, password);
@@ -217,6 +221,7 @@ async function reauthenticateUser(password){
   };
 }
 
+// Send Validation Email
 async function sendValidationEmail(){
   const auth = getAuth();
   try{
@@ -227,6 +232,7 @@ async function sendValidationEmail(){
   }  
 }
 
+// Send Validation Email Before Updating To New Email
 async function verifyBeforeUpdate(email){
   try{
     await verifyBeforeUpdateEmail(getAuth().currentUser, email);
@@ -238,6 +244,7 @@ async function verifyBeforeUpdate(email){
   } 
 }
 
+// Update Route In DB After New Images Are Loaded
 async function updateRoute(id, route){
   // Add a new document with a generated id.
   try {
@@ -254,7 +261,8 @@ async function updateRoute(id, route){
   }
 }
 
-export {  
+// Export functions
+export  {  
           getApp, 
           getAuth, 
           signOut, 
@@ -272,4 +280,4 @@ export {
           reauthenticateUser, 
           verifyBeforeUpdate,
           sendValidationEmail,
-        };
+        }

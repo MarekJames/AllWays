@@ -373,7 +373,6 @@ export class SearchScreen extends React.Component {
                   onNotFound={() => console.log('no results')}
                 /> */}
               
-
                 {/* When ?  Button*/}
                 <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#F1F4FF', margin:5}}>
                   <View style = {{flexDirection:'row', alignItems:'center'}}>
