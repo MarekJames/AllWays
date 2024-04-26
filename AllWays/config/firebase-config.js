@@ -266,8 +266,6 @@ export  {
           getApp, 
           getAuth, 
           signOut, 
-          getRoutes, 
-          insertUser, 
           deleteUser, 
           updateUser, 
           insertRoute,

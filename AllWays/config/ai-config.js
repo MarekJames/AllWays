@@ -1,18 +1,54 @@
 /*
 
-    Prompt.js
-    Function to generate the api prompt
+    ai-config.js
+    Handles AI functions
 
 */
 
+/******************** Imports Section ********************/ 
+
+import axios from 'axios';
+import { apiKey } from "./keys-config";
+
+
+
+
+/*********************** Functions ***********************/ 
+
+// Call ChatGPT
+async function callAI(prompt){
+    
+    try{
+        const result = await axios.post(
+            'https://api.openai.com/v1/completions',
+            {
+                prompt: prompt,
+                max_tokens: 2048,
+                model: "gpt-3.5-turbo-instruct"
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${apiKey}`
+                },
+            },
+        )
+
+        return JSON.parse(result.data.choices[0].text);
+    }
+    catch(e){
+        throw Error(e);
+    }
+}
+
 // Generates the prompt for the Open AI
-function generatePrompt (days, city) {
+function generatePrompt (city, startDate, endDate) {
 
     const prompt = ` 
     
         Give me a JSON format only response for the following prompt: 
 
-            Generate a route plan for ${days} days in ${city}, with 5 activities for each day with a name and description.
+            Generate a route plan for the dates beggining in ${startDate} and ending in ${endDate} in ${city}, with 5 activities for each day with a name and description.
             For the activity name give only the name of the monument/place if that is the case, e.g. Colisseum, Palatine Hill.
             If the activity name is related to restaurants or food, replace the activity name with a restaurant in the specified city that serves that dish).
             For the activity description give only a single line response.
@@ -35,4 +71,4 @@ function generatePrompt (days, city) {
     return prompt;
 }
 
-export {generatePrompt};
+export {generatePrompt, callAI};
