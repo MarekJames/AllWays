@@ -13,16 +13,18 @@ Search.js
 
 /******************** Imports Section ********************/ 
 
-import axios from 'axios';
 import { useFonts } from 'expo-font';
 import {Animated} from 'react-native';
 import "react-native-url-polyfill/auto";
-import { generatePrompt } from '../../prompt';
-import * as SplashScreen from 'expo-splash-screen';
 import { Feather } from '@expo/vector-icons';
-import React, {useState, useRef, useCallback} from 'react';  
+import { callAI } from '../../config/ai-config';
+import { Calendar } from 'react-native-calendars';
+import React, {useState, useCallback} from 'react';  
+import * as SplashScreen from 'expo-splash-screen';
+import { googleKey } from '../../config/keys-config';
+import { generatePrompt } from '../../config/ai-config';
+import { getImageUrl } from '../../config/images-config';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { apiKey, googleKey, customSearchKey, searchEngineId} from '../../config/keys-config';
 import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ImageBackground, Switch, Modal} from 'react-native'; 
 
 
@@ -52,232 +54,307 @@ export class SearchScreen extends React.Component {
   pontosScreen = () => {
     
     // Variables for storing purposes
-    var listsPlan2 = [];                                            // Contains the route plan after the AI is called
-    const [isValidInput, setValidInput] = useState('');             // Contains the error message if a non valid city is selected
-    const [selectedCity, setSelectedCity] = useState('');           // Contains the value of the selected city                                                                                                                     // Contains all the countries received from the API
-    const [isModalCity, setIsModalCity] = useState(false);
-    const [isModalDates, setIsModalDates] = useState(false);
-    const [selectedNumber, setSelectedNumber] = useState('');       // Contains the value of the selected days
-    
-    // Variables for control purposes
-    const [isNext, setNext] = useState(false);                      // Controls if City/Number of days input is shown
-    const [loading, setLoading] = useState(false);                  // Controls if Search/Loading page is shown
-    const [isResponse, setReponse] =useState(false);                // Controls which text appears in the loading page (waiting for Ai or loading images)
-    
-    // Variables for animation purposes
-    const fadeHow = useRef(new Animated.Value(0)).current;
-    const fadeWhere = useRef(new Animated.Value(1)).current;
-    const translation = useRef(new Animated.Value(0)).current;
+    var listsPlan2 = [];                                                        // Contains the route plan after the AI is called
+    const [isEnabled, setIsEnabled] = useState(false);                          // Flag for food search
+    const [markedDates, setMarkedDates] = useState({});                         // Contains the dates 
+    const [isValidInput, setValidInput] = useState('');                         // Contains the error message if a non valid city is selected
+    const [selectedCity, setSelectedCity] = useState('');                       // Contains the value of the selected city                                                                                                                     // Contains all the countries received from the API
+    const [isModalCity, setIsModalCity] = useState(false);                      // Flag to show/not show Modal to select city
+    const [isModalDates, setIsModalDates] = useState(false);                    // Flag to show/not show Modal to select dates
+    const [selectedEndDate, setSelectedEndDate] = useState('');                 // Contains the value of the end date
+    const [selectedStartDate, setSelectedStartDate] = useState('');             // Contains the value of the start date
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
     const [fontsLoaded, fontError] = useFonts({
       'Poppins-Light': require('../../Fonts/Poppins-Light.ttf'),
       'Poppins-SemiBold': require('../../Fonts/Poppins-SemiBold.ttf'),
       'Poppins-Bold': require('../../Fonts/Poppins-Bold.ttf'),
       'Poppins-Medium': require('../../Fonts/Poppins-Medium.ttf'),
     });
-    const [isEnabled, setIsEnabled] = useState(false);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    
 
+    // Variables for control purposes
+    const [loading, setLoading] = useState(false);                  // Controls if Search/Loading page is shown
+    const [isResponse, setResponse] =useState(false);               // Controls which text appears in the loading page (waiting for Ai or loading images)
+    
+    // Handle fonts loaded
     const onLayoutRootView = useCallback(async () => {
       if (fontsLoaded || fontError) {
         await SplashScreen.hideAsync();
       }
     }, [fontsLoaded, fontError]);
   
+    // Check fonts loaded
     if (!fontsLoaded && !fontError) {
       return null;
     }
 
-    //_____ Functions related to the images API ____//
-
-    // Calls the API with a parameter query and updates the listsplan
-    const getImageUrl = async (query,index, counter) => {
-      // Call the google search engine here
-      const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
-      try{
-        await axios.get(url)
-        .then((response) => {
-          const image = response.data.items[0];
-          return image;
-        })
-        .then((image) => {
-          const imageUrl = image.link;
-          listsPlan2[index].activities[0].imageUrl = imageUrl;
-          listsPlan2[index].imageUrl = imageUrl;
-        }) 
-      }catch(e){
-        console.log("Error getting image" + e.response.data)
-
-        // Only try three times, to not get an infinite loop
-        if(counter < 3) await getImageUrl(query, index, counter + 1);
-      }  
-    }
-
-    const getImageUrlOne = async (query, counter) => {
-      // Call the google search engine here
-      const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
-
-      try{
-        await axios.get(url)
-        .then((response) => {
-          const image = response.data.items[0];
-          return image;
-        })
-        .then((image) => {
-          const imageUrl = image.link;
-          listsPlan2.imageUrl = imageUrl;
-        })
-      }catch(e){
-        console.log("Error getting image");
-
-        //Try to get the image 3 times
-        if(counter < 3){
-          await getImageUrlOne(query, counter + 1)
-        }
-
-      }   
-    }
-
     // Loops through the listsplan, calls the getImageUrl and navigates to the days list when finished
-    const createImagesUrls = async (navigation, city) => {
-      //Loop through the activities and put the url in the listsPlan object
+    async function createImagesUrls(navigation, city) {
+        
       var counter = 0;
+      
       //Loop through the activities and put the url in the listsPlan object
       listsPlan2.forEach(async (item, index) => {
-        await getImageUrl(item.activities[0].name + ',' + city,index,0);
-        
-        //Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
-        counter++;
-        if(counter == listsPlan2.length){
-
-          // Get an image for the route
-          await getImageUrlOne(city,0);
-
-          //Reset animations for when the search screen is called again
-          translation.setValue(0);
-          fadeHow.setValue(0);
-          fadeWhere.setValue(1);
           
-          //console.log(listsPlan2);
-          setLoading(false);
-          this.props.navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:55}});
-          navigation.navigate("Days", {
-            savedRoutes: false,
-            listsPlan : listsPlan2,
-            city: selectedCity,
-            days: selectedNumber,
-            imageRoute: listsPlan2.imageUrl
-          }) 
-        }
+          // Get image url
+          await getImageUrl(listsPlan2, item.activities[0].name + ', ' + city, index, 0);
+          
+          //Check if all images were loaded
+          if(++counter == listsPlan2.length){
+
+            // Get an image for the route
+            await getImageUrl(listsPlan2, city, 10, 0);
+
+            // Remove Loading page
+            setLoading(false);
+
+            // Reset tab bar
+            navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:55}});
+            
+            // Navigate to days list
+            navigation.navigate("Days", {
+                savedRoutes: false,
+                listsPlan : listsPlan2,
+                city: selectedCity,
+                days: selectedStartDate,
+                imageRoute: listsPlan2.imageUrl
+            }) 
+          }
       });
     }
-
-    //_____ Functions related to the animations ____//
-
-    // Slides the where text to the right and changes opacity
-    const animationWhereText = () => {
-
-      Animated.parallel([
-        Animated.timing(translation, {
-          toValue: width,
-          duration: 500,
-          useNativeDriver:true
-    
-        }),
-        Animated.timing(fadeWhere, {
-          toValue: 0,
-          duration: 500,
-          useNativeDriver:true
-        })
-      ]).start(({finished}) => {
-        if(finished) {
-          setNext(true); 
-          fadeInHow();}
-      });;   
-    };
-
-    // Fades in the how text
-    const fadeInHow = () => {
-
-      Animated.timing(fadeHow, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver:true
-      }).start();
-    };
-
-    //_____ Functions related to the button handlers ____//
-
+   
     // Handles the next button on the right of city and number inputs
     const handleNext = async () => {
+      if( selectedStartDate != '' && selectedStartDate != '' & selectedEndDate != '' ){
+    
+        // Show loading page
+        setLoading(true); 
+        
+        // Remove nav bar
+        this.props.navigation.getParent().setOptions({tabBarStyle: {display: 'none'}});
+        
+        // Call AI
+        await getPlan(this.props.navigation, selectedCity, selectedStartDate, selectedEndDate);
       
-      if(isNext){
-        if( selectedNumber != null && Number.isInteger(parseInt(selectedNumber)) && selectedNumber % 1 == 0 && parseInt(selectedNumber) >= 1 && parseInt(selectedNumber) <= 10 ){
-          setValidInput('')
-          setLoading(true); 
-          this.props.navigation.getParent().setOptions({tabBarStyle: {display: 'none'}});
-          await getPlan(this.props.navigation, selectedCity, selectedNumber);
-          setNext(false);
-          setValidInput('');
-          setSelectedCity('');
-          setSelectedNumber('');
-        }
-        else{
-          setValidInput('Please select a valid number (1 to 10)')
-        }
       }
       else{
-        if(selectedCity != null && isValidInput != null){
-          setValidInput('');
-          animationWhereText();
-        }
-        else{
-          setValidInput('Please select a valid city')
-        }
+        setValidInput('Please select the city and the dates')
       }
     }
 
+    // Handles clear button
     const handleClear = () => {
-      setSelectedCity('');
-      setSelectedNumber('');
+      setLoading(false);
       setValidInput('');
+      setResponse(false);
+      setMarkedDates({});
+      setIsEnabled(false);
+      setSelectedCity('');
+      setSelectedEndDate('');
+      setSelectedStartDate('');
     }
-    //_____ Functions related to the AI ____//
+
+    // Handle toogle switch
+    const toggleSwitch = () => {
+      setIsEnabled(previousState => !previousState);
+    }
+
+    // Handles Calendar day press
+    const onDayPress = (day) => {
+      const date = day.dateString;
+  
+      if (!selectedStartDate || selectedEndDate || date < selectedStartDate) {
+        setSelectedStartDate(date);
+        setSelectedEndDate('');
+        setMarkedDates({
+          [date]: { startingDay: true, color: '#1FACC6', textColor: 'black', selected: true, dotColor: '#1FACC6' },
+        });
+      } else {
+        const startDate = new Date(selectedStartDate);
+        const endDate = new Date(date);
+        const dayDifference = (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24);
+  
+        if (dayDifference <= 6) {
+          setSelectedEndDate(date);
+          const range = {
+            [selectedStartDate]: { startingDay: true, color: '#1FACC6', textColor: 'black', selected: true, dotColor: '#1FACC6' },
+            [date]: { endingDay: true, color: '#1FACC6', textColor: 'black', selected: true, dotColor: '#1FACC6' },
+          };
+  
+          let nextDate = new Date(selectedStartDate);
+          nextDate.setDate(nextDate.getDate() + 1);
+          while (nextDate.toISOString().slice(0, 10) !== date) {
+            range[nextDate.toISOString().slice(0, 10)] = {
+              color: '#B6EBF4',
+              textColor: 'black',
+              selected: true,
+              dotColor: 'rgba(31, 172, 198, 0.5)',
+            };
+            nextDate.setDate(nextDate.getDate() + 1);
+          }
+          setMarkedDates(range);
+        } else {
+          setSelectedStartDate(date);
+          setSelectedEndDate('');
+          setMarkedDates({
+            [date]: { startingDay: true, color: '#1FACC6', textColor: 'black', selected: true, dotColor: '#1FACC6' },
+          });
+        }
+      }
+    };
+
+    // Modal Select City
+    ModalSelectCity = () => {
+      return(
+        <View style = {{flex:1}}>
+          <View style = {{flexDirection:'row', justifyContent:'space-between', margin:20}}>
+            <TouchableOpacity onPress={() => {setSelectedCity(''); setIsModalCity(false);}}>
+              <Feather name="x" size={20} color="#979797"/>
+            </TouchableOpacity>
+            <Text style = {{fontFamily:'Poppins-Medium', fontSize:17, textAlign:'center', color:'#000000'}}>Search city</Text>
+            <TouchableOpacity  style = {{opacity:selectedCity == '' ? 0.5 : 1}} disabled={selectedCity == '' ? true : false} onPress={() => {setSelectedCity('')}}>
+              <Text style = {{fontFamily:'Poppins-Medium', fontSize:17, textAlign:'center', color:'#23C2DF'}}>Clear</Text>  
+            </TouchableOpacity>
+          </View>
+          <View style = {{alignItems:'center', flex:1}}>
+            <GooglePlacesAutocomplete
+              placeholder = {selectedCity == '' ? "Search" : selectedCity}
+              styles={{
+                container: {
+                  flex:1,
+                  width: width*0.9,
+                  height:'100%',
+                },
+                textInput: {
+                  textAlign: 'left',
+                  paddingLeft:30,
+                  height: 50,
+                  borderRadius: 30,
+                  fontSize: 15,
+                  color:'#1B115C',
+                  backgroundColor: '#F1F4FF',
+                },
+                separator: {
+                  height: 1,
+                  backgroundColor: '#23C2DF',
+                },
+                row: {
+                  backgroundColor: '#F1F4FF',
+                  padding: 13,
+                  height: 44,
+                  flexDirection: 'row',
+                },
+              }}
+              enablePoweredByContainer = {false}
+              minLength={2}
+              debounce={500}
+              onPress={ (data) => {setSelectedCity(data.description)}}
+              query={{ key: googleKey, language: 'en', types : '(cities)'}}
+              onFail={(error) => console.error(error)}
+              onNotFound={() => console.log('no results')}
+            />
+
+            <TouchableOpacity style = {{width: width * 0.9, justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#23C2DF', margin:20, opacity:selectedCity == '' ? 0.5 : 1}} disabled={selectedCity == '' ? true : false} onPress={() => {setIsModalCity(false)}}>
+              <Text style = {{textAlign:'center', fontSize:17, color:'#fff', fontFamily:'Poppins-Medium'}}>Done</Text>
+            </TouchableOpacity> 
+          </View>
+        </View>
+      )
+    }
+
+    // Modal Select Dates
+    ModalSelectDates = () => {
+      return(
+        <View style = {{flex:1}}> 
+          <View style = {{flexDirection:'row', justifyContent:'space-between', margin:20}}>
+            <TouchableOpacity onPress={() => {setSelectedStartDate(''); setSelectedEndDate(''); setMarkedDates({}); setIsModalDates(false);}}>
+              <Feather name="x" size={20} color="#979797"/>
+            </TouchableOpacity>
+            <Text style = {{fontFamily:'Poppins-Medium', fontSize:17, textAlign:'center', color:'#000000'}}>Search date range</Text>
+            <TouchableOpacity  style = {{opacity:selectedStartDate == '' ? 0.5 : 1}} disabled={selectedStartDate == '' ? true : false} onPress={() => {setSelectedStartDate(''); setSelectedEndDate(''); setMarkedDates({});}}>
+              <Text style = {{fontFamily:'Poppins-Medium', fontSize:17, textAlign:'center', color:'#23C2DF'}}>Clear</Text>  
+            </TouchableOpacity>
+          </View>
+
+          <View style = {{flexDirection:'row', justifyContent:'space-between', margin:20, alignItems:'center'}}>
+            <Text style = {{width:width*0.4, fontFamily:'Poppins-Medium', fontSize:17, textAlign:'center', color:'#949494', margin:5}}>{selectedStartDate != '' ? formatDate(selectedStartDate) : 'Earliest outbound date'}</Text>
+            <Feather style= {{alignSelf:'center'}} name="arrow-right" size={20} color="#1B115C"/>
+            <Text style = {{textAlignVertical:'center', width:width*0.4, fontFamily:'Poppins-Medium', fontSize:17, textAlign:'center', color:'#949494', margin:5}}>{selectedEndDate != '' ? formatDate(selectedEndDate) : 'Latest return date'}</Text>
+          </View>
+
+          <View style = {{flex:1, marginTop:50}}>
+            <Calendar
+              theme={{
+                'stylesheet.calendar.header':{
+                  header: {
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  paddingLeft: 10,
+                  backgroundColor: 'rgba(35, 194, 223, 0.3)',
+                },
+                monthText: {
+                  fontSize: 17,
+                  color: '#1B115C',
+                  fontFamily:'Poppins-Medium',
+                  opacity:1
+                },
+                },
+              }}
+              onDayPress={onDayPress}
+              markingType={'period'}
+              markedDates={markedDates}
+              initialDate={selectedStartDate}
+              enableSwipeMonths={true}
+              hideArrows={true}
+              minDate={new Date(Date.now()).toISOString().split('T')[0].toString()}
+            /> 
+          </View>
+
+          <TouchableOpacity style = {{width: width * 0.9, justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#23C2DF', margin:20, opacity:selectedEndDate == '' ? 0.5 : 1 }} disabled={selectedEndDate == '' ? true : false} onPress={() => {setIsModalDates(false)}}>
+              <Text style = {{textAlign:'center', fontSize:17, color:'#fff', fontFamily:'Poppins-Medium'}}>Done</Text>
+          </TouchableOpacity> 
+        </View>
+      )
+    }
+
+    // Format dates to Day Month Year
+    function formatDate(date){
+      
+      date = date.split('-');
+
+      var day = date[2];
+      var year = date[0];
+      var month = date[1];
+      var formatedDate = day + " " + months[month-1] + " " + year;
+
+      return formatedDate;
+    }
 
     // Calls the AI 
-    async function getPlan(navigation, cityName, daysNumber) {
+    async function getPlan(navigation, cityName, startDate, endDate) {
      
-      const prompt = generatePrompt(daysNumber, cityName);
+      const prompt = generatePrompt(cityName, startDate, endDate);
 
       try {
-        const result = await axios.post(
-          'https://api.openai.com/v1/completions',
-          {
-            prompt: prompt,
-            max_tokens: 2048,
-            model: "gpt-3.5-turbo-instruct"
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${apiKey}`
-            },
-          },
-        )
-        setReponse(true);
-        listsPlan2 = JSON.parse(result.data.choices[0].text);
-    
+        
+        // Call AI
+        listsPlan2 = await callAI(prompt);
+     
+        // Change Loading Page Message
+        setResponse(true);
+
+        // Load Images to Route
         await createImagesUrls(navigation, cityName);
 
-      } catch (error) {
-        console.error('Error fetching AI response:', error);
+      }
+      catch (error) {
+        console.error('Error fetching AI response: ', error);
 
-        //Reset animations for when the search screen is called again
-        translation.setValue(0);
-        fadeHow.setValue(0);
-        fadeWhere.setValue(1);
-        setSelectedCity('');
-        setSelectedNumber('');
-        setLoading(false);
+        //Reset variables
+        handleClear();
 
         alert('There was an error with the AI response. \nPlease try again.')
       } 
@@ -288,51 +365,25 @@ export class SearchScreen extends React.Component {
       return (
         <View style = {PlansScreenStyles.container} onLayout={onLayoutRootView}>
 
-          {isModalCity && 
-            <Modal
-              visible={isModalCity}
-              onRequestClose={() => setIsModalCity(false)}
-            >
-              <View style = {{flex:1, justifyContent:'center', alignItems:'center', padding: 20}}>
-                <GooglePlacesAutocomplete
-                  placeholder = "City"
-                  styles={{
-                    container: {
-                      flex:1,
-                      width: '100%',
-                      height:'100%',
-                    },
-                    textInput: {
-                      textAlign: 'left',
-                      paddingLeft:30,
-                      height: 50,
-                      borderRadius: 30,
-                      fontSize: 15,
-                      backgroundColor: '#F1F4FF',
-                    },
-                    separator: {
-                      height: 1,
-                      backgroundColor: '#23C2DF',
-                    },
-                    row: {
-                      backgroundColor: '#F1F4FF',
-                      padding: 13,
-                      height: 44,
-                      flexDirection: 'row',
-                    },
-                  }}
-                  enablePoweredByContainer = {false}
-                  minLength={2}
-                  debounce={500}
-                  onPress={ (data) => {setSelectedCity(data.description)}}
-                  query={{ key: googleKey, language: 'en', types : '(cities)'}}
-                  onFail={(error) => console.error(error)}
-                  onNotFound={() => console.log('no results')}
-                /> 
-              </View>
+          {/* Modal Select City */}
+          <Modal
+            animationType="slide"
+            visible={isModalCity}
+            onRequestClose={() => setIsModalCity(false)}
+          >
+            <ModalSelectCity></ModalSelectCity>
+          </Modal>
 
-            </Modal>
-          }
+          {/* Modal Select Dates */}
+          <Modal
+            animationType="slide"
+            visible={isModalDates}
+            onRequestClose={() => setIsModalDates(false)}
+          >
+            <ModalSelectDates></ModalSelectDates>
+          </Modal>
+         
+          {/* Search Screen */}
           <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../../Images/SearchBackground.jpg')}>
 
             <View style = {{ justifyContent:'center', alignItems:'center'}}>
@@ -344,7 +395,7 @@ export class SearchScreen extends React.Component {
               />
           
               <View style = {{alignSelf:'flex-start', justifyContent:'center', width:width*0.8, paddingLeft: width*0.075}}>
-               <Animated.Text style = {{fontSize:42, fontFamily:'Poppins-SemiBold', color:'#fff',transform:[{translateX:translation }], opacity: fadeWhere }}>Where and when to go?</Animated.Text>
+               <Animated.Text style = {{fontSize:42, fontFamily:'Poppins-SemiBold', color:'#fff' }}>Where and when to go?</Animated.Text>
               </View>
             
               {isValidInput != null && (
@@ -356,19 +407,19 @@ export class SearchScreen extends React.Component {
                   <View style = {{flexDirection:'row', alignItems:'center'}}>
                     <Feather name="map-pin" size={20} color="#1B115C" style = {{margin:15}}/>
                     <View>
-                      <Text style = {{color:'#1B115C', fontSize:14, fontFamily:'Poppins-Medium'}}>Search</Text>
-                      <Text style = {{color:'#585858', fontSize:14, fontFamily:'Poppins-Medium'}}>Select City</Text>
+                      <Text style = {{color:'#1B115C', fontSize:14, fontFamily:'Poppins-Medium'}}>Where</Text>
+                      <Text style = {{color:'#585858', fontSize:14, fontFamily:'Poppins-Medium'}}>{selectedCity == '' ? 'Select City' : selectedCity}</Text>
                     </View>
                   </View>
                 </TouchableOpacity> 
               
                 {/* When ?  Button*/}
-                <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#F1F4FF', margin:5}}>
+                <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#F1F4FF', margin:5}} onPress={() => {setIsModalDates(true)}}>
                   <View style = {{flexDirection:'row', alignItems:'center'}}>
                     <Feather name="calendar" size={20} color="#1B115C" style = {{margin:15}}/>
                     <View>
                       <Text style = {{color:'#1B115C', fontSize:14, fontFamily:'Poppins-Medium'}}>When</Text>
-                      <Text style = {{color:'#585858', fontSize:14, fontFamily:'Poppins-Medium'}}>Select Dates</Text>
+                      <Text style = {{color:'#585858', fontSize:14, fontFamily:'Poppins-Medium'}}>{selectedEndDate != '' ? formatDate(selectedStartDate) + ' - ' + formatDate(selectedEndDate) : 'Select Dates'}</Text>
                     </View>
                   </View>
                 </TouchableOpacity> 
@@ -443,112 +494,21 @@ const PlansScreenStyles = StyleSheet.create({
     alignItems: 'center',
     flex:1
   },
-  containerLogo: {
-    alignItems: 'center',
-    marginTop: 40,
-    marginBottom: 20,
-  },
-  containerSelects: {
-    alignItems: 'center',
-    width: '100%',
-  },
-  containerRouteUp: {
-    marginBottom: 30,
-    width: '100%',
-    alignItems: 'center',
-  },
   imageLogo: {
     resizeMode:'contain',
     width:'80%',
     height:250,
     margin:10
   },
-  whereToText: {
-    fontSize: 36,
-    color: '#000000',
-    marginTop: 10,
-  },
-  wellGiveText: {
-    fontSize: 18,
-    color: '#000000',
-    marginTop: 5,
-  },
-  dropdownContainer: {
-  
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    marginVertical: 10,
-  },
-  dropdown: {
-    borderWidth: 1,
-    padding: 10,
-    width: '40%',
-    marginHorizontal: 5,
-    alignItems: 'center',
-  },
-  dropdownText: {
-   
-    fontSize: 16,
-  },
-  dropdownInput: {
-    width:'100%',
-    textAlign:'center',
-    fontSize: 16,
-  },
-  dropdownList: {
-    borderWidth: 1,
-    width: '40%',
-    maxHeight: 150,
-    backgroundColor: '#DDD',
-    borderRadius: 10,
-  },
-  dropdownItem: {
-    fontSize:16,
-    padding: 10,
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-  },
-  howManyDaysButton: {
-    backgroundColor: '#DDD',
-    borderRadius: 20,
-    width: '80%',
-    height: 50,
-    marginVertical: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex:2
-  },
-  howManyDaysDrop: {
-    backgroundColor: '#DDD',
-    borderRadius: 20,
-    height: 150,
-    width: '80%',
-  },
-  routeUpButton: {
-    justifyContent:'center',
-    alignItems:'center',
-    backgroundColor:'#000000',
-    borderRadius:30,
-    width:'80%',
-    height:50,
-    margin:20,
-  },
-  routeUpText: {
-    fontSize: 20,
-    color: '#FFFFFF',
-  },
-  
 });
 
 // Used for the LoadingScreen class
 const LoadingScreenStyle = StyleSheet.create({
-  
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor:'#000'
+    backgroundColor:'#000',
+    justifyContent: 'center',
   },
   imageLogo:{
     top:'-5%',
@@ -557,13 +517,12 @@ const LoadingScreenStyle = StyleSheet.create({
   },
   titleText:{
     fontSize: 20,
-    color:'#fff'
+    color:'#fff',
   
   },
   subtitleText:{
     fontSize: 15,
-    color:'#fff'
-  
+    color:'#fff',
   },
 })
 
