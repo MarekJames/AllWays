@@ -114,7 +114,7 @@ export class SearchScreen extends React.Component {
             setLoading(false);
 
             // Reset tab bar
-            navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:55}});
+            navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:45}});
             
             var startDate = selectedStartDate.split('-');
             startDate = startDate[2] + '/' + startDate[1] + '/' + startDate[0];
@@ -124,11 +124,11 @@ export class SearchScreen extends React.Component {
             
             // Navigate to days list
             navigation.navigate("Days", {
+                endDate: endDate,
                 savedRoutes: false,
-                listsPlan : listsPlan2,
                 city: selectedCity,
                 startDate: startDate,
-                endDate: endDate,
+                listsPlan : listsPlan2,
                 imageRoute: listsPlan2.imageUrl
             }) 
           }
