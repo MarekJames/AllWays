@@ -19,7 +19,6 @@ import { extendMoment } from 'moment-range';
 import { Ionicons } from '@expo/vector-icons';
 import {insertRoute, deleteRoute} from '../../config/firebase-config';
 import {Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView, ImageBackground} from 'react-native'; 
-import Day from 'react-native-calendars/src/calendar/day';
 
 
 
@@ -44,7 +43,6 @@ const height = Dimensions.get('window').height // Get height of the user screen
 */
 export class DaysScreen extends React.Component {  
   
- 
   // Function that displays the list of days
   lists = () => {
     
@@ -120,11 +118,8 @@ export class DaysScreen extends React.Component {
     // If fonts are loaded and showDayRoutePlan is 0 (Shows the list of days)
     return (
       <View style={ParentStyles.container}>
-        
         <View style={ParentStyles.imageBackground}>
-          
           <ImageBackground source={{ uri: imageRoute }} style={DaysListStyles.imageBackground} >
-
             <View style = {{flexDirection:'row', justifyContent:'space-between', marginRight: 20}}>
               <View>
                 {savedRoutes && (<TouchableOpacity
@@ -150,17 +145,13 @@ export class DaysScreen extends React.Component {
                 <Text style ={ParentStyles.subtitleDate}> {startDate.substring(0,5)}-{endDate.substring(0,5)}</Text>
               </View>  
             </View>
-           
           </ImageBackground>
-          
         </View>
 
-      
-          {/* Scroll view with the list of days */}
+        {/* Scroll view with the list of days */}
         <ScrollView style={{flex:1, marginBottom:65}}>
             {/* Title and description */}
           <Text style={ParentStyles.listTitle}> Select a day to discover your journey</Text>
-         
           <this.lists/>
         </ScrollView>
 
@@ -175,66 +166,19 @@ export class DaysScreen extends React.Component {
 /********************* Stylesheets ***********************/
 
 const ParentStyles = StyleSheet.create({
-  container: {
+  container:{
     flex:1,
     backgroundColor: '#FFFFFF',
   },
-  imageBackground: {
+  imageBackground:{
     width:'100%',
     height:'30%',
   },
-  header: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-    paddingBottom: 10,
-    marginBottom: 20,
-  },
-  containerLogoHeart: {
-    flexDirection: 'row', // Arrange children horizontally
-    alignItems: 'center', // Align items vertically
-    justifyContent: 'center', // Space evenly between children
-  },
-  containerLogo: {
-    flex:1,
-    marginRight: 10, // Adjust margin as needed
-  },
-  logo: {
-    width: '100%', // Adjust logo width as needed
-    height: '100%', // Adjust logo height as needed
-    resizeMode: 'contain', // Ensure the logo fits its container
-  },
-  iconContainer: {
-    // Style heart icon container if needed
-    paddingRight:10
-  },
-  listTitle: {
-    fontSize: 20,
+  listTitle:{
+    fontSize:20,
     marginTop:10,
-    textAlign: 'center',
-    fontFamily: 'Poppins-Medium',
-  },
-  listSubtitle: {
-    fontSize: 20,
-    textAlign: 'center',
-    marginTop: 10, // Adjust margin top as needed to bring the list name down
-    marginBottom:20
-  },
-  dayText: {
-    fontSize: 30,
-    textAlign: 'center',
-  },
-  saveRouteButtom:{
-    borderColor:'#000',
-    borderWidth:1,
-    borderRadius: 30,
-    paddingVertical: 20,
-    paddingHorizontal: 60,
-    margin:10,
-    alignSelf:'center',
-  },
-  saveRouteText:{
-    fontSize: 30,
-    color:'#000'
+    textAlign:'center',
+    fontFamily:'Poppins-Medium',
   },
   title:{
     fontSize:64,
@@ -257,44 +201,43 @@ const ParentStyles = StyleSheet.create({
 });
 
 const DaysListStyles = StyleSheet.create({
-  dayContainer: {
-      width: width * 0.9, // 90% of the device width
-      height: height * 0.15,
-      backgroundColor: '#EEF6FB',
-      borderRadius: 25,
-      overflow: 'hidden',
-      elevation: 5, // Adds a shadow (Android)
-      shadowColor: '#000', // Adds a shadow (iOS)
-      shadowOffset: { width: 0, height: 2 }, // Adds a shadow (iOS)
-      shadowOpacity: 0.25, // Adds a shadow (iOS)
-      shadowRadius: 3.84, // Adds a shadow (iOS)
-      margin: 10,
-      flexDirection:'row',
+  dayContainer:{
+      margin:10,
+      elevation:5, 
+      borderRadius:25,
+      overflow:'hidden',
+      width:width * 0.9,
+      shadowRadius:3.84,
       alignSelf:'center',
+      shadowOpacity:0.25,
+      shadowColor:'#000',
+      flexDirection:'row',
+      height:height * 0.15,
+      backgroundColor:'#EEF6FB',
+      shadowOffset:{width:0, height:2},
   },
-  image: {
-    width: '35%',
-    height: '100%', // Adjusted to 100% to fill the container
+  image:{
+    height:height,
+    width:width*0.35,
   },
   imageBackground: {
-    width: '100%',
-    height: '100%', // Adjusted to 100% to fill the container
-   
+    width:width,
+    height:height,
   },
-  dayTitle: {
+  dayTitle:{
     fontSize: 30,
     color:'#000',
-    fontFamily:'Poppins-Medium',
     textAlign:'center',
+    fontFamily:'Poppins-Medium',
   },  
-  dayTitleDate: {
+  dayTitleDate:{
     margin:10,
     fontSize:15,
     textAlign:'center',
     color:'rgba(0,0,0,0.5)',
     fontFamily:'Poppins-Medium',
   },
-  daySubtitle: {
+  daySubtitle:{
     fontSize: 13,
     color:'#000',
     fontFamily:'Poppins-Light',

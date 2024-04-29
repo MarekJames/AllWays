@@ -16,12 +16,15 @@ import { getAuth } from 'firebase/auth';
 import UserAvatar from 'react-native-user-avatar';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Dimensions } from 'react-native';
 
 
 
 
-/******************** Global Variables *******************/ 
+/******************* Global Variables ********************/
+
+const width = Dimensions.get('window').width   // Get width of the user screen
+const height = Dimensions.get('window').height // Get height of the user screen
 
 // Set of options for settings
 const optionsSettings = [
@@ -85,7 +88,7 @@ export class ProfileScreen extends React.Component{
     );
 
     return (
-      <ImageBackground source = {require('../../Images/BackgroundHome.jpg')} style = {{ backgroundColor:'#fff',flex:1, width:'100%',height:'13%'}}>
+      <ImageBackground source = {require('../../Images/BackgroundHome.jpg')} style = {ProfileScreenStyles.imageBackground}>
 
           {/* Avatar Name and Email */}
           <View style={ProfileScreenStyles.profileContainer}>
@@ -107,7 +110,7 @@ export class ProfileScreen extends React.Component{
                   <Text style={ProfileScreenStyles.optionName}>{option.name}</Text>
                   <Ionicons size={20} color={'#9F9F9F'} name = {'chevron-forward-sharp'}/>
                 </TouchableOpacity>
-                <View style={{ height: 1, backgroundColor: '#C2C2C2', marginVertical:5}} />
+                <View style={ProfileScreenStyles.separator} />
               </View>
             ))}
           </View>
@@ -128,19 +131,19 @@ export class ProfileScreen extends React.Component{
                   <Text style={ProfileScreenStyles.optionName}>{option.name}</Text>
                   <Ionicons size={20} color={'#9F9F9F'} name = {'chevron-forward-sharp'}/>
                 </TouchableOpacity>
-                <View style={{ height: 1, backgroundColor: '#C2C2C2', marginVertical:5}} />
+                <View style={ProfileScreenStyles.separator} />
               </View>
             ))}
             
           </View>
 
           {/* Logout */}
-          <View style = {{position:'absolute', width:'90%', bottom:'10%', marginHorizontal:20}}>
+          <View style = {ProfileScreenStyles.logoutContainer}>
             <TouchableOpacity onPress={handleLogout} style={ProfileScreenStyles.optionItem}>
-              <Text style={{fontSize:16, fontWeight:'400', color:'#EA0000'}}>Logout</Text>
+              <Text style={ProfileScreenStyles.logout}>Logout</Text>
               <Ionicons size={20} color={'#9F9F9F'} name = {'chevron-forward-sharp'}/>
             </TouchableOpacity>
-            <View style={{ height: 1, backgroundColor: '#C2C2C2', marginVertical:5}} />
+            <View style={ProfileScreenStyles.separator} />
           </View>
 
       </ImageBackground>
@@ -163,39 +166,61 @@ export class ProfileScreen extends React.Component{
 // StyleSheet for the profile screen
 const ProfileScreenStyles = StyleSheet.create({
   profileContainer: {
-    top:'7%',
+    top:height*0.07,
     marginBottom:30,
-    alignItems:'center'
+    alignItems:'center',
+  },
+  logoutContainer:{
+    width:width*0.9,
+    bottom:height*0.1,
+    position:'absolute',
+    marginHorizontal:20,
+  },
+  imageBackground:{
+    flex:1, 
+    width:width,
+    height:height*0.13,
+    backgroundColor:'#fff',
   },
   userName: {
-    fontSize: 32,
-    color:'#000000',
-    fontWeight: '700',
-    marginVertical:15
+    fontSize:32,
+    color:'#000',
+    marginVertical:15,
+    fontFamily:'Poppins-SemiBold',
   },
   email: {
-    fontSize: 16,
-    color:'#000000',
+    fontSize:16,
+    color:'#000',
     marginBottom:30,
-    fontWeight: '500'
+    fontFamily:'Poppins-Medium',
   },
   optionsContainer: {
     marginHorizontal:20,
-    justifyContent:'center'
+    justifyContent:'center',
   },
   optionItem: {
-    marginVertical: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
+    marginVertical:10,
+    flexDirection:'row',
+    alignItems:'center',
     justifyContent:'space-between'
   },
   optionName: {
-    fontSize: 16,
-    fontWeight:'400'
+    fontSize:16,
+    fontFamily:'Poppins-Medium'
   },
-  optionTitle: {
-    fontSize: 20,
-    fontWeight:'700',
-    marginVertical:20
-  }
+  optionTitle:{
+    fontSize:20,
+    marginVertical:20,
+    fontFamily:'Poppins-SemiBold',
+  },
+  separator:{
+    height:1,
+    marginVertical:5,
+    backgroundColor:'#C2C2C2',
+  },
+  logout:{
+    fontSize:16,
+    color:'#EA0000',
+    fontFamily:'Poppins-Medium',
+  },
 });

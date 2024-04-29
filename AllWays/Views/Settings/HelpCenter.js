@@ -11,9 +11,17 @@ HelpCenter.js
 
 /******************** Imports Section ********************/ 
 
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Linking } from 'react-native';
+import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Linking, Dimensions } from 'react-native';
+
+
+
+
+/******************* Global Variables ********************/
+
+const width = Dimensions.get('window').width   // Get width of the user screen
+const height = Dimensions.get('window').height // Get height of the user screen
 
 
 
@@ -25,7 +33,6 @@ import { Ionicons } from '@expo/vector-icons';
   Allow users to sends us questions
 
 */
-
 export class HelpCenterScreen extends React.Component{
   
   helpCenterScreen = () => {
@@ -48,18 +55,10 @@ export class HelpCenterScreen extends React.Component{
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >
         
-        <View style = {{flexDirection:'row', marginTop:50, marginBottom:50}}>
+        <View style = {HelpCenterStyles.subContainer}>
           <TouchableOpacity
                 onPress={() => this.props.navigation.goBack()}
-                style={{
-                  width: 45,
-                  height: 45,
-                  borderRadius: 30,
-                  backgroundColor: '#fff',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft:10
-                }}
+                style={HelpCenterStyles.backButton}
               >
                 <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
           </TouchableOpacity>
@@ -88,42 +87,55 @@ export class HelpCenterScreen extends React.Component{
 
 
 
-
 /********************* Stylesheets ***********************/
 
 const HelpCenterStyles = StyleSheet.create ({
   container: {
     flex: 1,
-    alignItems: 'center',
-    backgroundColor:'white'
+    alignItems:'center',
+    backgroundColor:'white',
+  },
+  subContainer:{
+    marginTop:50,
+    marginBottom:50,
+    flexDirection:'row',
   },
   imageBackground:{
     flex: 1,
-    width: '100%',
-    height: '100%',
+    width:width,
+    height:height,
   },
   title: {
     flex:1,
-    fontSize: 30,
+    fontSize:30,
+    color:'#000',
     marginRight:55,
-    color:'#000000',
     alignSelf:'center',
     textAlign:'center',
-    fontWeight: 'bold',
+    fontFamily:'Poppins-Bold',
   },
   subTitle: {
-    fontSize: 20,
+    fontSize:20,
     marginLeft:25,
     color:'#494949',
-    marginBottom: 30,
-    fontWeight:'600',
+    marginBottom:30,
+    fontFamily:'Poppins-Medium',
   },
   email: {
-    fontSize: 20,
+    fontSize:20,
     marginLeft:25,
     color:'#2100E8',
-    fontWeight:'600',
     textAlign:'left',
-    textDecorationLine:'underline'
+    fontFamily:'Poppins-Medium',
+    textDecorationLine:'underline',
   },
+  backButton:{
+    width:45,
+    height:45,
+    marginLeft:10,
+    borderRadius:30,
+    alignItems:'center',
+    backgroundColor:'#fff',
+    justifyContent:'center',
+  }
 })

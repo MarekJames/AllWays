@@ -34,9 +34,8 @@ const BottomTabNavigator = () => {
       screenOptions={{
         headerShown: false, // Hide the header for tab navigator
         tabBarActiveTintColor:'#000000',
-        
-        tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:45},
-        tabBarIconStyle: {marginTop:5},
+        tabBarStyle:{borderTopWidth: 2, borderTopColor:'#fff', position:'absolute', elevation:0, height:45},
+        tabBarIconStyle:{marginTop:5},
       }} 
     >
       <Tab.Screen 

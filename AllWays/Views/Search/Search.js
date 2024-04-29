@@ -400,7 +400,7 @@ export class SearchScreen extends React.Component {
               />
           
               <View style = {{alignSelf:'flex-start', justifyContent:'center', width:width*0.8, paddingLeft: width*0.075}}>
-               <Animated.Text style = {{fontSize:42, fontFamily:'Poppins-SemiBold', color:'#fff' }}>Where and when to go?</Animated.Text>
+               <Text style = {{fontSize:42, fontFamily:'Poppins-SemiBold', color:'#fff' }}>Where and when to go?</Text>
               </View>
             
               {isValidInput != null && (

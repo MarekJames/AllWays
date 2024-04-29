@@ -14,7 +14,15 @@ ChangeName.js
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { updateUser } from '../../config/firebase-config';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Dimensions } from 'react-native';
+
+
+
+
+/******************* Global Variables ********************/
+
+const width = Dimensions.get('window').width   // Get width of the user screen
+const height = Dimensions.get('window').height // Get height of the user screen
 
 
 
@@ -69,20 +77,12 @@ export class ChangeNameScreen extends React.Component{
         >
 
           {/* Header of the screen | Back button | Title */}
-          <View style = {{flexDirection:'row', marginTop:50, marginBottom:10}}>
+          <View style = {ChangeNameStyles.subContainer}>
             
             {/* Back button */}
             <TouchableOpacity
                   onPress={() => this.props.navigation.goBack()}
-                  style={{
-                    width: 45,
-                    height: 45,
-                    marginLeft:10,
-                    borderRadius: 30,
-                    alignItems: 'center',
-                    backgroundColor: '#fff',
-                    justifyContent: 'center'
-                  }}
+                  style={ChangeNameStyles.backButton}
                 >
                   <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
             </TouchableOpacity>
@@ -96,7 +96,7 @@ export class ChangeNameScreen extends React.Component{
 
           {/* Error Message */}
           {invalidName !== null && ( // Checking if the variable is not null
-            <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidName}</Text>
+            <Text style = {ChangeNameStyles.invalidInput}>{invalidName}</Text>
           )}
 
           {/* Name Input */}
@@ -110,7 +110,7 @@ export class ChangeNameScreen extends React.Component{
 
           {/* Submit Button */}
           <TouchableOpacity style = {ChangeNameStyles.recover} onPress={() => {handleSubmit(this.props.navigation)}}>
-            <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Update</Text>
+            <Text style = {ChangeNameStyles.updateText}>Update</Text>
           </TouchableOpacity>
     
         </ImageBackground>
@@ -133,48 +133,75 @@ export class ChangeNameScreen extends React.Component{
 
 const ChangeNameStyles = StyleSheet.create ({
   container: {
-    flex: 1,
-    alignItems: 'center',
+    flex:1,
+    alignItems:'center',
     backgroundColor:'white'
   },
+  subContainer:{
+    marginTop:50,
+    marginBottom:10,
+    flexDirection:'row',
+  },
   imageBackground:{
-    flex: 1,
-    width: '100%',
-    height: '100%',
+    flex:1,
+    width:width,
+    height:height,
   },
   title: {
     flex:1,
     fontSize: 30,
     marginRight:55,
     color:'#000000',
-    fontWeight: 'bold',
     alignSelf:'center',
-    textAlign:'center'
+    textAlign:'center',
+    fontFamily:'Poppins-Bold',
   },
   subTitle: {
-    fontSize: 20,
+    fontSize:20,
     color:'#494949',
-    fontWeight:'600',
-    marginBottom: 40,
-    textAlign:'center'
+    marginBottom:40,
+    textAlign:'center',
+    fontFamily:'Poppins-Medium',
   },
   input: {
-    height: 50,
-    width: '80%',
-    paddingLeft: 20,
+    height:50,
+    paddingLeft:20,
+    width:width*0.8,
     borderRadius:30,
+    marginVertical:30,
     alignSelf:'center',
-    marginVertical: 30,
-    backgroundColor:'#F1F4FF'
+    backgroundColor:'#F1F4FF',
+    fontFamily:'Poppins-Light',
   },
   recover: {
-    height: 50,
-    width: '80%',
+    height:50,
     marginTop:10,
     borderRadius:30,
-    marginBottom: 10,
+    width:width*0.8,
+    marginBottom:10,
     alignSelf:'center',
     justifyContent:'center',
     backgroundColor:'#23C2DF'
-  }
+  },
+  backButton:{
+    width:45,
+    height:45,
+    marginLeft:10,
+    borderRadius:30,
+    alignItems:'center',
+    backgroundColor:'#fff',
+    justifyContent:'center',
+  },
+  invalidInput:{
+    color:'red',
+    fontSize:12,
+    textAlign:'center',
+    fontFamily:'Poppins-Medium',
+  },
+  updateText:{
+    fontSize:20,
+    color:'#FFF',
+    textAlign:'center',
+    fontFamily:'Poppins-SemiBold',
+  },
 })
