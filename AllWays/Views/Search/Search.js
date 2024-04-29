@@ -11,11 +11,12 @@ Search.js
 
 
 
-/******************** Imports Section ********************/ 
-
+/******************** Imports Section ********************/
+import Moment from 'moment';
 import { useFonts } from 'expo-font';
 import {Animated} from 'react-native';
 import "react-native-url-polyfill/auto";
+import { extendMoment } from 'moment-range';
 import { Feather } from '@expo/vector-icons';
 import { callAI } from '../../config/ai-config';
 import { Calendar } from 'react-native-calendars';
@@ -32,6 +33,7 @@ import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableO
 
 /******************* Global Variables ********************/
 
+const moment = extendMoment(Moment);
 const width = Dimensions.get('window').width   // Get width of the user screen
 const height = Dimensions.get('window').height // Get height of the user screen
 
@@ -58,11 +60,11 @@ export class SearchScreen extends React.Component {
     const [isEnabled, setIsEnabled] = useState(false);                          // Flag for food search
     const [markedDates, setMarkedDates] = useState({});                         // Contains the dates 
     const [isValidInput, setValidInput] = useState('');                         // Contains the error message if a non valid city is selected
-    const [selectedCity, setSelectedCity] = useState('');                       // Contains the value of the selected city                                                                                                                     // Contains all the countries received from the API
+    const [selectedCity, setSelectedCity] = useState('Porto, Portugal');                       // Contains the value of the selected city                                                                                                                     // Contains all the countries received from the API
     const [isModalCity, setIsModalCity] = useState(false);                      // Flag to show/not show Modal to select city
     const [isModalDates, setIsModalDates] = useState(false);                    // Flag to show/not show Modal to select dates
-    const [selectedEndDate, setSelectedEndDate] = useState('');                 // Contains the value of the end date
-    const [selectedStartDate, setSelectedStartDate] = useState('');             // Contains the value of the start date
+    const [selectedEndDate, setSelectedEndDate] = useState('2024-04-30');                 // Contains the value of the end date
+    const [selectedStartDate, setSelectedStartDate] = useState('2024-04-29');             // Contains the value of the start date
     const months = [
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
@@ -114,12 +116,19 @@ export class SearchScreen extends React.Component {
             // Reset tab bar
             navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:55}});
             
+            var startDate = selectedStartDate.split('-');
+            startDate = startDate[2] + '/' + startDate[1] + '/' + startDate[0];
+
+            var endDate = selectedEndDate.split('-');
+            endDate = endDate[2] + '/' + endDate[1] + '/' + endDate[0];
+            
             // Navigate to days list
             navigation.navigate("Days", {
                 savedRoutes: false,
                 listsPlan : listsPlan2,
                 city: selectedCity,
-                days: selectedStartDate,
+                startDate: startDate,
+                endDate: endDate,
                 imageRoute: listsPlan2.imageUrl
             }) 
           }
@@ -352,10 +361,6 @@ export class SearchScreen extends React.Component {
       }
       catch (error) {
         console.error('Error fetching AI response: ', error);
-
-        //Reset variables
-        handleClear();
-
         alert('There was an error with the AI response. \nPlease try again.')
       } 
     }

@@ -48,7 +48,7 @@ function generatePrompt (city, startDate, endDate) {
     
         Give me a JSON format only response for the following prompt: 
 
-            Generate a route plan for the dates beggining in ${startDate} and ending in ${endDate} in ${city}, with 5 activities for each day with a name and description.
+            Generate a route plan for the following dates: ${startDate} till ${endDate} in ${city}, with 5 activities for each day with the day, date with only day and month and a description.
             For the activity name give only the name of the monument/place if that is the case, e.g. Colisseum, Palatine Hill.
             If the activity name is related to restaurants or food, replace the activity name with a restaurant in the specified city that serves that dish).
             For the activity description give only a single line response.
@@ -58,6 +58,7 @@ function generatePrompt (city, startDate, endDate) {
             Use the following json format mandatorily:  
 
                 [{  "day": "Day 1", 
+                    "date": "20/04",
                     "description: "day 1 description", 
                     "activities" : [
                         { "name": "activity name 1","description": "activity description"},

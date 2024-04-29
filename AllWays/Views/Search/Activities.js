@@ -191,7 +191,11 @@ export class ActivitiesScreen extends React.Component{
               <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
             </TouchableOpacity>
             <Text style ={ParentStyles.title}>{newCity}</Text>
-            <Text style ={ParentStyles.subtitle}>{routePlan.day}</Text>  
+            <View style = {{flexDirection:'row'}}>
+              <Text style ={ParentStyles.subtitle}>{routePlan.day}</Text> 
+              <Text style ={ActivitiesListStyles.activitySubtitleDate}>{routePlan.date}</Text>  
+            </View>
+             
           </ImageBackground>
         </View>
 
@@ -251,20 +255,21 @@ const ParentStyles = StyleSheet.create({
   },
   listTitle: {
     fontSize: 20,
-    fontWeight:'500',
     marginTop:10,
     textAlign: 'center',
-    
+    fontFamily: 'Poppins-Medium',
   },
   listSubtitle: {
     fontSize: 20,
     textAlign: 'center',
     marginTop: 10, // Adjust margin top as needed to bring the list name down
-    marginBottom:20
+    marginBottom:20,
+    fontFamily: 'Poppins-Medium',
   },
   dayText: {
     fontSize: 30,
     textAlign: 'center',
+    fontFamily: 'Poppins-Medium',
   },
   saveRouteButtom:{
     borderColor:'#000',
@@ -277,13 +282,15 @@ const ParentStyles = StyleSheet.create({
   },
   saveRouteText:{
     fontSize: 30,
-    color:'#000'
+    color:'#000',
+    fontFamily: 'Poppins-Medium',
   },
   title:{
     marginLeft:10,
     fontWeight:'500',
     fontSize:64,
     color:'#fff',
+    fontFamily: 'Poppins-Medium',
 
   },
   subtitle:{
@@ -291,7 +298,8 @@ const ParentStyles = StyleSheet.create({
     fontWeight:'400',
     fontSize:30,
     color:'#fff',
-    marginTop:-15
+    marginTop:-15,
+    fontFamily: 'Poppins-Medium',
   }
 });
   
@@ -319,31 +327,31 @@ const ActivitiesListStyles = StyleSheet.create({
     height: '40%', // Adjusted to 100% to fill the container
   },
   textContainer: {
-    justifyContent:'center',
+    margin:10,
     alignItems:'center',
-    margin:10
-     // Adjusted margin top for better spacing
+    justifyContent:'center',
+    fontFamily:'Poppins-Medium',
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    textAlign:'center'
+    textAlign:'center',
+    fontFamily: 'Poppins-SemiBold',
   
   },
   description: {
     fontSize: 16,
-    fontWeight: '400',
-    textAlign:'center'
+    textAlign:'center',
+    fontFamily: 'Poppins-Light',
   },
   buttonContainer: {
+    padding: 10,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 10,
   },
   buttonText: {
+    fontSize:16,
     color: 'white',
-    fontWeight: 'bold',
-    fontSize:16
+    fontFamily: 'Poppins-Bold',
   },
   button: {
     borderRadius:30,
@@ -353,6 +361,13 @@ const ActivitiesListStyles = StyleSheet.create({
     margin:10,
     justifyContent:'center',
     alignItems:'center'
-  }
+  },
+  activitySubtitleDate: {
+    fontSize:15,
+    marginLeft:10,
+    textAlign:'center',
+    color:'rgba(255,255,255,1)',
+    fontFamily:'Poppins-Medium',
+  },
 
 });

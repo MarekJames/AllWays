@@ -12,17 +12,21 @@ Days.js
 /******************** Imports Section ********************/ 
 
 // Imports for the react components add buttons, images, text, etc
-import React, {useState} from 'react';  
-import {Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView, ImageBackground} from 'react-native'; 
-import "react-native-url-polyfill/auto"
+import Moment from 'moment';
+import React, {useState} from 'react';
+import "react-native-url-polyfill/auto";
+import { extendMoment } from 'moment-range';
 import { Ionicons } from '@expo/vector-icons';
-import {insertRoute, deleteRoute} from '../../config/firebase-config'
+import {insertRoute, deleteRoute} from '../../config/firebase-config';
+import {Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView, ImageBackground} from 'react-native'; 
+import Day from 'react-native-calendars/src/calendar/day';
 
 
 
 
 /******************* Global Variables ********************/
 
+const moment = extendMoment(Moment);
 const width = Dimensions.get('window').width   // Get width of the user screen
 const height = Dimensions.get('window').height // Get height of the user screen
 
@@ -45,10 +49,10 @@ export class DaysScreen extends React.Component {
   lists = () => {
     
     const { route } = this.props;
-    const { savedRoutes, listsPlan, city, days, imageRoute, routeId } = route.params;
+    const { savedRoutes, listsPlan, city, startDate, endDate, imageRoute, routeId } = route.params;
 
     return listsPlan.map((item, index) => (
-      <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {this.props.navigation.navigate('Activities', { savedRoutes: savedRoutes, listsPlan:listsPlan, routePlan:listsPlan[index], city: city, days:days, imageRoute: imageRoute, routeId: routeId != null ? routeId : 0 })}}>
+      <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {this.props.navigation.navigate('Activities', { savedRoutes: savedRoutes, listsPlan:listsPlan, routePlan:listsPlan[index], city: city, startDate: startDate, endDate: endDate, imageRoute: imageRoute, routeId: routeId != null ? routeId : 0 })}}>
           {/* Image at the top occupying 50% of the square */}
           <Image
             source={{ uri: item.imageUrl }}
@@ -56,7 +60,10 @@ export class DaysScreen extends React.Component {
           />
 
           <View style = {{flex:1, alignItems:'left', justifyContent:'center', margin:10}}>
-            <Text style = {DaysListStyles.dayTitle}>{item.day}</Text>
+            <View style = {{flexDirection:'row'}}>
+              <Text style = {DaysListStyles.dayTitle}>{item.day}</Text>
+              <Text style = {DaysListStyles.dayTitleDate}>{item.date}</Text>
+            </View>
             <Text style = {DaysListStyles.daySubtitle}>{item.description}</Text>
           </View>
 
@@ -68,17 +75,21 @@ export class DaysScreen extends React.Component {
   // Renders the screen
   render() {
     const { route } = this.props;
-    const { savedRoutes, city, days, listsPlan, imageRoute } = route.params;
+    const { savedRoutes, city, startDate, endDate, listsPlan, imageRoute } = route.params;
     var newCity = city.split(',')[0];
-    // Const that gets the images for the specific activities
-    // Also defines what is shown in the specific day route plan screen
-   
+    
+    // Format dates
+    const start = moment(startDate, 'DD/MM/YYYY');
+    const end   = moment(endDate, 'DD/MM/YYYY');
+    const range = moment.range(start, end);
+
+    // Heart Icon
     const HeartIcon = () => {
       const [isSaved, setIsSaved] = useState(false); // Initially, the content is not saved
       const [routeId, setRouteId] = useState('');
 
       const toggleSave = () => {
-        if(!isSaved) insertRoute(listsPlan, listsPlan.imageUrl, city, days).then((id) => setRouteId(id));
+        if(!isSaved) insertRoute(listsPlan, listsPlan.imageUrl, city, startDate, endDate).then((id) => setRouteId(id));
         else deleteRoute(routeId);
 
         setIsSaved(!isSaved);
@@ -107,35 +118,37 @@ export class DaysScreen extends React.Component {
     };
 
     // If fonts are loaded and showDayRoutePlan is 0 (Shows the list of days)
-
     return (
       <View style={ParentStyles.container}>
         
         <View style={ParentStyles.imageBackground}>
           
-          <ImageBackground source={{ uri: imageRoute }}style={DaysListStyles.imageBackground} >
+          <ImageBackground source={{ uri: imageRoute }} style={DaysListStyles.imageBackground} >
 
-            <View>
-            <View style ={{justifyContent:'flex-start'}} >
-              {savedRoutes && (<TouchableOpacity
-                onPress={() => this.props.navigation.navigate('SavedRoutes')}
-               
-              >
-                <Ionicons name="chevron-back-sharp" size={30} color="black" />
-              </TouchableOpacity>
-              )}
+            <View style = {{flexDirection:'row', justifyContent:'space-between', marginRight: 20}}>
+              <View>
+                {savedRoutes && (<TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('SavedRoutes')}
+                
+                >
+                  <Ionicons name="chevron-back-sharp" size={30} color="black" />
+                </TouchableOpacity>
+                )}
+              </View>
+              <View>
+            
+                {/* HeartIcon component */}
+                {!savedRoutes && (
+                  <HeartIcon/>
+                )}
+              </View>
             </View>
-            <View style ={{justifyContent:'flex-end'}} >
-          
-              {/* HeartIcon component */}
-              {!savedRoutes && (
-                <HeartIcon/>
-              )}
-            </View>
-            </View>
-            <View style = {{flex:1, justifyContent:'flex-end',marginBottom:30}}>
-              <Text style ={ParentStyles.title}>{newCity}</Text>
-              <Text style ={ParentStyles.subtitle}>{days} Days</Text>  
+            <View style = {{margin:10}}>
+            <Text style ={ParentStyles.title}>{newCity}</Text>
+              <View style = {{flexDirection:'row'}}>
+                <Text style ={ParentStyles.subtitle}>{range.diff('days') + 1} Days</Text>
+                <Text style ={ParentStyles.subtitleDate}> {startDate.substring(0,5)}-{endDate.substring(0,5)}</Text>
+              </View>  
             </View>
            
           </ImageBackground>
@@ -196,9 +209,9 @@ const ParentStyles = StyleSheet.create({
   },
   listTitle: {
     fontSize: 20,
-    fontWeight:'500',
     marginTop:10,
     textAlign: 'center',
+    fontFamily: 'Poppins-Medium',
   },
   listSubtitle: {
     fontSize: 20,
@@ -224,17 +237,22 @@ const ParentStyles = StyleSheet.create({
     color:'#000'
   },
   title:{
-    marginLeft:10,
-    fontWeight:'500',
     fontSize:64,
     color:'#fff',
+    textAlignVertical:'bottom',
+    fontFamily:'Poppins-Medium',
   },
   subtitle:{
-    marginLeft:10,
-    fontWeight:'400',
-    fontSize:30,
+    fontSize:24,
     color:'#fff',
-    marginTop:-15
+    textAlignVertical:'center',
+    fontFamily:'Poppins-Medium',
+  },
+  subtitleDate:{
+    fontSize:16,
+    color:'#fff',
+    textAlignVertical:'center',
+    fontFamily:'Poppins-Medium', 
   }
 });
 
@@ -265,12 +283,22 @@ const DaysListStyles = StyleSheet.create({
   },
   dayTitle: {
     fontSize: 30,
-    fontWeight:'500',
     color:'#000',
+    fontFamily:'Poppins-Medium',
+    textAlign:'center',
   },  
+  dayTitleDate: {
+    margin:10,
+    fontSize:15,
+    textAlign:'center',
+    color:'rgba(0,0,0,0.5)',
+    fontFamily:'Poppins-Medium',
+  },
   daySubtitle: {
-    fontSize: 15,
-    fontWeight:'400',
+    fontSize: 13,
     color:'#000',
+    fontFamily:'Poppins-Light',
   }
 });
+
+
