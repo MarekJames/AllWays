@@ -23,6 +23,8 @@
     "expo-splash-screen": "^0.26.4",
     "expo-status-bar": "~1.11.1",
     "firebase": "10.7.1",
+    "moment": "^2.30.1",
+    "moment-range": "^4.0.2",
     "react": "18.2.0",
     "react-native": "0.73.6",
     "react-native-calendars": "^1.1304.1",

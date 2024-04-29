@@ -69,11 +69,12 @@ export class SavedRoutesScreen extends React.Component{
     return userRoutes._j.map((item, index) => (   
       <TouchableOpacity style={SavedRoutesStyles.square} key={index} onPress={() =>  {
         this.props.navigation.navigate('Days', {  savedRoutes: true, 
-                                                  listsPlan: item.route, 
                                                   city: item.city, 
-                                                  days: item.days, 
+                                                  routeId: item.id,
+                                                  endDate: item.endDate,
+                                                  listsPlan: item.route, 
+                                                  startDate: item.startDate, 
                                                   imageRoute: item.imageUrl,
-                                                  routeId: item.id
                                                 })
       }}>
 
@@ -86,7 +87,7 @@ export class SavedRoutesScreen extends React.Component{
         {/* Title and description */}
         <View style={SavedRoutesStyles.textContainer}>
           <Text style={SavedRoutesStyles.titleSquare}>{item.city.split(',')[0] + ',' + item.city.split(',')[item.city.split(',').length - 1]}</Text>
-          <Text style={SavedRoutesStyles.description}>{item.days} Days </Text>
+          <Text style={SavedRoutesStyles.description}>{item.startDate}-{item.endDate}</Text>
         </View>
 
         {/* Delete Option */}
@@ -144,6 +145,7 @@ const SavedRoutesStyles = StyleSheet.create({
   noRoutesText:{
     fontSize:15,
     textAlign:'center',
+    fontFamily: 'Poppins-Medium',
   },
   imageBackground: {
     width:'100%',
@@ -189,20 +191,21 @@ const SavedRoutesStyles = StyleSheet.create({
     fontSize: 40,
     color:'#FFFFFF',
     marginBottom: 10,
-    fontWeight: '600',
+    fontFamily: 'Poppins-Medium',
   },
   subtitle: {
     margin:10,
-    fontSize:20, 
-    fontWeight:'500', 
+    fontSize:20,  
+    fontFamily: 'Poppins-Medium',
   },
   titleSquare: {
     fontSize: 27,
     color:'#000000',
     marginBottom: 10,
-    fontWeight: '500',
+    fontFamily: 'Poppins-Medium',
   },
   description: {
-    fontSize: 16,
+    fontSize: 13,
+    fontFamily: 'Poppins-Light',
   },
 });

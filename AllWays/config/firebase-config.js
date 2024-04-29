@@ -112,13 +112,14 @@ async function changePassword(oldPassword, newPassword){
 }
 
 // Insert Route in DB
-async function insertRoute(route, imageRoute, city, days){
+async function insertRoute(route, imageRoute, city, startDate, endDate){
 
   // Add a new document with a generated id.
   try {
     const docRef = await addDoc(collection(db, "routes"), {
       city: city,
-      days: days,
+      startDate: startDate,
+      endDate: endDate,
       route: route,
       imageUrl: imageRoute,
       userId: getAuth().currentUser.uid

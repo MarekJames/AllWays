@@ -1,9 +1,29 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import  Ionicons  from '@expo/vector-icons/Ionicons';
-import { deleteUser } from 'firebase/auth';
+/*
 
-// Set of options for settings
+AccountSettings.js 
+  
+  -> Shows the account settings
+
+*/
+
+
+
+
+/******************** Imports Section ********************/ 
+
+import React from 'react';
+import { deleteUser } from 'firebase/auth';
+import  Ionicons  from '@expo/vector-icons/Ionicons';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
+
+
+
+
+/******************* Global Variables ********************/
+
+const width = Dimensions.get('window').width   // Get width of the user screen
+const height = Dimensions.get('window').height // Get height of the user screen
+
 const optionsSettings = [
   { name: 'Change Account Name'},
   { name: 'Change Email'},
@@ -11,129 +31,155 @@ const optionsSettings = [
 ];
 
 
-// Account Settings Screen Screen
+
+
+/*********************** Classes *************************/
+
+/*
+
+  AccountSettingsScreen class
+  Shows the account settings
+
+*/
 export class AccountSettingsScreen extends React.Component{
 
-    AccountSettings = () => {
+  AccountSettings = () => {
 
-        const handleDelete =  () => {
-            deleteUser();
-        }
+    const handleDelete =  () => {
+        deleteUser();
+    }
 
-        return (
+    return (
+      <View style = {AccountSettingsStyles.container}>
+
+          {/* Title and back button */}
+          <View style={AccountSettingsStyles.profileContainer}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={AccountSettingsStyles.backButton}>
+              <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+            </TouchableOpacity>
+            <Text style={AccountSettingsStyles.userName}>Account</Text>
+          </View>
           
-          <View style = {{ backgroundColor:'#fff', flex:1}}>
+          {/* First set of options - Settings*/}
+          <View style={AccountSettingsStyles.optionsContainer}>
+            <Text style={AccountSettingsStyles.optionTitle}>Settings</Text>
+            
+            <View style={AccountSettingsStyles.separator} />
 
-              {/* Title and back button */}
-              <View style={styles.profileContainer}>
-                <TouchableOpacity
-                  onPress={() => this.props.navigation.goBack()}
-                  style={{
-                    width: 45,
-                    height: 45,
-                    borderRadius: 30,
-                    backgroundColor: '#fff',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginLeft:10
-                  }}
-                >
-                  <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
-                </TouchableOpacity>
-                <Text style={styles.userName}>Account</Text>
-              </View>
-              
-              {/* First set of options - Settings*/}
-              <View style={styles.optionsContainer}>
-                <Text style={styles.optionTitle}>Settings</Text>
-                
-                <View style={{ height: 1, backgroundColor: '#C2C2C2', marginVertical:5}} />
+            {optionsSettings.map((option, index) => (
+              <View key = {index}>
+                <TouchableOpacity onPress={()=> {
 
-                {optionsSettings.map((option, index) => (
-                  <View key = {index}>
-                    <TouchableOpacity onPress={()=> {
+                    if(option.name ==  'Change Account Name'){this.props.navigation.navigate('ChangeName')}
+                    if(option.name ==  'Change Email'){this.props.navigation.navigate('ChangeEmail')}
+                    if(option.name ==  'Change Password'){this.props.navigation.navigate('ChangePassword')}
 
-                        if(option.name ==  'Change Account Name'){this.props.navigation.navigate('ChangeName')}
-                        if(option.name ==  'Change Email'){this.props.navigation.navigate('ChangeEmail')}
-                        if(option.name ==  'Change Password'){this.props.navigation.navigate('ChangePassword')}
-
-                      }} style={styles.optionItem} key={index}>
-                      <Text style={styles.optionName}>{option.name}</Text>
-                      <Ionicons size={20} color={'#9F9F9F'} name = {'chevron-forward-sharp'}/>
-                    </TouchableOpacity>
-                    <View style={{ height: 1, backgroundColor: '#C2C2C2', marginVertical:5}} />
-                  </View>
-                ))}
-              </View>
-
-              {/* Delete */}
-              <View style = {{position:'absolute', width:'90%', bottom:'10%', marginHorizontal:20}}>
-                <TouchableOpacity onPress={handleDelete} style={styles.optionItem}>
-                  <Text style={{fontSize:16, fontWeight:'400', color:'#EA0000'}}>Delete Account</Text>
+                  }} style={AccountSettingsStyles.optionItem} key={index}>
+                  <Text style={AccountSettingsStyles.optionName}>{option.name}</Text>
                   <Ionicons size={20} color={'#9F9F9F'} name = {'chevron-forward-sharp'}/>
                 </TouchableOpacity>
-                <View style={{ height: 1, backgroundColor: '#C2C2C2', marginVertical:5}} />
+                <View style={AccountSettingsStyles.separator} />
               </View>
-
+            ))}
           </View>
-       
-        );
+
+          {/* Delete */}
+          <View style = {AccountSettingsStyles.deleteContainer}>
+            <TouchableOpacity onPress={handleDelete} style={AccountSettingsStyles.optionItem}>
+              <Text style={AccountSettingsStyles.deleteText}>Delete Account</Text>
+              <Ionicons size={20} color={'#9F9F9F'} name = {'chevron-forward-sharp'}/>
+            </TouchableOpacity>
+            <View style={AccountSettingsStyles.separator} />
+          </View>
+
+      </View>
+    
+      );
     };
 
     render() {  
-        return (
-            <this.AccountSettings/>
-        )    
+      return (
+          <this.AccountSettings/>
+      )    
     }
     
 }
 
-// StyleSheet for the profile screen
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      marginTop:20
-    },
-    profileContainer: {
-     flexDirection:'row',
-     marginBottom:40,
-     marginTop:50
-    },
-    userName: {
-      flex:1,
-      fontSize: 32,
-      fontWeight: '700',
-      color:'#000000',
-      textAlign:'center',
-      marginRight:55
-    },
-    email: {
-      fontSize: 16,
-      fontWeight: '500',
-      color:'#000000',
-      marginBottom:30
-    },
-    optionsContainer: {
-      justifyContent:'center',
-      marginHorizontal:20
-    },
-    optionItem: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent:'space-between',
-      marginVertical: 15,
-    },
-    optionIcon: {
-      marginRight: 10,
-      margin:10
-    },
-    optionName: {
-      fontSize: 16,
-      fontWeight:'400'
-    },
-    optionTitle: {
-      fontSize: 20,
-      fontWeight:'700',
-      marginVertical:20
-    }
+
+
+
+/********************* Stylesheets ***********************/
+
+const AccountSettingsStyles = StyleSheet.create({
+  container:{
+    flex: 1,
+    backgroundColor:"#fff",
+  },
+  deleteContainer:{
+    width:width*0.9,
+    bottom:height*0.1,
+    marginHorizontal:20,
+    position:'absolute',
+  },
+  profileContainer:{
+    marginTop:50,
+    marginBottom:40,
+    flexDirection:'row',
+  },
+  userName:{
+    flex:1,
+    fontSize:32,
+    marginRight:55,
+    color:'#000000',
+    textAlign:'center',
+    fontFamily:'Poppins-SemiBold'
+  },
+  email:{
+    fontSize:16,
+    marginBottom:30,
+    color:'#454545',
+    fontFamily:'Poppins-Medium',
+  },
+  optionsContainer:{
+    marginHorizontal:20,
+    justifyContent:'center',
+  },
+  optionItem:{
+    marginVertical:15,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between',
+  },
+  optionIcon:{
+    margin:10,
+    marginRight:10,
+  },
+  optionName:{
+    fontSize:16,
+    fontFamily:'Poppins-Medium',
+  },
+  optionTitle:{
+    fontSize: 20,
+    marginVertical:20,
+    fontFamily:'Poppins-SemiBold',
+  },
+  separator:{
+    height:1,
+    marginVertical:5,
+    backgroundColor:'#C2C2C2',
+  },
+  backButton:{
+    width: 45,
+    height: 45,
+    marginLeft:10,
+    borderRadius: 30,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+  },
+  deleteText:{
+    fontSize:16,
+    color:'#EA0000',
+    fontFamily:'Poppins-Medium',
+  }
 });

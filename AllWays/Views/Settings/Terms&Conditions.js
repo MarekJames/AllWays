@@ -29,21 +29,13 @@ import  Ionicons  from '@expo/vector-icons/Ionicons';
 export class TermsConditionsScreen extends React.Component{
   render() {  
     return (
-      <View>
+      <View style = {TermsConditionsStyles.container}>
 
           {/* Title and Back button */}
-          <View style = {{flexDirection:'row', marginTop:50, marginBottom:50}}>
+          <View style = {TermsConditionsStyles.titleContainer}>
             <TouchableOpacity
                   onPress={() => this.props.navigation.goBack()}
-                  style={{
-                    width: 45,
-                    height: 45,
-                    borderRadius: 30,
-                    backgroundColor: '#fff',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginLeft:10
-                  }}
+                  style={TermsConditionsStyles.backButton}
                 >
                   <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
             </TouchableOpacity>
@@ -63,24 +55,38 @@ export class TermsConditionsScreen extends React.Component{
 
 const TermsConditionsStyles = StyleSheet.create ({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor:'white'
+    flex:1,
+    alignItems:'center',
+    backgroundColor:'#FFF'
+  },
+  titleContainer:{
+    marginTop:50, 
+    marginBottom:50,
+    flexDirection:'row',
   },
   title: {
-    fontSize: 30,
-    fontWeight: 'bold',
+    flex:1,
+    fontSize:30,
+    marginRight:55,
     color:'#000000',
     alignSelf:'center',
     textAlign:'center',
-    flex:1,
-    marginRight:55
+    fontFamily:'Poppins-Bold',
   },
   subTitle: {
-    fontSize: 20,
-    marginBottom: 30,
+    fontSize:20,
+    marginLeft:25,
+    marginBottom:30,
     color:'#494949',
-    fontWeight:'600',
-    marginLeft:25
+    fontFamily:'Poppins-Medium',
   },
+  backButton:{
+    width:45,
+    height:45,
+    marginLeft:10,
+    borderRadius:30,
+    alignItems:'center',
+    backgroundColor:'#fff',
+    justifyContent:'center',
+  }
 })

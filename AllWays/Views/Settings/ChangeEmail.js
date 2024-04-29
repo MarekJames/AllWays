@@ -12,16 +12,17 @@ ChangeEmail.js
 /******************** Imports Section ********************/ 
 
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Modal, ActivityIndicator, Dimensions } from 'react-native';
-import { updateUserEmail, getAuth, verifyBeforeUpdate, reauthenticateUser } from '../../config/firebase-config';
 import { Ionicons } from '@expo/vector-icons';
+import { updateUserEmail, getAuth, verifyBeforeUpdate, reauthenticateUser } from '../../config/firebase-config';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Modal, ActivityIndicator, Dimensions } from 'react-native';
+
 
 
 
 /******************* Global Variables ********************/
 
 const width = Dimensions.get('window').width   // Get width of the user screen
-
+const height = Dimensions.get('window').height // Get height of the user screen
 
 
 
@@ -33,19 +34,19 @@ const width = Dimensions.get('window').width   // Get width of the user screen
   Allows the user to update their email
 
 */
-
 export class ChangeEmailScreen extends React.Component{
   
   changeEmailScreen = () => {
     
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [invalidEmail, setInvalidEmail] = useState('');
     const [confirmEmail, setConfirmEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [invalidConfirmEmail, setInvalidConfirmEmail] = useState('');
-    const [isModalVisible, setIsModalVisible] = useState(false);
     const [isRecentLogin, setIsRecentLogin] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [invalidConfirmEmail, setInvalidConfirmEmail] = useState('');
    
+    // Handles Reauthentication
     const handleLogin = async () => {
 
       // Reauthenticate user with provided password
@@ -58,7 +59,9 @@ export class ChangeEmailScreen extends React.Component{
       }
     }
 
+    // Handle Success
     const handleComplete = async () => {
+      
       // Check user
       await getAuth().currentUser.reload();
       const user = getAuth().currentUser;
@@ -80,6 +83,7 @@ export class ChangeEmailScreen extends React.Component{
       }
     }
 
+    // Handle Verify Email
     const handleVerifyEmailError = async (error) => {
       if(error == 'auth/requires-recent-login'){
         
@@ -91,6 +95,7 @@ export class ChangeEmailScreen extends React.Component{
       }
     }
 
+    // Handle Submit
     const handleSubmit = async (navigator) => {
         
         if(!email){
@@ -151,14 +156,14 @@ export class ChangeEmailScreen extends React.Component{
           visible={isModalVisible}
           onRequestClose={() => setIsModalVisible(false)}
         >
-          <View style = {{flex:1, justifyContent:'center', alignItems:'center', padding: 20}}>
+          <View style = {ChangeEmailStyles.subContainer}>
 
             {/* Show email validation OR Login reauthenticate */}
             {!isRecentLogin ? (
               <View>
-                <Text style = {{margin:40, fontWeight:'bold', fontSize: 20, textAlign:'center'}}>Please verify your new email</Text>
-                <Text style = {{fontSize: 15, textAlign:'center'}}>An email has been sent to your new email</Text>
-                <Text style = {{fontSize: 15, textAlign:'center'}}>Verify it and click complete.</Text>
+                <Text style = {ChangeEmailStyles.errorTitle}>Please verify your new email</Text>
+                <Text style = {ChangeEmailStyles.errorSubtitle}>An email has been sent to your new email</Text>
+                <Text style = {ChangeEmailStyles.errorSubtitle}>Verify it and click complete.</Text>
                 
                 <ActivityIndicator style = {{margin:30}}>
                 </ActivityIndicator>
@@ -166,14 +171,14 @@ export class ChangeEmailScreen extends React.Component{
                   style = {ChangeEmailStyles.modalButtom}
                   onPress={() => {handleComplete()}}
                 >
-                  <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Complete</Text>
+                  <Text style = {ChangeEmailStyles.updateText}>Complete</Text>
                 </TouchableOpacity>
               </View>
             ) : (
               <View>
-                <Text style = {{margin:40, fontWeight:'bold', fontSize: 20, textAlign:'center'}}>You have been logged for too long</Text>
-                <Text style = {{fontSize: 15, textAlign:'center'}}>For sensitive operations it is required to reauthenticate</Text>
-                <Text style = {{fontSize: 15, textAlign:'center'}}>Please input your password</Text>
+                <Text style = {ChangeEmailStyles.errorTitle}>You have been logged for too long</Text>
+                <Text style = {ChangeEmailStyles.errorSubtitle}>For sensitive operations it is required to reauthenticate</Text>
+                <Text style = {ChangeEmailStyles.errorSubtitle}>Please input your password</Text>
                 <TextInput
                   style={ChangeEmailStyles.modalInput}
                   placeholder="Password"
@@ -186,7 +191,7 @@ export class ChangeEmailScreen extends React.Component{
                   style = {ChangeEmailStyles.modalButtom}
                   onPress={() => {handleLogin()}}
                 >
-                  <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Login</Text>
+                  <Text style = {ChangeEmailStyles.updateText}>Login</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -199,18 +204,10 @@ export class ChangeEmailScreen extends React.Component{
           resizeMode="cover" // You can adjust the resizeMode property as needed
         >
         
-        <View style = {{flexDirection:'row', marginTop:50, marginBottom:10}}>
+        <View style = {ChangeEmailStyles.containerHeader}>
           <TouchableOpacity
                 onPress={() => this.props.navigation.goBack()}
-                style={{
-                  width: 45,
-                  height: 45,
-                  borderRadius: 30,
-                  backgroundColor: '#fff',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft:10
-                }}
+                style={ChangeEmailStyles.backButton}
               >
                 <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
           </TouchableOpacity>
@@ -221,7 +218,7 @@ export class ChangeEmailScreen extends React.Component{
         <Text style={ChangeEmailStyles.subTitle}>Enter your email</Text>
 
         {invalidEmail !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidEmail}</Text>
+          <Text style = {ChangeEmailStyles.invalidInput}>{invalidEmail}</Text>
         )}
         <TextInput
           style={ChangeEmailStyles.input}
@@ -232,7 +229,7 @@ export class ChangeEmailScreen extends React.Component{
         />
 
         {invalidConfirmEmail !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidConfirmEmail}</Text>
+          <Text style = {ChangeEmailStyles.invalidInput}>{invalidConfirmEmail}</Text>
         )}
         <TextInput
           style={ChangeEmailStyles.input}
@@ -243,7 +240,7 @@ export class ChangeEmailScreen extends React.Component{
         />
 
         <TouchableOpacity style = {ChangeEmailStyles.recover} onPress={() => {handleSubmit(this.props.navigation)}}>
-          <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Update</Text>
+          <Text style = {ChangeEmailStyles.updateText}>Update</Text>
         </TouchableOpacity>
   
         </ImageBackground>
@@ -270,53 +267,57 @@ const ChangeEmailStyles = StyleSheet.create ({
     alignItems: 'center',
     backgroundColor:'white'
   },
+  subContainer:{
+    flex:1,
+    padding: 20,
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  containerHeader:{
+    marginTop:50,
+    marginBottom:10,
+    flexDirection:'row',
+  },
   imageBackground:{
-      flex: 1,
-      width: '100%', // You can adjust width and height as needed
-      height: '100%',
+      flex:1,
+      width:width,
+      height:height,
   },
   title: {
+    flex:1,
+    color:'#000',
     fontSize: 30,
-    fontWeight: 'bold',
-    color:'#000000',
+    marginRight:55,
     alignSelf:'center',
     textAlign:'center',
-    flex:1,
-    marginRight:55
-
+    fontFamily:'Poppins-Bold',
   },
   subTitle: {
     fontSize: 20,
-    marginBottom: 40,
     color:'#494949',
-    fontWeight:'600',
-    textAlign:'center'
+    marginBottom: 40,
+    textAlign:'center',
+    fontFamily:'Poppins-Medium',
   },
   input: {
-    width: '80%',
-    height: 50,
-    paddingLeft: 20,
-    marginVertical: 20,
+    height:50,
+    paddingLeft:20,
+    width:width*0.8,
     borderRadius:30,
     alignSelf:'center',
-    backgroundColor:'#F1F4FF'
+    marginVertical: 20,
+    backgroundColor:'#F1F4FF',
+    fontFamily:'Poppins-Light'
   },
   recover: {
-    width: '80%',
-    height: 50,
-    backgroundColor:'#23C2DF',
+    height:50,
     marginTop:40,
-    marginBottom: 10,
+    width:width*0.8,
     borderRadius:30,
+    marginBottom:10,
     alignSelf:'center',
-    justifyContent:'center'
-  },
-  continueWith:{
-    textAlign:'center',
-    fontSize:14,
-    color:'#23C2DF',
-    fontWeight:'600',
-    marginTop:30
+    justifyContent:'center',
+    backgroundColor:'#23C2DF',
   },
   modalButtom:{
     width: width * 0.8,
@@ -329,22 +330,45 @@ const ChangeEmailStyles = StyleSheet.create ({
     justifyContent:'center'
   },
   modalInput: {
-    width: width*0.8,
-    height: 50,
-    paddingLeft: 20,
-    marginVertical: 20,
+    height:50,
+    paddingLeft:20,
+    width:width*0.8,
     borderRadius:30,
+    marginVertical:20,
     alignSelf:'center',
-    backgroundColor:'#F1F4FF'
+    backgroundColor:'#F1F4FF',
+    fontFamily:'Poppins-Medium',
   },
-  icons:{
-    alignItems:'center', 
-    justifyContent:'center', 
-    width:60, 
-    height:50, 
-    borderRadius: 10, 
-    backgroundColor:'#ECECEC',
-    marginHorizontal:10
-  }
- 
+  updateText:{
+    fontSize:20,
+    color:'#FFF',
+    textAlign:'center', 
+    fontFamily:'Poppins-SemiBold',
+  },
+  invalidInput:{
+    color:'red',
+    fontSize:12,
+    textAlign:'center',
+    fontFamily:'Poppins-Medium',
+  },
+  backButton:{
+    width:45,
+    height:45,
+    marginLeft:10,
+    borderRadius:30,
+    alignItems:'center',
+    justifyContent:'center',
+    backgroundColor:'#fff',
+  },
+  errorTitle:{
+    margin:40, 
+    fontSize: 20,
+    textAlign:'center',
+    fontFamily:'Poppins-Bold',
+  },
+  errorSubtitle:{
+    fontSize: 15,
+    textAlign:'center',
+    fontFamily:'Poppins-Medium',
+  },
 })

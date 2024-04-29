@@ -34,20 +34,15 @@ const BottomTabNavigator = () => {
       screenOptions={{
         headerShown: false, // Hide the header for tab navigator
         tabBarActiveTintColor:'#000000',
-        tabBarLabelStyle: {
-          fontSize: 14, // Adjust label font size
-          fontWeight: 'bold', // Make label text bold
-          marginBottom:5
-        },
-        tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:55},
-        tabBarIconStyle: {marginTop:5},
+        tabBarStyle:{borderTopWidth: 2, borderTopColor:'#fff', position:'absolute', elevation:0, height:45},
+        tabBarIconStyle:{marginTop:5},
       }} 
     >
       <Tab.Screen 
         name = "StackRoutePlanNavigator" 
         component = {StackRoutePlanNavigator}
         options = {{
-          title : 'Search',
+          title : '',
           tabBarIcon : ({size,focused,color}) => {return(<Ionicons name={'search-outline'} size={size} color={color}/>)},
         }}
       /> 
@@ -56,7 +51,7 @@ const BottomTabNavigator = () => {
         name = "StackSavedNavigator" 
         component = {StackSavedNavigator}
         options = {{
-          title : 'Saved',
+          title : '',
           tabBarIcon : ({size,focused,color}) => {return(<Ionicons name={'heart-outline'} size={size} color={color}/>)},
         }}
       />
@@ -65,7 +60,7 @@ const BottomTabNavigator = () => {
         name = "StackProfileNavigator" 
         component = {StackProfileNavigator} 
         options = {{
-          title : 'Profile',
+          title : '',
           tabBarIcon : ({size,focused,color}) => {return(<Ionicons name={'person-circle-outline'} size={size} color={color}/>)}
         }} 
       />
