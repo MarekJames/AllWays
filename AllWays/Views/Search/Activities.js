@@ -223,17 +223,16 @@ const ParentStyles = StyleSheet.create({
   container: {
     flex:1,
     backgroundColor: '#FFFFFF',
-    
   },
   imageBackground: {
     width:'100%',
     height:'30%',
   },
   header: {
+    marginBottom: 20,
+    paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#CCCCCC',
-    paddingBottom: 10,
-    marginBottom: 20,
   },
   containerLogoHeart: {
     flexDirection: 'row', // Arrange children horizontally
@@ -291,7 +290,6 @@ const ParentStyles = StyleSheet.create({
     fontSize:64,
     color:'#fff',
     fontFamily: 'Poppins-Medium',
-
   },
   subtitle:{
     marginLeft:10,
@@ -336,7 +334,6 @@ const ActivitiesListStyles = StyleSheet.create({
     fontSize: 24,
     textAlign:'center',
     fontFamily: 'Poppins-SemiBold',
-  
   },
   description: {
     fontSize: 16,
@@ -369,5 +366,4 @@ const ActivitiesListStyles = StyleSheet.create({
     color:'rgba(255,255,255,1)',
     fontFamily:'Poppins-Medium',
   },
-
 });

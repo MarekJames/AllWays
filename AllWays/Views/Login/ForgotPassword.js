@@ -12,8 +12,9 @@ ForgotPassword.js
 /******************** Imports Section ********************/ 
 
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground } from 'react-native';
 import { resetPassword } from '../../config/firebase-config';
+import { NetworkContext, showNetworkError } from '../../config/network-config';
+import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground } from 'react-native';
 
 
 
@@ -34,49 +35,64 @@ export class ForgotPasswordScreen extends React.Component{
     const [email, setEmail] = useState('');
     const [invalidEmail, setInvalidEmail] = useState('');
   
-    const handleSubmit = async () => {
+    const handleSubmit = async (navigation, isConnected) => {
         
+      if(isConnected){
         if(!email){
             setInvalidEmail('Please input your email');
         }
         else{
-            resetPassword(email);
+          const result = await resetPassword(email);
+          if(result == 'success'){
+            console.log('Reset email sent!');
+          }
+          else if(result == 'auth/invalid-email'){
+            setInvalidEmail('Please input a valid email');
+          }
         }
+      }
+      else{
+        showNetworkError(navigation, 'Network');
+      }
     }
 
     return (
-      <View style={ForgotPasswordStyles.container}>
+      <NetworkContext.Consumer>
+      {(value) => (
+        <View style={ForgotPasswordStyles.container}>
 
-        <ImageBackground
-          source={require('../../Images/LoginBackground.png')} // Replace with your image path
-          style={ForgotPasswordStyles.imageBackground}
-          resizeMode="cover" // You can adjust the resizeMode property as needed
-        >
+          <ImageBackground
+            source={require('../../Images/LoginBackground.png')} // Replace with your image path
+            style={ForgotPasswordStyles.imageBackground}
+            resizeMode="cover" // You can adjust the resizeMode property as needed
+          >
 
-        <Text style={ForgotPasswordStyles.title}>Forgot Password</Text>
+            <Text style={ForgotPasswordStyles.title}>Forgot Password</Text>
 
-        <Text style={ForgotPasswordStyles.subTitle}>Enter your email</Text>
+            <Text style={ForgotPasswordStyles.subTitle}>Enter your email</Text>
 
-        {invalidEmail !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidEmail}</Text>
-        )}
-        <TextInput
-          style={ForgotPasswordStyles.input}
-          placeholder="Email"
-          placeholderTextColor={'#626262'}
-          value={email}
-          onChangeText={setEmail}
-        />
+            {invalidEmail !== null && ( // Checking if the variable is not null
+              <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidEmail}</Text>
+            )}
+            <TextInput
+              style={ForgotPasswordStyles.input}
+              placeholder="Email"
+              placeholderTextColor={'#626262'}
+              value={email}
+              onChangeText={setEmail}
+            />
 
-        <TouchableOpacity style = {ForgotPasswordStyles.recover} onPress={handleSubmit}>
-          <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Recover Password</Text>
-        </TouchableOpacity>
-  
-        <Pressable onPress={() => {this.props.navigation.reset({ index: 0,routes: [{ name: 'Login' }]})}}>
-          <Text style={ForgotPasswordStyles.alreadyHaveAccount}>Already have an account</Text>
-        </Pressable>
-      </ImageBackground>
-      </View>
+            <TouchableOpacity style = {ForgotPasswordStyles.recover} onPress={() => {handleSubmit(this.props.navigation, value)}}>
+              <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Recover Password</Text>
+            </TouchableOpacity>
+      
+            <Pressable onPress={() => {this.props.navigation.reset({ index: 0,routes: [{ name: 'Login' }]})}}>
+              <Text style={ForgotPasswordStyles.alreadyHaveAccount}>Already have an account</Text>
+            </Pressable>
+          </ImageBackground>
+        </View>
+      )}
+      </NetworkContext.Consumer>
     );
   };
 
