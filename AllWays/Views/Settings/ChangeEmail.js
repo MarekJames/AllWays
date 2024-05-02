@@ -13,8 +13,10 @@ ChangeEmail.js
 
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { NetworkContext, showNetworkError } from '../../config/network-config';
 import { updateUserEmail, getAuth, verifyBeforeUpdate, reauthenticateUser } from '../../config/firebase-config';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Modal, ActivityIndicator, Dimensions } from 'react-native';
+import { NativeIconAPI } from '@expo/vector-icons/build/vendor/react-native-vector-icons/lib/create-icon-set';
 
 
 
@@ -47,44 +49,58 @@ export class ChangeEmailScreen extends React.Component{
     const [invalidConfirmEmail, setInvalidConfirmEmail] = useState('');
    
     // Handles Reauthentication
-    const handleLogin = async () => {
+    const handleLogin = async (navigation, isConnected) => {
 
-      // Reauthenticate user with provided password
-      const resultReauthenticate = await reauthenticateUser(password);
-      
-      // If success close modal
-      if(resultReauthenticate == 'success'){
-        setIsModalVisible(!isModalVisible);
-        setIsRecentLogin(!isRecentLogin);
+      if(isConnected){
+        // Reauthenticate user with provided password
+        const resultReauthenticate = await reauthenticateUser(password);
+        
+        // If success close modal
+        if(resultReauthenticate == 'success'){
+          setIsModalVisible(!isModalVisible);
+          setIsRecentLogin(!isRecentLogin);
+        }
+        else{
+          showNetworkError(navigation, resultReauthenticate);
+        }
+      }
+      else{
+        showNetworkError(navigation, 'Network');
       }
     }
 
     // Handle Success
-    const handleComplete = async () => {
+    const handleComplete = async (navigation, isConnected) => {
       
-      // Check user
-      await getAuth().currentUser.reload();
-      const user = getAuth().currentUser;
-      // Check email verified
+      if(isConnected){
+        // Check user
+        await getAuth().currentUser.reload();
+        const user = getAuth().currentUser;
+        // Check email verified
 
-      if(user.email == email && user.emailVerified){
-        console.log(user.email + ":" + user.emailVerified);
-       
-        // Log user out
-        try {
-          await getAuth().signOut();
+        if(user.email == email && user.emailVerified){
+          console.log(user.email + ":" + user.emailVerified);
+        
+          // Log user out
+          try {
+            await getAuth().signOut();
+          }
+          catch(error){
+            console.log('Error Sign Out: ' + error);
+            showNetworkError(navigation, error.message);
+          }
         }
-        catch(error){
-          console.log('Error Sign Out: ' + error);
+        else{
+          console.log(user.email + ":" + user.emailVerified);
         }
       }
       else{
-        console.log(user.email + ":" + user.emailVerified);
+        showNetworkError(navigation, 'Network');
       }
     }
 
     // Handle Verify Email
-    const handleVerifyEmailError = async (error) => {
+    const handleVerifyEmailError = async (navigation, error) => {
       if(error == 'auth/requires-recent-login'){
         
         // Show modal
@@ -93,10 +109,13 @@ export class ChangeEmailScreen extends React.Component{
         // Set recent login
         setIsRecentLogin(!isRecentLogin);
       }
+      else{
+        showNetworkError(navigation, error);
+      }
     }
 
     // Handle Submit
-    const handleSubmit = async (navigator) => {
+    const handleSubmit = async (navigation, isConnected) => {
         
         if(!email){
             setInvalidEmail('Please input your email');
@@ -114,9 +133,10 @@ export class ChangeEmailScreen extends React.Component{
             setInvalidConfirmEmail('');
         }
         if(email && confirmEmail && email == confirmEmail){
+          if(isConnected){
             const result = await updateUserEmail(email);
             if(result == 'success'){
-              navigator.replace('Profile', {email : email});
+              navigation.replace('Profile', {email : email});
             }
             if(result == 'auth/invalid-email'){
               setInvalidEmail('Invalid email, try again');
@@ -143,108 +163,118 @@ export class ChangeEmailScreen extends React.Component{
               else{
 
                 // Send to Error handler
-                handleVerifyEmailError(resultVerify);
+                handleVerifyEmailError(navigation, resultVerify);
               }
             }
+            else{
+              showNetworkError(navigation, result);
+            }
+          }
+          else{
+            showNetworkError(navigation, 'Network');
+          }
         }
     }
 
     return (
-      <View style={ChangeEmailStyles.container}>
+      <NetworkContext.Consumer>
+      {(value) => (
+        <View style={ChangeEmailStyles.container}>
+          <Modal
+            visible={isModalVisible}
+            onRequestClose={() => setIsModalVisible(false)}
+          >
+            <View style = {ChangeEmailStyles.subContainer}>
 
-        <Modal
-          visible={isModalVisible}
-          onRequestClose={() => setIsModalVisible(false)}
-        >
-          <View style = {ChangeEmailStyles.subContainer}>
+              {/* Show email validation OR Login reauthenticate */}
+              {!isRecentLogin ? (
+                <View>
+                  <Text style = {ChangeEmailStyles.errorTitle}>Please verify your new email</Text>
+                  <Text style = {ChangeEmailStyles.errorSubtitle}>An email has been sent to your new email</Text>
+                  <Text style = {ChangeEmailStyles.errorSubtitle}>Verify it and click complete.</Text>
+                  
+                  <ActivityIndicator style = {{margin:30}}>
+                  </ActivityIndicator>
+                  <TouchableOpacity 
+                    style = {ChangeEmailStyles.modalButtom}
+                    onPress={() => {handleComplete(this.props.navigation, value)}}
+                  >
+                    <Text style = {ChangeEmailStyles.updateText}>Complete</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View>
+                  <Text style = {ChangeEmailStyles.errorTitle}>You have been logged for too long</Text>
+                  <Text style = {ChangeEmailStyles.errorSubtitle}>For sensitive operations it is required to reauthenticate</Text>
+                  <Text style = {ChangeEmailStyles.errorSubtitle}>Please input your password</Text>
+                  <TextInput
+                    style={ChangeEmailStyles.modalInput}
+                    placeholder="Password"
+                    placeholderTextColor={'#626262'}
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                  />
+                  <TouchableOpacity 
+                    style = {ChangeEmailStyles.modalButtom}
+                    onPress={() => {handleLogin(this.props.navigation, value)}}
+                  >
+                    <Text style = {ChangeEmailStyles.updateText}>Login</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </Modal>
 
-            {/* Show email validation OR Login reauthenticate */}
-            {!isRecentLogin ? (
-              <View>
-                <Text style = {ChangeEmailStyles.errorTitle}>Please verify your new email</Text>
-                <Text style = {ChangeEmailStyles.errorSubtitle}>An email has been sent to your new email</Text>
-                <Text style = {ChangeEmailStyles.errorSubtitle}>Verify it and click complete.</Text>
-                
-                <ActivityIndicator style = {{margin:30}}>
-                </ActivityIndicator>
-                <TouchableOpacity 
-                  style = {ChangeEmailStyles.modalButtom}
-                  onPress={() => {handleComplete()}}
+          <ImageBackground
+            source={require('../../Images/LoginBackground.png')} // Replace with your image path
+            style={ChangeEmailStyles.imageBackground}
+            resizeMode="cover" // You can adjust the resizeMode property as needed
+          >
+          
+          <View style = {ChangeEmailStyles.containerHeader}>
+            <TouchableOpacity
+                  onPress={() => this.props.navigation.goBack()}
+                  style={ChangeEmailStyles.backButton}
                 >
-                  <Text style = {ChangeEmailStyles.updateText}>Complete</Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <View>
-                <Text style = {ChangeEmailStyles.errorTitle}>You have been logged for too long</Text>
-                <Text style = {ChangeEmailStyles.errorSubtitle}>For sensitive operations it is required to reauthenticate</Text>
-                <Text style = {ChangeEmailStyles.errorSubtitle}>Please input your password</Text>
-                <TextInput
-                  style={ChangeEmailStyles.modalInput}
-                  placeholder="Password"
-                  placeholderTextColor={'#626262'}
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                />
-                <TouchableOpacity 
-                  style = {ChangeEmailStyles.modalButtom}
-                  onPress={() => {handleLogin()}}
-                >
-                  <Text style = {ChangeEmailStyles.updateText}>Login</Text>
-                </TouchableOpacity>
-              </View>
-            )}
+                  <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+            </TouchableOpacity>
+
+            <Text style={ChangeEmailStyles.title}>Change Email</Text>
           </View>
-        </Modal>
 
-        <ImageBackground
-          source={require('../../Images/LoginBackground.png')} // Replace with your image path
-          style={ChangeEmailStyles.imageBackground}
-          resizeMode="cover" // You can adjust the resizeMode property as needed
-        >
-        
-        <View style = {ChangeEmailStyles.containerHeader}>
-          <TouchableOpacity
-                onPress={() => this.props.navigation.goBack()}
-                style={ChangeEmailStyles.backButton}
-              >
-                <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+          <Text style={ChangeEmailStyles.subTitle}>Enter your email</Text>
+
+          {invalidEmail !== null && ( // Checking if the variable is not null
+            <Text style = {ChangeEmailStyles.invalidInput}>{invalidEmail}</Text>
+          )}
+          <TextInput
+            style={ChangeEmailStyles.input}
+            placeholder="Email"
+            placeholderTextColor={'#626262'}
+            value={email}
+            onChangeText={setEmail}
+          />
+
+          {invalidConfirmEmail !== null && ( // Checking if the variable is not null
+            <Text style = {ChangeEmailStyles.invalidInput}>{invalidConfirmEmail}</Text>
+          )}
+          <TextInput
+            style={ChangeEmailStyles.input}
+            placeholder="Confirm Email"
+            placeholderTextColor={'#626262'}
+            value={confirmEmail}
+            onChangeText={setConfirmEmail}
+          />
+
+          <TouchableOpacity style = {ChangeEmailStyles.recover} onPress={() => {handleSubmit(this.props.navigation, value)}}>
+            <Text style = {ChangeEmailStyles.updateText}>Update</Text>
           </TouchableOpacity>
-
-          <Text style={ChangeEmailStyles.title}>Change Email</Text>
+    
+          </ImageBackground>
         </View>
-
-        <Text style={ChangeEmailStyles.subTitle}>Enter your email</Text>
-
-        {invalidEmail !== null && ( // Checking if the variable is not null
-          <Text style = {ChangeEmailStyles.invalidInput}>{invalidEmail}</Text>
-        )}
-        <TextInput
-          style={ChangeEmailStyles.input}
-          placeholder="Email"
-          placeholderTextColor={'#626262'}
-          value={email}
-          onChangeText={setEmail}
-        />
-
-        {invalidConfirmEmail !== null && ( // Checking if the variable is not null
-          <Text style = {ChangeEmailStyles.invalidInput}>{invalidConfirmEmail}</Text>
-        )}
-        <TextInput
-          style={ChangeEmailStyles.input}
-          placeholder="Confirm Email"
-          placeholderTextColor={'#626262'}
-          value={confirmEmail}
-          onChangeText={setConfirmEmail}
-        />
-
-        <TouchableOpacity style = {ChangeEmailStyles.recover} onPress={() => {handleSubmit(this.props.navigation)}}>
-          <Text style = {ChangeEmailStyles.updateText}>Update</Text>
-        </TouchableOpacity>
-  
-        </ImageBackground>
-      </View>
+      )}
+      </NetworkContext.Consumer>
     );
   };
 

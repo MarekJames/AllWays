@@ -12,9 +12,10 @@ ChangePassword.js
 /******************** Imports Section ********************/ 
 
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Alert, Modal } from 'react-native';
-import { changePassword, getAuth, reauthenticateUser } from '../../config/firebase-config';
 import { Ionicons } from '@expo/vector-icons';
+import { NetworkContext, showNetworkError } from '../../config/network-config';
+import { changePassword, reauthenticateUser } from '../../config/firebase-config';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Alert, Modal } from 'react-native';
 
 
 
@@ -68,31 +69,47 @@ export class ChangePasswordScreen extends React.Component{
       }
     }
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (navigation, isConnected) => {
       if(validateInputs()){
+        if(isConnected){
           const result = await changePassword(oldPassword, newPassword);
-          
+        
           if(result == 'auth/invalid-credential'){
             setInvalidOldPassword('Incorrect password');
           }
-          if(result == 'auth/too-many-requests'){
+          else if(result == 'auth/too-many-requests'){
             setInvalidOldPassword('Too many requests, try again later');
           }
-          if(result == 'auth/weak-password'){
+          else if(result == 'auth/weak-password'){
             setInvalidConfirmPassword('Invalid password, should be at least 6 characters');
           }
-          if(result == 'auth/requires-recent-login'){
-            const result = await reauthenticateUser(oldPassword);
-            if(result == 'auth/too-many-requests'){
-              setInvalidOldPassword('Too many requests, try again later');
+          else if(result == 'auth/requires-recent-login'){
+            if(isConnected){ 
+              const result = await reauthenticateUser(oldPassword);
+              if(result == 'auth/too-many-requests'){
+                setInvalidOldPassword('Too many requests, try again later');
+              }
+              else if (result == 'success'){
+                handleSubmit(navigation, isConnected);
+              }
+              else{
+                showNetworkError(navigation, result);
+              }
             }
-            else if (result == 'success'){
-              handleSubmit();
+            else{
+              showNetworkError(navigation, 'Network');
             }
           }
           else if( result == 'success'){
             setIsOpen(!isOpen);
           }
+          else{
+            showNetworkError(navigation, result);
+          }
+        }
+        else{
+          showNetworkError(navigation, 'Network');
+        }
       }
     }
     
@@ -107,85 +124,89 @@ export class ChangePasswordScreen extends React.Component{
     );
 
     return (
-      <View style={ChangePasswordStyles.container}>
+      <NetworkContext.Consumer>
+      {(value) => (
+        <View style={ChangePasswordStyles.container}>
 
-        <ImageBackground
-          source={require('../../Images/LoginBackground.png')} // Replace with your image path
-          style={ChangePasswordStyles.imageBackground}
-          resizeMode="cover" // You can adjust the resizeMode property as needed
+          <ImageBackground
+            source={require('../../Images/LoginBackground.png')} // Replace with your image path
+            style={ChangePasswordStyles.imageBackground}
+            resizeMode="cover" // You can adjust the resizeMode property as needed
+          >
+          
+          <View style = {{flexDirection:'row', marginTop:50, marginBottom:10}}>
+            <TouchableOpacity
+                  onPress={() => this.props.navigation.goBack()}
+                  style={{
+                    width: 45,
+                    height: 45,
+                    borderRadius: 30,
+                    backgroundColor: '#fff',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginLeft:10
+                  }}
+                >
+                  <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+            </TouchableOpacity>
+            <Text style={ChangePasswordStyles.title}>Change Password</Text>
+          </View>
+
+          <Text style={ChangePasswordStyles.subTitle}>Enter your new password</Text>
+
+          {invalidOldPassword !== null && ( // Checking if the variable is not null
+            <Text style = {{color:'red', fontSize:12, fontWeight:'600', textAlign:'center'}}>{invalidOldPassword}</Text>
+          )}
+          <TextInput
+            style={ChangePasswordStyles.input}
+            placeholder="Old Password"
+            placeholderTextColor={'#626262'}
+            value={oldPassword}
+            onChangeText={setOldPassword}
+            secureTextEntry
+          />
+
+          {invalidNewPassword !== null && ( // Checking if the variable is not null
+            <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidNewPassword}</Text>
+          )}
+          <TextInput
+            style={ChangePasswordStyles.input}
+            placeholder="New Password"
+            placeholderTextColor={'#626262'}
+            value={newPassword}
+            onChangeText={setNewPassword}
+            secureTextEntry
+          />
+
+          {invalidConfirmPassword !== null && ( // Checking if the variable is not null
+            <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidConfirmPassword}</Text>
+          )}
+          <TextInput
+            style={ChangePasswordStyles.input}
+            placeholder="Confirm Password"
+            placeholderTextColor={'#626262'}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+          />
+
+        <Modal
+          animationType="slide" // Optional: Choose an animation type (e.g., 'slide', 'fade')
+          transparent={true} // Optional: Set to true for a transparent background
+          visible={isOpen}
+          onRequestClose={()=>{setIsOpen(!isOpen)}}
         >
-        
-        <View style = {{flexDirection:'row', marginTop:50, marginBottom:10}}>
-          <TouchableOpacity
-                onPress={() => this.props.navigation.goBack()}
-                style={{
-                  width: 45,
-                  height: 45,
-                  borderRadius: 30,
-                  backgroundColor: '#fff',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft:10
-                }}
-              >
-                <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+          {modalContent}
+        </Modal>
+
+          <TouchableOpacity style = {ChangePasswordStyles.recover} onPress={() => {handleSubmit(this.props.navigation, value)}}>
+            <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Update</Text>
           </TouchableOpacity>
-          <Text style={ChangePasswordStyles.title}>Change Password</Text>
+    
+          </ImageBackground>
         </View>
-
-        <Text style={ChangePasswordStyles.subTitle}>Enter your new password</Text>
-
-        {invalidOldPassword !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red', fontSize:12, fontWeight:'600', textAlign:'center'}}>{invalidOldPassword}</Text>
-        )}
-        <TextInput
-          style={ChangePasswordStyles.input}
-          placeholder="Old Password"
-          placeholderTextColor={'#626262'}
-          value={oldPassword}
-          onChangeText={setOldPassword}
-          secureTextEntry
-        />
-
-        {invalidNewPassword !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidNewPassword}</Text>
-        )}
-        <TextInput
-          style={ChangePasswordStyles.input}
-          placeholder="New Password"
-          placeholderTextColor={'#626262'}
-          value={newPassword}
-          onChangeText={setNewPassword}
-          secureTextEntry
-        />
-
-        {invalidConfirmPassword !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidConfirmPassword}</Text>
-        )}
-        <TextInput
-          style={ChangePasswordStyles.input}
-          placeholder="Confirm Password"
-          placeholderTextColor={'#626262'}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-        />
-
-      <Modal
-        animationType="slide" // Optional: Choose an animation type (e.g., 'slide', 'fade')
-        transparent={true} // Optional: Set to true for a transparent background
-        visible={isOpen}
-        onRequestClose={()=>{setIsOpen(!isOpen)}}
-      >
-        {modalContent}
-      </Modal>
-
-        <TouchableOpacity style = {ChangePasswordStyles.recover} onPress={handleSubmit}>
-          <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Update</Text>
-        </TouchableOpacity>
-  
-        </ImageBackground>
-      </View>
+      )}
+      </NetworkContext.Consumer>
     );
   };
 

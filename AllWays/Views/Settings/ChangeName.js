@@ -14,6 +14,7 @@ ChangeName.js
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { updateUser } from '../../config/firebase-config';
+import { NetworkContext, showNetworkError } from '../../config/network-config';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Dimensions } from 'react-native';
 
 
@@ -45,76 +46,96 @@ export class ChangeNameScreen extends React.Component{
     const [invalidName, setInvalidName] = useState('');
   
     // Function to handle submit button
-    const handleSubmit = async (navigator) => {
+    const handleSubmit = async (navigation, isConnected) => {
         
-      // Check user inputs
-      if(!name){
-          setInvalidName('Please input your name');
-      }
-      if(name && invalidName){
-        setInvalidName('');
-      }
-      if(name){
+      if(isConnected){
 
-        // Call updateUser to chage name
-        const result = await updateUser(name);
-        if(result == 'success') {
+        let regex = /^[a-zA-Z]+$/;
 
-          // If successfull navigate to the Profile screen
-          navigator.navigate('Profile');
+        // Check user inputs
+        if(!name){
+            setInvalidName('Please input your name');
         }
+        if(name && invalidName){
+          setInvalidName('');
+        }
+        if(name){
+
+          if(regex.test(name)){
+            // Call updateUser to chage name
+            const result = await updateUser(name);
+            if(result == 'success') {
+
+              // If successfull navigate to the Profile screen
+              navigation.navigate('Profile');
+            }
+            else{
+              showNetworkError(navigation, result);
+            }
+          }
+          else{
+            setInvalidName('Please input a valid name');
+          }
+        }
+      }
+      else{
+        showNetworkError(navigation, 'Network');
       }
     }
 
     return (
-      <View style={ChangeNameStyles.container}>
+      <NetworkContext.Consumer>
+      {(value) => (
+        <View style={ChangeNameStyles.container}>
 
-        {/* ImageBackground of the screen */}
-        <ImageBackground
-          resizeMode="cover"
-          style={ChangeNameStyles.imageBackground}
-          source={require('../../Images/LoginBackground.png')}
-        >
+          {/* ImageBackground of the screen */}
+          <ImageBackground
+            resizeMode="cover"
+            style={ChangeNameStyles.imageBackground}
+            source={require('../../Images/LoginBackground.png')}
+          >
 
-          {/* Header of the screen | Back button | Title */}
-          <View style = {ChangeNameStyles.subContainer}>
+            {/* Header of the screen | Back button | Title */}
+            <View style = {ChangeNameStyles.subContainer}>
+              
+              {/* Back button */}
+              <TouchableOpacity
+                    onPress={() => this.props.navigation.goBack()}
+                    style={ChangeNameStyles.backButton}
+                  >
+                    <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+              </TouchableOpacity>
+
+              {/* Title */}
+              <Text style={ChangeNameStyles.title}>Change Name</Text>
+            </View>
             
-            {/* Back button */}
-            <TouchableOpacity
-                  onPress={() => this.props.navigation.goBack()}
-                  style={ChangeNameStyles.backButton}
-                >
-                  <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+            {/* Subtitle */}
+            <Text style={ChangeNameStyles.subTitle}>Enter your name</Text>
+
+            {/* Error Message */}
+            {invalidName !== null && ( // Checking if the variable is not null
+              <Text style = {ChangeNameStyles.invalidInput}>{invalidName}</Text>
+            )}
+
+            {/* Name Input */}
+            <TextInput
+              value={name}
+              placeholder="Name"
+              onChangeText={setName}
+              style={ChangeNameStyles.input}
+              placeholderTextColor={'#626262'}
+            />
+
+            {/* Submit Button */}
+            <TouchableOpacity style = {ChangeNameStyles.recover} onPress={() => {handleSubmit(this.props.navigation, value)}}>
+              <Text style = {ChangeNameStyles.updateText}>Update</Text>
             </TouchableOpacity>
-
-            {/* Title */}
-            <Text style={ChangeNameStyles.title}>Change Name</Text>
-          </View>
-          
-          {/* Subtitle */}
-          <Text style={ChangeNameStyles.subTitle}>Enter your name</Text>
-
-          {/* Error Message */}
-          {invalidName !== null && ( // Checking if the variable is not null
-            <Text style = {ChangeNameStyles.invalidInput}>{invalidName}</Text>
-          )}
-
-          {/* Name Input */}
-          <TextInput
-            value={name}
-            placeholder="Name"
-            onChangeText={setName}
-            style={ChangeNameStyles.input}
-            placeholderTextColor={'#626262'}
-          />
-
-          {/* Submit Button */}
-          <TouchableOpacity style = {ChangeNameStyles.recover} onPress={() => {handleSubmit(this.props.navigation)}}>
-            <Text style = {ChangeNameStyles.updateText}>Update</Text>
-          </TouchableOpacity>
-    
-        </ImageBackground>
-      </View>
+      
+          </ImageBackground>
+        </View>
+      )}
+      </NetworkContext.Consumer>
     );
   };
 

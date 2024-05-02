@@ -28,6 +28,7 @@ const NetworkProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
+      //setIsConnected(false);
     });
 
     return () => unsubscribe();
