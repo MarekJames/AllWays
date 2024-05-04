@@ -10,35 +10,41 @@
 import axios from 'axios';
 import { apiKey } from "./keys-config";
 
-
+    
 
 
 /*********************** Functions ***********************/ 
 
 // Call ChatGPT
-async function callAI(prompt){
+async function callAI (prompt, isConnected){
     
-    try{
-        const result = await axios.post(
-            'https://api.openai.com/v1/completions',
-            {
-                prompt: prompt,
-                max_tokens: 2048,
-                model: "gpt-3.5-turbo-instruct"
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${apiKey}`
+    console.log('Network Connection? : ' + isConnected);
+    if(isConnected){
+        try{
+            const result = await axios.post(
+                'https://api.openai.com/v1/completions',
+                {
+                    prompt: prompt,
+                    max_tokens: 2048,
+                    model: "gpt-3.5-turbo-instruct"
                 },
-            },
-        )
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${apiKey}`
+                    },
+                },
+            )
 
-        return JSON.parse(result.data.choices[0].text);
+            return JSON.parse(result.data.choices[0].text);
+        }
+        catch(e){
+            throw Error(e.message);
+        }
     }
-    catch(e){
-        throw Error(e);
-    }
+
+    // No Internet Connection
+    throw Error('Network');
 }
 
 // Generates the prompt for the Open AI

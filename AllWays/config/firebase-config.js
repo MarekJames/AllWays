@@ -129,6 +129,7 @@ async function insertRoute(route, imageRoute, city, startDate, endDate){
 
   } catch (e) {
     console.error("Error adding document: ", e);
+    throw Error(error.message);
   }
 }
 
@@ -136,22 +137,27 @@ async function insertRoute(route, imageRoute, city, startDate, endDate){
 async function resetPassword(email){
 
   var sendEmail = email != '' ? email : getAuth().currentUser.email;
-
-  sendPasswordResetEmail(getAuth(), sendEmail)
-    .then(() => {
-      // Password reset email sent successfully
-      console.log('Password reset email sent successfully');
-    })
-    .catch((error) => {
-      // Handle errors
-      console.error('Error sending password reset email:', error.message);
-    });
+  
+  try{
+    await sendPasswordResetEmail(getAuth(), sendEmail);
+    return 'success';
+  }
+  catch(error){
+    console.error('Error sending password reset email:', error.code);
+    return error.code;
+  };
 }
 
 // Delete Selected Route
 async function deleteRoute(routeId){
 
-  await deleteDoc(doc(db, "routes", routeId));
+  try{
+    await deleteDoc(doc(db, "routes", routeId));
+  }
+  catch(error){
+    console.log('Error deleting route: ' + error.message);
+    throw Error(error.message);
+  }
 
 }
 
@@ -161,30 +167,56 @@ async function updateSavedRoutes() {
 
     useEffect(() => {
 
-      const q = query(collection(db, "routes"), where("userId", "==", getAuth().currentUser.uid));
+      try{
+        const q = query(collection(db, "routes"), where("userId", "==", getAuth().currentUser.uid));
 
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const updatedData = [];
-  
-        querySnapshot.forEach((doc) => {
-          updatedData.push({
-            id: doc.id,
-            ...doc.data(),
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+          const updatedData = [];
+    
+          querySnapshot.forEach((doc) => {
+            updatedData.push({
+              id: doc.id,
+              ...doc.data(),
+            });
           });
+    
+          setData(updatedData);
         });
-  
-        setData(updatedData);
-      });
-  
-      return () => {
-        // Cleanup function to unsubscribe when the component unmounts
-        unsubscribe();
-      };
+
+        return () => {
+          // Cleanup function to unsubscribe when the component unmounts
+          unsubscribe();
+        };
+      }
+      catch(error){
+        console.log('Error getting user routes: ' + error.message);
+        throw Error(error.message);
+      }
     }, ['routes', 'userId', getAuth().currentUser.uid]);
 
     return data;
   
 };
+
+// Delete user routes
+async function deleteRoutes(){
+
+  try{
+    const q = query(collection(db, "routes"), where("userId", "==", getAuth().currentUser.uid));
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+  
+      deleteRoute(doc.id)
+      
+    });
+  }
+  catch(error){
+    console.log('Error deleting user routes: ' + error.message);
+    throw Error(error.message);
+  }
+
+}
 
 // Delete User
 async function deleteUser(){
@@ -193,16 +225,14 @@ async function deleteUser(){
   try{
 
     //Remove every route related to the user
-    await getRoutes();
+    await deleteRoutes();
 
     //Remove user
-    user
-      .delete()
-      .then(() => console.log("User deleted"))
-      .catch((error) => console.log(error));
-
-  }catch(e){
-    console.log('Error deleting user: ' + e.getMessage());
+    user.delete();
+  }
+  catch(error){
+    console.log('Error deleting user: ' + error.message);
+    throw Error(error.message);
   }
 }
 
@@ -224,12 +254,17 @@ async function reauthenticateUser(password){
 
 // Send Validation Email
 async function sendValidationEmail(){
-  const auth = getAuth();
+  
   try{
+    const auth = getAuth();
+
+    // Send email
     await sendEmailVerification(auth.currentUser);
-    console.log('Verification Email Sent!');
-  }catch(error){
-    console.log(error);
+   
+  }
+  catch(error){
+    console.log('Error sending verification email: ' + error.message);
+    throw Error(error.message);
   }  
 }
 
@@ -247,6 +282,7 @@ async function verifyBeforeUpdate(email){
 
 // Update Route In DB After New Images Are Loaded
 async function updateRoute(id, route){
+  
   // Add a new document with a generated id.
   try {
 
@@ -257,8 +293,10 @@ async function updateRoute(id, route){
     await updateDoc(docRef, {route: route});
     console.log('Route updated successfully');
 
-  } catch (e) {
-    console.error("Error updating route: ", e);
+  }
+  catch (error) {
+    console.error("Error updating route: ", error.message);
+    throw Error(error.message);
   }
 }
 

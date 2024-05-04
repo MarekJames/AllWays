@@ -15,6 +15,7 @@ import React from 'react';
 import { deleteUser } from 'firebase/auth';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
+import { NetworkContext, showNetworkError } from '../../config/network-config';
 
 
 
@@ -45,12 +46,24 @@ export class AccountSettingsScreen extends React.Component{
 
   AccountSettings = () => {
 
-    const handleDelete =  () => {
-        deleteUser();
+    const handleDelete =  async (navigation, isConnected) => {
+      try{
+        if(isConnected){
+          await deleteUser();
+        }
+        else{
+          showNetworkError(navigation, 'Network');
+        }
+      }
+      catch(error){
+        showNetworkError(navigation, error.message);
+      }
     }
 
     return (
-      <View style = {AccountSettingsStyles.container}>
+      <NetworkContext.Consumer>
+      {(value) => (
+        <View style = {AccountSettingsStyles.container}>
 
           {/* Title and back button */}
           <View style={AccountSettingsStyles.profileContainer}>
@@ -85,15 +98,15 @@ export class AccountSettingsScreen extends React.Component{
 
           {/* Delete */}
           <View style = {AccountSettingsStyles.deleteContainer}>
-            <TouchableOpacity onPress={handleDelete} style={AccountSettingsStyles.optionItem}>
+            <TouchableOpacity onPress={() => {handleDelete(this.props.navigation, value)}} style={AccountSettingsStyles.optionItem}>
               <Text style={AccountSettingsStyles.deleteText}>Delete Account</Text>
               <Ionicons size={20} color={'#9F9F9F'} name = {'chevron-forward-sharp'}/>
             </TouchableOpacity>
             <View style={AccountSettingsStyles.separator} />
           </View>
-
-      </View>
-    
+        </View>
+      )}
+      </NetworkContext.Consumer>
       );
     };
 

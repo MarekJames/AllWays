@@ -122,16 +122,13 @@ export class DaysScreen extends React.Component {
           <ImageBackground source={{ uri: imageRoute }} style={DaysListStyles.imageBackground} >
             <View style = {{flexDirection:'row', justifyContent:'space-between', marginRight: 20}}>
               <View>
-                {savedRoutes && (<TouchableOpacity
-                  onPress={() => this.props.navigation.navigate('SavedRoutes')}
-                
-                >
+                {savedRoutes && (<TouchableOpacity style = {ParentStyles.backButton} onPress={() => this.props.navigation.navigate('SavedRoutes')}>
                   <Ionicons name="chevron-back-sharp" size={30} color="black" />
                 </TouchableOpacity>
                 )}
               </View>
               <View>
-            
+  
                 {/* HeartIcon component */}
                 {!savedRoutes && (
                   <HeartIcon/>
@@ -197,7 +194,17 @@ const ParentStyles = StyleSheet.create({
     color:'#fff',
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium', 
-  }
+  },
+  backButton:{
+    width: 45,
+    height: 45,
+    marginTop:40,
+    marginLeft:20,
+    borderRadius: 30,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+  },
 });
 
 const DaysListStyles = StyleSheet.create({
@@ -217,12 +224,12 @@ const DaysListStyles = StyleSheet.create({
       shadowOffset:{width:0, height:2},
   },
   image:{
-    height:height,
-    width:width*0.35,
+    height:'100%',
+    width:'35%',
   },
   imageBackground: {
-    width:width,
-    height:height,
+    width:'100%',
+    height:'100%',
   },
   dayTitle:{
     fontSize: 30,

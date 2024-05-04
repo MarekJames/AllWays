@@ -18,42 +18,49 @@ import { customSearchKey, searchEngineId } from './keys-config';
 /******************** Functions ********************/ 
 
 // Calls the API with a parameter query and updates the listsplan
-async function getImageUrl(listsPlan2, query, index, counter) {
-   
+async function getImageUrl(listsPlan2, query, index, counter, isConnected) {
+    
     // Create URL
     const url = await createUrl(query);
 
     // Call API
-    try{
-        await axios.get(url)
-        .then((response) => {
-            const image = response.data.items[0];
-            return image;
-        })
-        .then((image) => {
-            const imageUrl = image.link;
+    if(isConnected){
+        try{
+            await axios.get(url)
+            .then((response) => {
+                const image = response.data.items[0];
+                return image;
+            })
+            .then((image) => {
+                const imageUrl = image.link;
+                
+                // Check if its the route root image
+                if(index == 10){
+                    listsPlan2.imageUrl = imageUrl;
+                }
+                else{
+                    listsPlan2[index].activities[0].imageUrl = imageUrl;
+                    listsPlan2[index].imageUrl = imageUrl;
+                }
+            }) 
+        }
+        catch(e){
             
-            // Check if its the route root image
-            if(index == 10){
-                listsPlan2.imageUrl = imageUrl;
+            // Only try three times, to not get an infinite loop
+            if(counter++ < 3){
+                await getImageUrl(listsPlan2, query, index, counter, isConnected);
             }
             else{
-                listsPlan2[index].activities[0].imageUrl = imageUrl;
-                listsPlan2[index].imageUrl = imageUrl;
+                console.log('After three tries the image for : ' + query + ' could not be loaded.');
             }
-        }) 
+        }
+
+        // Leave without throwing the error
+        return;
     }
-    catch(e){
-        
-        console.log(e);
-        // Only try three times, to not get an infinite loop
-        if(counter++ < 3){
-            await getImageUrl(query, index, counter);
-        }
-        else{
-            console.log('After three tries the image for : ' + query + ' could not be loaded.');
-        }
-    }  
+    
+    // No network connection
+    throw Error('Network');
 }
 
 // Create URL with received query

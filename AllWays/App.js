@@ -2,8 +2,9 @@
 import { useFonts } from 'expo-font';
 import { getAuth } from 'firebase/auth';
 import * as SplashScreen from 'expo-splash-screen';
+import React, { useRef, useCallback } from 'react';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
-import React, { useEffect, useRef, useCallback } from 'react';
+import { NetworkProvider } from './config/network-config.js';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -19,10 +20,12 @@ import { HelpCenterScreen } from './Views/Settings/HelpCenter.js';
 import { SavedRoutesScreen } from './Views/Search/SavedRoutes.js';
 import { ChangeEmailScreen } from './Views/Settings/ChangeEmail.js';
 import { ForgotPasswordScreen } from './Views/Login/ForgotPassword.js';
+import { InternalProblemScreen } from './Views/Error/InternalProblem.js';
 import { ChangePasswordScreen } from './Views/Settings/ChangePassword.js';
 import { AccountSettingsScreen } from './Views/Settings/AccountSettings.js';
-import { TermsConditionsScreen } from './Views/Settings/Terms&Conditions.js';
 import { LoginUserScreen, RegisterUserScreen } from './Views/Login/User.js';
+import { NetworkConnectionScreen } from './Views/Error/NetworkConnection.js';
+import { TermsConditionsScreen } from './Views/Settings/Terms&Conditions.js';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -78,6 +81,9 @@ const StackNavigator = () => {
       <Stack.Screen name = "Register" component = {RegisterUserScreen}/>
       <Stack.Screen name = "ForgotPassword" component = {ForgotPasswordScreen}/>
       <Stack.Screen name = "TermsConditions" component = {TermsConditionsScreen}/>
+      <Stack.Screen options = {{ gestureEnabled: false }} name = "Internal" component = {InternalProblemScreen}/>
+      <Stack.Screen options = {{ gestureEnabled: false }} name = "Network" component = {NetworkConnectionScreen}/>
+    
     </Stack.Navigator>
   );
 }; 
@@ -87,10 +93,12 @@ const StackRoutePlanNavigator = () => {
     <Stack.Navigator initialRouteName = 'Plans' screenOptions = {{ headerShown: false }}>
       <Stack.Screen options = {{ gestureEnabled: false }} name = "Days" component = {DaysScreen}/>
       <Stack.Screen options = {{ gestureEnabled: false }} name = "Plans" component = {SearchScreen}/>
-      <Stack.Screen options = {{ gestureEnabled: true }} name = "Activities" component = {ActivitiesScreen} />
+      <Stack.Screen options = {{ gestureEnabled: true }} name = "Activities" component = {ActivitiesScreen}/>
+      <Stack.Screen options = {{ gestureEnabled: false }} name = "Internal" component = {InternalProblemScreen}/>
+      <Stack.Screen options = {{ gestureEnabled: false }} name = "Network" component = {NetworkConnectionScreen}/>
     </Stack.Navigator>
   );
-}; 
+};
 
 const StackSavedNavigator = () => {
   return (
@@ -98,6 +106,8 @@ const StackSavedNavigator = () => {
       <Stack.Screen options = {{ gestureEnabled: false }} name = "Days" component = {DaysScreen}/>
       <Stack.Screen options = {{ gestureEnabled: true }} name = "Activities" component = {ActivitiesScreen}/>
       <Stack.Screen options = {{ gestureEnabled: false }} name = "SavedRoutes" component = {SavedRoutesScreen}/>
+      <Stack.Screen options = {{ gestureEnabled: false }} name = "Internal" component = {InternalProblemScreen}/>
+      <Stack.Screen options = {{ gestureEnabled: false }} name = "Network" component = {NetworkConnectionScreen}/>
     </Stack.Navigator>
   );
 }; 
@@ -113,6 +123,8 @@ const StackProfileNavigator = () => {
       <Stack.Screen name = "ChangePassword" component = {ChangePasswordScreen}/>
       <Stack.Screen name = "AccountSettings" component = {AccountSettingsScreen}/>
       <Stack.Screen name = "TermsConditions" component = {TermsConditionsScreen}/>
+      <Stack.Screen options = {{ gestureEnabled: false }} name = "Internal" component = {InternalProblemScreen}/>
+      <Stack.Screen options = {{ gestureEnabled: false }} name = "Network" component = {NetworkConnectionScreen}/>
     </Stack.Navigator>
   );
 }; 
@@ -195,7 +207,7 @@ export default function App() {
 
   const [user, setUser] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
- 
+  
   React.useEffect( () =>{
     const unsubscribe = getAuth().onAuthStateChanged(userp => {
       setUser(userp);
@@ -205,19 +217,20 @@ export default function App() {
   }, []);
 
   return (
+    <NetworkProvider>
       <NavigationContainer>
-        
+    
         {/* Rest of your app code */}
         { !loading && (user  ? <BottomTabNavigator /> : <StackNavigator />)}
             
       </NavigationContainer>
+    </NetworkProvider>
   );   
 }
 
 const stylesHomeScreen = StyleSheet.create({
   startText: {
     fontSize: 20,
-    fontWeight:'500',
     color: '#000000',
     textAlign:'center',
     fontFamily:'Poppins-SemiBold',

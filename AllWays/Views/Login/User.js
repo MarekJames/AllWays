@@ -13,11 +13,12 @@ User.js
 /******************** Imports Section ********************/ 
 
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground} from 'react-native';
-import { CheckBox } from 'react-native-elements'; // Assuming react-native-elements
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { getAuth, sendValidationEmail } from '../../config/firebase-config';
+import { CheckBox } from 'react-native-elements';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
+import { getAuth, sendValidationEmail } from '../../config/firebase-config';
+import { NetworkContext, showNetworkError } from '../../config/network-config';
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground} from 'react-native';
 
 /******************* Global Variables ********************/
 
@@ -54,107 +55,116 @@ export class LoginUserScreen extends React.Component{
       } */
     };
     
-    const handleSubmit = async () => {
-      if(email && password){
-        await signInWithEmailAndPassword(getAuth(),email,password)
-          .then((response) => {
-            console.log('Signed In : ' + response.user.uid);
-            this.props.navigation.push('Tabs');
-          })
-          .catch(error => {
-            if(error.code == 'auth/invalid-email'){
-              setInvalidEmail('Invalid email, try again');
-              setInvalidPassword('');
-            }
-            else if(error.code == 'auth/invalid-credential'){
-              setInvalidEmail('Invalid email or password, try again');
-              setInvalidPassword('');
-            }
-            else if(error.code == 'auth/too-many-requests'){
-              setInvalidEmail('');
-              setInvalidPassword('Too many atempts, wait a few minutes and try again');
-            }
-            else{
-              alert('Something went wrong, please try again')
-            }
-          })
-      }
-      else if(!email){
-        setInvalidEmail('Please input a valid email');
-        setInvalidPassword('');
-      }
-      else if(!password){
-        setInvalidPassword('Please input a password');
-        setInvalidEmail('');
+    const handleSubmit = async (navigation, isConnected) => {
+      if(isConnected){
+        if(email && password){
+          await signInWithEmailAndPassword(getAuth(),email,password)
+            .then((response) => {
+              console.log('Signed In : ' + response.user.uid);
+              this.props.navigation.push('Tabs');
+            })
+            .catch(error => {
+              if(error.code == 'auth/invalid-email'){
+                setInvalidEmail('Invalid email, try again');
+                setInvalidPassword('');
+              }
+              else if(error.code == 'auth/invalid-credential'){
+                setInvalidEmail('Invalid email or password, try again');
+                setInvalidPassword('');
+              }
+              else if(error.code == 'auth/too-many-requests'){
+                setInvalidEmail('');
+                setInvalidPassword('Too many atempts, wait a few minutes and try again');
+              }
+              else{
+                showNetworkError(navigation, 'Other');
+              }
+            })
+        }
+        else if(!email){
+          setInvalidEmail('Please input a valid email');
+          setInvalidPassword('');
+        }
+        else if(!password){
+          setInvalidPassword('Please input a password');
+          setInvalidEmail('');
+        }
+        else{
+          showNetworkError(navigation, 'Other');
+        }
       }
       else{
-        alert('Something went wrong, please try again');
+        showNetworkError(navigation, 'Network');
       }
     };
 
     return (
-      <View style={LoginUserStyles.container}>
+      <NetworkContext.Consumer>
+      {(value) => (
+        <View style={LoginUserStyles.container}>
 
-        <ImageBackground
-          source={require('../../Images/LoginBackground.png')} // Replace with your image path
-          style={RegisterUserStyles.imageBackground}
-          resizeMode="cover" // You can adjust the resizeMode property as needed
-        >
+          <ImageBackground
+            source={require('../../Images/LoginBackground.png')} // Replace with your image path
+            style={RegisterUserStyles.imageBackground}
+            resizeMode="cover" // You can adjust the resizeMode property as needed
+          >
 
-        <Text style={LoginUserStyles.title}>Login here</Text>
+          <Text style={LoginUserStyles.title}>Login here</Text>
 
-        <Text style={LoginUserStyles.subTitle}>Welcome back you've been missed!</Text>
+          <Text style={LoginUserStyles.subTitle}>Welcome back you've been missed!</Text>
 
-        {invalidEmail !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidEmail}</Text>
-        )}
-        <TextInput
-          style={LoginUserStyles.input}
-          placeholder="Email"
-          placeholderTextColor={'#626262'}
-          value={email}
-          onChangeText={setEmail}
-        />
+          {invalidEmail !== null && ( // Checking if the variable is not null
+            <Text style = {{color:'red',fontSize:12,fontWeight:'600', textAlign:'center'}}>{invalidEmail}</Text>
+          )}
+          <TextInput
+            style={LoginUserStyles.input}
+            placeholder="Email"
+            placeholderTextColor={'#626262'}
+            value={email}
+            onChangeText={setEmail}
+          />
 
-        {invalidPassword !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{invalidPassword}</Text>
-        )}
-        <TextInput
-          style={LoginUserStyles.input}
-          placeholder="Password"
-          placeholderTextColor={'#626262'}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+          {invalidPassword !== null && ( // Checking if the variable is not null
+            <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{invalidPassword}</Text>
+          )}
+          <TextInput
+            style={LoginUserStyles.input}
+            placeholder="Password"
+            placeholderTextColor={'#626262'}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
 
-        <TouchableOpacity onPress={ () => {this.props.navigation.navigate('ForgotPassword')}}>
-          <Text style={LoginUserStyles.forgotPassword}>Forgot your password?</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={ () => {this.props.navigation.navigate('ForgotPassword')}}>
+            <Text style={LoginUserStyles.forgotPassword}>Forgot your password?</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style = {LoginUserStyles.signIn} onPress={handleSubmit}>
-          <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Sign In</Text>
-        </TouchableOpacity>
-  
-        <Pressable onPress={() => {this.props.navigation.reset({ index: 0,routes: [{ name: 'Register' }]})}}>
-          <Text style={LoginUserStyles.createAccount}>Create new account</Text>
-        </Pressable>
-  
-        <Text style = {LoginUserStyles.continueWith}>Or continue with</Text>
-  
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
-            <TouchableOpacity style = {LoginUserStyles.icons} onPress = {signInGoogle}>
-                <Text><Ionicons name="logo-google" size={30} color="black" /></Text>
-            </TouchableOpacity>
-            <TouchableOpacity style = {LoginUserStyles.icons}>
-                <Text><Ionicons name="logo-facebook" size={30} color="black" /></Text>
-            </TouchableOpacity>
-            <TouchableOpacity style = {LoginUserStyles.icons}>
-                <Ionicons name="logo-instagram" size={30} color="black" />
-            </TouchableOpacity>
+          <TouchableOpacity style = {LoginUserStyles.signIn} onPress={() => {handleSubmit(this.props.navigation, value)}}>
+            <Text style = {LoginUserStyles.signInText}>Sign In</Text>
+          </TouchableOpacity>
+    
+          <Pressable onPress={() => {this.props.navigation.reset({ index: 0,routes: [{ name: 'Register' }]})}}>
+            <Text style={LoginUserStyles.createAccount}>Create new account</Text>
+          </Pressable>
+    
+          {/* <Text style = {LoginUserStyles.continueWith}>Or continue with</Text>
+    
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
+              <TouchableOpacity style = {LoginUserStyles.icons} onPress = {signInGoogle}>
+                  <Text><Ionicons name="logo-google" size={30} color="black" /></Text>
+              </TouchableOpacity>
+              <TouchableOpacity style = {LoginUserStyles.icons}>
+                  <Text><Ionicons name="logo-facebook" size={30} color="black" /></Text>
+              </TouchableOpacity>
+              <TouchableOpacity style = {LoginUserStyles.icons}>
+                  <Ionicons name="logo-instagram" size={30} color="black" />
+              </TouchableOpacity>
+          </View> */}
+        </ImageBackground>
         </View>
-      </ImageBackground>
-      </View>
+      )}
+      </NetworkContext.Consumer>
     );
   };
 
@@ -187,197 +197,209 @@ export class RegisterUserScreen extends React.Component{
 
     const [isChecked, setIsChecked] = React.useState(false);
 
-    const handleSubmit = async () => {
-      if(( name && email && password && confirmPassword) && (password == confirmPassword) && isChecked){
-       
-          await createUserWithEmailAndPassword(getAuth(),email,password)
-          .then((response) =>{
-            console.log("User uid: " + response.user.uid);
+    const handleSubmit = async (navigation, isConnected) => {
+      if(isConnected){
+        if(( name && email && password && confirmPassword) && (password == confirmPassword) && isChecked){
+        
+            await createUserWithEmailAndPassword(getAuth(),email,password)
+            .then((response) =>{
+              console.log("User uid: " + response.user.uid);
 
-            updateProfile(response.user, {
-              displayName: name,
-            }).then(() => {
-              // Additional information updated successfully
-              console.log('User created successfully with additional information');
-              this.props.navigation.navigate('Tabs', {userUID: response.user.uid});
+              updateProfile(response.user, {
+                displayName: name,
+              }).then(() => {
+                // Additional information updated successfully
+                console.log('User created successfully with additional information');
+                this.props.navigation.navigate('Tabs', {userUID: response.user.uid});
 
-            }).catch((error) => {
-              // Handle errors related to updating user profile
-              console.error('Error updating user profile:', error.message);
-            });
+              }).catch((error) => {
+                console.error('Error updating user profile:', error.message);
+                showNetworkError(navigation, error.message);
+              });
 
-            // Send verification email to user
-            sendValidationEmail();
-          })
-          .catch(error => {
-            if(error.code == 'auth/invalid-email'){
-              setInvalidEmail('Invalid email, try again');
-              setInvalidPassword('');
-              setInvalidName('');
-              setInvalidConfirmPassword('');
-              setCheckTerms('');
-            }
+              // Send verification email to user
+              sendValidationEmail();
+            })
+            .catch(error => {
+              if(error.code == 'auth/invalid-email'){
+                setInvalidEmail('Invalid email, try again');
+                setInvalidPassword('');
+                setInvalidName('');
+                setInvalidConfirmPassword('');
+                setCheckTerms('');
+              }
 
-            else if(error.code == 'auth/weak-password'){
-              setInvalidPassword('Invalid password, should be at least 6 characters')
-              setInvalidEmail('');
-              setInvalidName('');
-              setInvalidConfirmPassword('');
-              setCheckTerms('');
-            }
-            else if(error.code == 'auth/email-already-in-use'){
-              setInvalidEmail('This email already exists')
-              setInvalidConfirmPassword('')
-              setInvalidName('');
-              setInvalidPassword('');
-              setCheckTerms('');
-            }
-            else alert(error);
-          })
+              else if(error.code == 'auth/weak-password'){
+                setInvalidPassword('Invalid password, should be at least 6 characters')
+                setInvalidEmail('');
+                setInvalidName('');
+                setInvalidConfirmPassword('');
+                setCheckTerms('');
+              }
+              else if(error.code == 'auth/email-already-in-use'){
+                setInvalidEmail('This email already exists')
+                setInvalidConfirmPassword('')
+                setInvalidName('');
+                setInvalidPassword('');
+                setCheckTerms('');
+              }
+              else{
+                showNetworkError(navigation, 'Other');
+              }
+            })
+        }
+        else if(!name){
+          setInvalidName('Please input your name');
+          setInvalidConfirmPassword('');
+          setInvalidEmail('');
+          setInvalidPassword('');
+          setCheckTerms('');
+        }
+        else if(!email){
+          setInvalidEmail('Please input your email')
+          setInvalidConfirmPassword('');
+          setInvalidName('');
+          setInvalidPassword('');
+          setCheckTerms('');
+        }
+        else if(!password){
+          setInvalidPassword('Please input your password')
+          setInvalidEmail('')
+          setInvalidConfirmPassword('');
+          setInvalidName('');
+          setCheckTerms('');
+    
+        }
+        else if(!confirmPassword){
+          setInvalidConfirmPassword('Please input your password confirmation')
+          setInvalidEmail('')
+          setInvalidName('');
+          setInvalidPassword('');
+          setCheckTerms('');
+        }
+        else if(password!=confirmPassword){
+          setInvalidConfirmPassword('Your password and password confirmation are not the same')
+          setInvalidEmail('')
+          setInvalidName('');
+          setInvalidPassword('');
+          setCheckTerms('');
+        }
+        else if(!isChecked){
+          setInvalidConfirmPassword('')
+          setInvalidEmail('')
+          setInvalidName('');
+          setInvalidPassword('');
+          setCheckTerms('Please accept the Terms & Conditions')
+        }
       }
-      else if(!name){
-        setInvalidName('Please input your name');
-        setInvalidConfirmPassword('');
-        setInvalidEmail('');
-        setInvalidPassword('');
-        setCheckTerms('');
-      }
-      else if(!email){
-        setInvalidEmail('Please input your email')
-        setInvalidConfirmPassword('');
-        setInvalidName('');
-        setInvalidPassword('');
-        setCheckTerms('');
-      }
-      else if(!password){
-        setInvalidPassword('Please input your password')
-        setInvalidEmail('')
-        setInvalidConfirmPassword('');
-        setInvalidName('');
-        setCheckTerms('');
-  
-      }
-      else if(!confirmPassword){
-        setInvalidConfirmPassword('Please input your password confirmation')
-        setInvalidEmail('')
-        setInvalidName('');
-        setInvalidPassword('');
-        setCheckTerms('');
-      }
-      else if(password!=confirmPassword){
-        setInvalidConfirmPassword('Your password and password confirmation are not the same')
-        setInvalidEmail('')
-        setInvalidName('');
-        setInvalidPassword('');
-        setCheckTerms('');
-      }
-      else if(!isChecked){
-        setInvalidConfirmPassword('')
-        setInvalidEmail('')
-        setInvalidName('');
-        setInvalidPassword('');
-        setCheckTerms('Please accept the Terms & Conditions')
+      else{
+        showNetworkError(navigation, 'Network');
       }
     };
 
     return (
-      <View style={RegisterUserStyles.container}>
-       <ImageBackground
-          source={require('../../Images/LoginBackground.png')} // Replace with your image path
-          style={RegisterUserStyles.imageBackground}
-          resizeMode="cover" // You can adjust the resizeMode property as needed
-        >
-        <Text style={RegisterUserStyles.title}>Create Account</Text>
-  
-        <Text style={RegisterUserStyles.subTitle}>So you can explore this beautiful world!</Text>
-
-        {invalidName !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{invalidName}</Text>
-        )}
-        <TextInput
-          style={RegisterUserStyles.input}
-          placeholderTextColor={'#626262'}
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
-        />
-
-        {invalidEmail !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{invalidEmail}</Text>
-        )}
-        <TextInput
-          style={RegisterUserStyles.input}
-          placeholder="Email"
-          placeholderTextColor={'#626262'}
-          value={email}
-          onChangeText={setEmail}
-        />
+      <NetworkContext.Consumer>
+      {(value) => (
       
-        {invalidPassword !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{invalidPassword}</Text>
-        )}
-        <TextInput
-          style={RegisterUserStyles.input}
-          placeholder="Password"
-          placeholderTextColor={'#626262'}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+        <View style={RegisterUserStyles.container}>
+          <ImageBackground
+            source={require('../../Images/LoginBackground.png')} // Replace with your image path
+            style={RegisterUserStyles.imageBackground}
+            resizeMode="cover" // You can adjust the resizeMode property as needed
+          >
+          <Text style={RegisterUserStyles.title}>Create Account</Text>
+    
+          <Text style={RegisterUserStyles.subTitle}>So you can explore this beautiful world!</Text>
 
-        {invalidConfirmPassword !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{invalidConfirmPassword}</Text>
-        )}
-        <TextInput
-          style={RegisterUserStyles.input}
-          placeholder="Confirm Password"
-          placeholderTextColor={'#626262'}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-        />
+          {invalidName !== null && ( // Checking if the variable is not null
+            <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{invalidName}</Text>
+          )}
+          <TextInput
+            style={RegisterUserStyles.input}
+            placeholderTextColor={'#626262'}
+            placeholder="Name"
+            value={name}
+            onChangeText={setName}
+          />
 
-        {checkTerms !== null && ( // Checking if the variable is not null
-          <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{checkTerms}</Text>
-        )}
-
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent:'flex-start', marginHorizontal:40}}>
-            <CheckBox
-              checked={isChecked}
-              onPress={() => setIsChecked(!isChecked)}
-            />
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('TermsConditions')}>
-              <Text style={{ color: '#626262', textDecorationLine: 'underline' }}>I agree to the Terms & Conditions</Text>
-            </TouchableOpacity>
-        </View>
+          {invalidEmail !== null && ( // Checking if the variable is not null
+            <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{invalidEmail}</Text>
+          )}
+          <TextInput
+            style={RegisterUserStyles.input}
+            placeholder="Email"
+            placeholderTextColor={'#626262'}
+            value={email}
+            onChangeText={setEmail}
+          />
         
-        <TouchableOpacity 
-          style = {RegisterUserStyles.signUp}
-          onPress={handleSubmit}
-        >
-          <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Sign Up</Text>
-        </TouchableOpacity>
-  
-        <Pressable onPress={() => {this.props.navigation.reset({ index: 0,routes: [{ name: 'Login' }]})}}>
-          <Text style={RegisterUserStyles.alreadyHaveAccount}>Already have an account</Text>
-        </Pressable>
+          {invalidPassword !== null && ( // Checking if the variable is not null
+            <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{invalidPassword}</Text>
+          )}
+          <TextInput
+            style={RegisterUserStyles.input}
+            placeholder="Password"
+            placeholderTextColor={'#626262'}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
 
-        <Text style = {RegisterUserStyles.continueWith}>Or continue with</Text>
-  
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
-            <TouchableOpacity style = {RegisterUserStyles.icons}>
-                <Text><Ionicons name="logo-google" size={30} color="black" /></Text>
-            </TouchableOpacity>
-            <TouchableOpacity style = {RegisterUserStyles.icons}>
-                <Text><Ionicons name="logo-facebook" size={30} color="black" /></Text>
-            </TouchableOpacity>
-            <TouchableOpacity style = {RegisterUserStyles.icons}>
-                <Ionicons name="logo-instagram" size={30} color="black" />
-            </TouchableOpacity>
+          {invalidConfirmPassword !== null && ( // Checking if the variable is not null
+            <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{invalidConfirmPassword}</Text>
+          )}
+          <TextInput
+            style={RegisterUserStyles.input}
+            placeholder="Confirm Password"
+            placeholderTextColor={'#626262'}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+          />
+
+          {checkTerms !== null && ( // Checking if the variable is not null
+            <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{checkTerms}</Text>
+          )}
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent:'flex-start', marginHorizontal:40}}>
+              <CheckBox
+                checked={isChecked}
+                onPress={() => setIsChecked(!isChecked)}
+              />
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('TermsConditions')}>
+                <Text style={{ color: '#626262', textDecorationLine: 'underline' }}>I agree to the Terms & Conditions</Text>
+              </TouchableOpacity>
+          </View>
+          
+          <TouchableOpacity 
+            style = {RegisterUserStyles.signUp}
+            onPress={() => {handleSubmit(this.props.navigation, value)}}
+          >
+            <Text style = {RegisterUserStyles.signUpText}>Sign Up</Text>
+          </TouchableOpacity>
+    
+          <Pressable onPress={() => {this.props.navigation.reset({ index: 0,routes: [{ name: 'Login' }]})}}>
+            <Text style={RegisterUserStyles.alreadyHaveAccount}>Already have an account</Text>
+          </Pressable>
+
+          {/* <Text style = {RegisterUserStyles.continueWith}>Or continue with</Text>
+    
+          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
+              <TouchableOpacity style = {RegisterUserStyles.icons}>
+                  <Text><Ionicons name="logo-google" size={30} color="black" /></Text>
+              </TouchableOpacity>
+              <TouchableOpacity style = {RegisterUserStyles.icons}>
+                  <Text><Ionicons name="logo-facebook" size={30} color="black" /></Text>
+              </TouchableOpacity>
+              <TouchableOpacity style = {RegisterUserStyles.icons}>
+                  <Ionicons name="logo-instagram" size={30} color="black" />
+              </TouchableOpacity>
+          </View> */}
+          
+          </ImageBackground>
         </View>
-        
-        </ImageBackground>
-      </View>
+      )}
+      </NetworkContext.Consumer>
     );
   };
 
@@ -430,7 +452,7 @@ const LoginUserStyles = StyleSheet.create ({
     borderRadius:30,
     alignSelf:'center',
     backgroundColor:'#F1F4FF',
-    fontFamily:'Poppins-Medium',
+    fontFamily:'Poppins-Light',
   },
   forgotPassword: {
     textAlign: 'center',
@@ -490,6 +512,12 @@ const LoginUserStyles = StyleSheet.create ({
     borderRadius: 10, 
     backgroundColor:'#ECECEC',
     marginHorizontal:10
+  },
+  signInText:{
+    fontSize:20,
+    textAlign:'center',
+    color:'#FFFFFF',
+    fontFamily:'Poppins-Medium'
   }
 })
 
@@ -506,18 +534,19 @@ const RegisterUserStyles = StyleSheet.create ({
   },
   title: {
     fontSize: 30,
-    fontWeight: 'bold',
     marginBottom: 10,
     marginTop:80,
     color:'#23C2DF',
-    alignSelf:'center'
+    alignSelf:'center',
+    fontFamily:'Poppins-Bold'
   },
   subTitle: {
     fontSize: 20,
     marginBottom: 40,
+    marginHorizontal:20,
     color:'#494949',
-    fontWeight:'600',
-    textAlign:'center'
+    textAlign:'center',
+    fontFamily:'Poppins-Medium'
   },
   input: {
     width: '80%',
@@ -526,14 +555,15 @@ const RegisterUserStyles = StyleSheet.create ({
     marginBottom: 20,
     borderRadius:30,
     alignSelf:'center',
-    backgroundColor:'#F1F4FF'
+    backgroundColor:'#F1F4FF',
+    fontFamily:'Poppins-Light'
   },
   alreadyHaveAccount: {
     textAlign: 'center',
     fontSize: 14,
     marginTop: 20,
-    fontWeight:'600',
-    color:'#494949'
+    color:'#494949',
+    fontFamily:'Poppins-Medium'
   },
   signUp: {
     width: '80%',
@@ -543,7 +573,8 @@ const RegisterUserStyles = StyleSheet.create ({
     marginBottom: 10,
     borderRadius:30,
     alignSelf:'center',
-    justifyContent:'center'
+    justifyContent:'center',
+    alignItems:'center',
   },
   continueWith:{
     textAlign:'center',
@@ -560,6 +591,11 @@ const RegisterUserStyles = StyleSheet.create ({
     borderRadius: 10, 
     backgroundColor:'#ECECEC',
     marginHorizontal:10
+  },
+  signUpText:{
+    fontSize:20,
+    textAlign:'center',
+    color:'#FFFFFF',
+    fontFamily:'Poppins-Medium'
   }
- 
 })

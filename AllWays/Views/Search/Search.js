@@ -12,19 +12,18 @@ Search.js
 
 
 /******************** Imports Section ********************/
-import Moment from 'moment';
+
 import { useFonts } from 'expo-font';
-import {Animated} from 'react-native';
 import "react-native-url-polyfill/auto";
-import { extendMoment } from 'moment-range';
 import { Feather } from '@expo/vector-icons';
 import { callAI } from '../../config/ai-config';
 import { Calendar } from 'react-native-calendars';
-import React, {useState, useCallback} from 'react';  
+import React, {useState, useCallback, useContext} from 'react';  
 import * as SplashScreen from 'expo-splash-screen';
 import { googleKey } from '../../config/keys-config';
 import { generatePrompt } from '../../config/ai-config';
 import { getImageUrl } from '../../config/images-config';
+import { NetworkContext, showNetworkError } from '../../config/network-config';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ImageBackground, Switch, Modal} from 'react-native'; 
 
@@ -33,7 +32,6 @@ import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableO
 
 /******************* Global Variables ********************/
 
-const moment = extendMoment(Moment);
 const width = Dimensions.get('window').width   // Get width of the user screen
 const height = Dimensions.get('window').height // Get height of the user screen
 
@@ -76,7 +74,6 @@ export class SearchScreen extends React.Component {
       'Poppins-Medium': require('../../Fonts/Poppins-Medium.ttf'),
     });
     
-
     // Variables for control purposes
     const [loading, setLoading] = useState(false);                  // Controls if Search/Loading page is shown
     const [isResponse, setResponse] =useState(false);               // Controls which text appears in the loading page (waiting for Ai or loading images)
@@ -94,21 +91,23 @@ export class SearchScreen extends React.Component {
     }
 
     // Loops through the listsplan, calls the getImageUrl and navigates to the days list when finished
-    async function createImagesUrls(navigation, city) {
+    async function createImagesUrls(navigation, city, isConnected) {
         
       var counter = 0;
       
       //Loop through the activities and put the url in the listsPlan object
       listsPlan2.forEach(async (item, index) => {
           
+        try{
+
           // Get image url
-          await getImageUrl(listsPlan2, item.activities[0].name + ', ' + city, index, 0);
+          await getImageUrl(listsPlan2, item.activities[0].name + ', ' + city, index, 0, isConnected);
           
           //Check if all images were loaded
           if(++counter == listsPlan2.length){
 
             // Get an image for the route
-            await getImageUrl(listsPlan2, city, 10, 0);
+            await getImageUrl(listsPlan2, city, 10, 0, isConnected);
 
             // Remove Loading page
             setLoading(false);
@@ -132,21 +131,34 @@ export class SearchScreen extends React.Component {
                 imageRoute: listsPlan2.imageUrl
             }) 
           }
+        }
+        catch(e){
+          throw Error(e);
+        }
       });
     }
-   
+    
     // Handles the next button on the right of city and number inputs
-    const handleNext = async () => {
+    const handleNext = async (isConnected) => {
+
+      // Check network connection
       if( selectedStartDate != '' && selectedStartDate != '' & selectedEndDate != '' ){
     
-        // Show loading page
-        setLoading(true); 
-        
-        // Remove nav bar
-        this.props.navigation.getParent().setOptions({tabBarStyle: {display: 'none'}});
-        
         // Call AI
-        await getPlan(this.props.navigation, selectedCity, selectedStartDate, selectedEndDate);
+        try{
+          
+          // Show loading page
+          setLoading(true); 
+          
+          // Remove nav bar
+          this.props.navigation.getParent().setOptions({tabBarStyle: {display: 'none'}});
+
+          await getPlan(this.props.navigation, selectedCity, selectedStartDate, selectedEndDate, isConnected);
+        }
+        catch(e){
+          setLoading(false);
+          showNetworkError(this.props.navigation, e);
+        }
       
       }
       else{
@@ -343,118 +355,121 @@ export class SearchScreen extends React.Component {
     }
 
     // Calls the AI 
-    async function getPlan(navigation, cityName, startDate, endDate) {
+    async function getPlan(navigation, cityName, startDate, endDate, isConnected) {
      
       const prompt = generatePrompt(cityName, startDate, endDate);
-
+      
       try {
         
         // Call AI
-        listsPlan2 = await callAI(prompt);
+        listsPlan2 = await callAI(prompt, isConnected);
      
         // Change Loading Page Message
         setResponse(true);
 
         // Load Images to Route
-        await createImagesUrls(navigation, cityName);
+        await createImagesUrls(navigation, cityName, isConnected);
 
       }
-      catch (error) {
-        console.error('Error fetching AI response: ', error);
-        alert('There was an error with the AI response. \nPlease try again.')
+      catch(e) {
+        throw Error(e.message);
       } 
     }
 
     // Defines the screen components
     if(!loading){
       return (
-        <View style = {PlansScreenStyles.container} onLayout={onLayoutRootView}>
+        <NetworkContext.Consumer>
+        {(value) => (
+          <View style = {PlansScreenStyles.container} onLayout={onLayoutRootView}>
 
-          {/* Modal Select City */}
-          <Modal
-            animationType="slide"
-            visible={isModalCity}
-            onRequestClose={() => setIsModalCity(false)}
-          >
-            <ModalSelectCity></ModalSelectCity>
-          </Modal>
+              {/* Modal Select City */}
+              <Modal
+                animationType="slide"
+                visible={isModalCity}
+                onRequestClose={() => setIsModalCity(false)}
+              >
+                <ModalSelectCity></ModalSelectCity>
+              </Modal>
 
-          {/* Modal Select Dates */}
-          <Modal
-            animationType="slide"
-            visible={isModalDates}
-            onRequestClose={() => setIsModalDates(false)}
-          >
-            <ModalSelectDates></ModalSelectDates>
-          </Modal>
-         
-          {/* Search Screen */}
-          <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../../Images/SearchBackground.jpg')}>
-
-            <View style = {{ justifyContent:'center', alignItems:'center'}}>
-
-              <Image
-                source={require('../../Images/Logo.png')}
-                style = {LoadingScreenStyle.imageLogo}
-                resizeMode='contain'
-              />
-          
-              <View style = {{alignSelf:'flex-start', justifyContent:'center', width:width*0.8, paddingLeft: width*0.075}}>
-               <Text style = {{fontSize:42, fontFamily:'Poppins-SemiBold', color:'#fff' }}>Where and when to go?</Text>
-              </View>
+              {/* Modal Select Dates */}
+              <Modal
+                animationType="slide"
+                visible={isModalDates}
+                onRequestClose={() => setIsModalDates(false)}
+              >
+                <ModalSelectDates></ModalSelectDates>
+              </Modal>
             
-              {isValidInput != null && (
-                <Text style = {{paddingLeft:30, fontSize:15, color:'red'}}>{isValidInput}</Text>
-              )}
+              {/* Search Screen */}
+              <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:30}} source = {require('../../Images/SearchBackground.jpg')}>
 
-                {/* Where ? Button */}
-                <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#F1F4FF', margin:5}} onPress={() => {setIsModalCity(true)}}>
-                  <View style = {{flexDirection:'row', alignItems:'center'}}>
-                    <Feather name="map-pin" size={20} color="#1B115C" style = {{margin:15}}/>
-                    <View>
-                      <Text style = {{color:'#1B115C', fontSize:14, fontFamily:'Poppins-Medium'}}>Where</Text>
-                      <Text style = {{color:'#585858', fontSize:14, fontFamily:'Poppins-Medium'}}>{selectedCity == '' ? 'Select City' : selectedCity}</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity> 
-              
-                {/* When ?  Button*/}
-                <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#F1F4FF', margin:5}} onPress={() => {setIsModalDates(true)}}>
-                  <View style = {{flexDirection:'row', alignItems:'center'}}>
-                    <Feather name="calendar" size={20} color="#1B115C" style = {{margin:15}}/>
-                    <View>
-                      <Text style = {{color:'#1B115C', fontSize:14, fontFamily:'Poppins-Medium'}}>When</Text>
-                      <Text style = {{color:'#585858', fontSize:14, fontFamily:'Poppins-Medium'}}>{selectedEndDate != '' ? formatDate(selectedStartDate) + ' - ' + formatDate(selectedEndDate) : 'Select Dates'}</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity> 
-                
-                <View style = {{flexDirection:'row', justifyContent:'left', width:width, paddingLeft: width*0.075}}>
-                  <Switch
-                    trackColor={{false: '#767577', true: '#FFFFFF'}}
-                    thumbColor={isEnabled ? '#23C2DF' : '#f4f3f4'}
-                    ios_backgroundColor="#3e3e3e"
-                    onValueChange={toggleSwitch}
-                    value={isEnabled}
+                <View style = {{ justifyContent:'center', alignItems:'center'}}>
+
+                  <Image
+                    source={require('../../Images/Logo.png')}
+                    style = {LoadingScreenStyle.imageLogo}
+                    resizeMode='contain'
                   />
-                  <Text style = {{textAlignVertical:'center', fontFamily:'Poppins-SemiBold', fontSize:16, color:'#fff'}}>Include food sugestions</Text>
+              
+                  <View style = {{alignSelf:'flex-start', justifyContent:'center', width:width*0.8, paddingLeft: width*0.075}}>
+                  <Text style = {{fontSize:42, fontFamily:'Poppins-SemiBold', color:'#fff' }}>Where and when to go?</Text>
+                  </View>
+                
+                  {isValidInput != null && (
+                    <Text style = {{paddingLeft:30, fontSize:15, color:'red'}}>{isValidInput}</Text>
+                  )}
+
+                    {/* Where ? Button */}
+                    <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#F1F4FF', margin:5}} onPress={() => {setIsModalCity(true)}}>
+                      <View style = {{flexDirection:'row', alignItems:'center'}}>
+                        <Feather name="map-pin" size={20} color="#1B115C" style = {{margin:15}}/>
+                        <View>
+                          <Text style = {{color:'#1B115C', fontSize:14, fontFamily:'Poppins-Medium'}}>Where</Text>
+                          <Text style = {{color:'#585858', fontSize:14, fontFamily:'Poppins-Medium'}}>{selectedCity == '' ? 'Select City' : selectedCity}</Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity> 
+                  
+                    {/* When ?  Button*/}
+                    <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#F1F4FF', margin:5}} onPress={() => {setIsModalDates(true)}}>
+                      <View style = {{flexDirection:'row', alignItems:'center'}}>
+                        <Feather name="calendar" size={20} color="#1B115C" style = {{margin:15}}/>
+                        <View>
+                          <Text style = {{color:'#1B115C', fontSize:14, fontFamily:'Poppins-Medium'}}>When</Text>
+                          <Text style = {{color:'#585858', fontSize:14, fontFamily:'Poppins-Medium'}}>{selectedEndDate != '' ? formatDate(selectedStartDate) + ' - ' + formatDate(selectedEndDate) : 'Select Dates'}</Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity> 
+                    
+                    <View style = {{flexDirection:'row', justifyContent:'left', width:width, paddingLeft: width*0.075}}>
+                      <Switch
+                        trackColor={{false: '#767577', true: '#FFFFFF'}}
+                        thumbColor={isEnabled ? '#23C2DF' : '#f4f3f4'}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={toggleSwitch}
+                        value={isEnabled}
+                      />
+                      <Text style = {{textAlignVertical:'center', fontFamily:'Poppins-SemiBold', fontSize:16, color:'#fff'}}>Include food sugestions</Text>
+                    </View>
+
+                    <TouchableOpacity onPress={() => {handleNext(value)}} style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#23C2DF', margin:5}}>
+                      <Text style = {{textAlign:'center', fontSize:24, color:'#fff', fontFamily:'Poppins-Medium'}}>Go</Text>
+                    </TouchableOpacity> 
+
+                    <TouchableOpacity style = {{margin:20}} onPress={() => {handleClear()}}>
+                      <Text style = {{fontFamily:'Poppins-Medium', fontSize:16, textAlign:'center', color:'#fff'}}>Clear Search</Text>
+                    </TouchableOpacity>
                 </View>
-
-                <TouchableOpacity onPress={() => {handleNext()}} style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:56, backgroundColor: '#23C2DF', margin:5}}>
-                  <Text style = {{textAlign:'center', fontSize:24, color:'#fff', fontFamily:'Poppins-Medium'}}>Go</Text>
-                </TouchableOpacity> 
-
-                <TouchableOpacity style = {{margin:20}} onPress={() => {handleClear()}}>
-                  <Text style = {{fontFamily:'Poppins-Medium', fontSize:16, textAlign:'center', color:'#fff'}}>Clear Search</Text>
-                </TouchableOpacity>
-            </View>
-          </ImageBackground>
-        </View>
+              </ImageBackground>
+          </View>
+        )}
+        </NetworkContext.Consumer>
       );
     } 
     else{
       return ( 
-        <ImageBackground source = {require('../../Images/BackgroundHome.jpg')} style= {{justifyContent:'center', alignItems:'center',  width:'100%', height:'100%', resizeMode:'contain'}}>
+        <ImageBackground source = {require('../../Images/BackgroundLoading.jpg')} style= {{justifyContent:'center', alignItems:'center',  width:'100%', height:'100%', resizeMode:'contain'}}>
           
           {/* Show Logo */}
           <Image
@@ -523,11 +538,12 @@ const LoadingScreenStyle = StyleSheet.create({
   titleText:{
     fontSize: 20,
     color:'#fff',
-  
+    fontFamily:'Poppins-Bold'
   },
   subtitleText:{
     fontSize: 15,
     color:'#fff',
+    fontFamily:'Poppins-Medium'
   },
 })
 
