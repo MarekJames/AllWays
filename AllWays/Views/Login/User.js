@@ -141,14 +141,14 @@ export class LoginUserScreen extends React.Component{
           </TouchableOpacity>
 
           <TouchableOpacity style = {LoginUserStyles.signIn} onPress={() => {handleSubmit(this.props.navigation, value)}}>
-            <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Sign In</Text>
+            <Text style = {LoginUserStyles.signInText}>Sign In</Text>
           </TouchableOpacity>
     
           <Pressable onPress={() => {this.props.navigation.reset({ index: 0,routes: [{ name: 'Register' }]})}}>
             <Text style={LoginUserStyles.createAccount}>Create new account</Text>
           </Pressable>
     
-          <Text style = {LoginUserStyles.continueWith}>Or continue with</Text>
+          {/* <Text style = {LoginUserStyles.continueWith}>Or continue with</Text>
     
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
               <TouchableOpacity style = {LoginUserStyles.icons} onPress = {signInGoogle}>
@@ -160,7 +160,7 @@ export class LoginUserScreen extends React.Component{
               <TouchableOpacity style = {LoginUserStyles.icons}>
                   <Ionicons name="logo-instagram" size={30} color="black" />
               </TouchableOpacity>
-          </View>
+          </View> */}
         </ImageBackground>
         </View>
       )}
@@ -375,14 +375,14 @@ export class RegisterUserScreen extends React.Component{
             style = {RegisterUserStyles.signUp}
             onPress={() => {handleSubmit(this.props.navigation, value)}}
           >
-            <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Sign Up</Text>
+            <Text style = {RegisterUserStyles.signUpText}>Sign Up</Text>
           </TouchableOpacity>
     
           <Pressable onPress={() => {this.props.navigation.reset({ index: 0,routes: [{ name: 'Login' }]})}}>
             <Text style={RegisterUserStyles.alreadyHaveAccount}>Already have an account</Text>
           </Pressable>
 
-          <Text style = {RegisterUserStyles.continueWith}>Or continue with</Text>
+          {/* <Text style = {RegisterUserStyles.continueWith}>Or continue with</Text>
     
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
               <TouchableOpacity style = {RegisterUserStyles.icons}>
@@ -394,7 +394,7 @@ export class RegisterUserScreen extends React.Component{
               <TouchableOpacity style = {RegisterUserStyles.icons}>
                   <Ionicons name="logo-instagram" size={30} color="black" />
               </TouchableOpacity>
-          </View>
+          </View> */}
           
           </ImageBackground>
         </View>
@@ -452,7 +452,7 @@ const LoginUserStyles = StyleSheet.create ({
     borderRadius:30,
     alignSelf:'center',
     backgroundColor:'#F1F4FF',
-    fontFamily:'Poppins-Medium',
+    fontFamily:'Poppins-Light',
   },
   forgotPassword: {
     textAlign: 'center',
@@ -512,6 +512,12 @@ const LoginUserStyles = StyleSheet.create ({
     borderRadius: 10, 
     backgroundColor:'#ECECEC',
     marginHorizontal:10
+  },
+  signInText:{
+    fontSize:20,
+    textAlign:'center',
+    color:'#FFFFFF',
+    fontFamily:'Poppins-Medium'
   }
 })
 
@@ -528,18 +534,19 @@ const RegisterUserStyles = StyleSheet.create ({
   },
   title: {
     fontSize: 30,
-    fontWeight: 'bold',
     marginBottom: 10,
     marginTop:80,
     color:'#23C2DF',
-    alignSelf:'center'
+    alignSelf:'center',
+    fontFamily:'Poppins-Bold'
   },
   subTitle: {
     fontSize: 20,
     marginBottom: 40,
+    marginHorizontal:20,
     color:'#494949',
-    fontWeight:'600',
-    textAlign:'center'
+    textAlign:'center',
+    fontFamily:'Poppins-Medium'
   },
   input: {
     width: '80%',
@@ -548,14 +555,15 @@ const RegisterUserStyles = StyleSheet.create ({
     marginBottom: 20,
     borderRadius:30,
     alignSelf:'center',
-    backgroundColor:'#F1F4FF'
+    backgroundColor:'#F1F4FF',
+    fontFamily:'Poppins-Light'
   },
   alreadyHaveAccount: {
     textAlign: 'center',
     fontSize: 14,
     marginTop: 20,
-    fontWeight:'600',
-    color:'#494949'
+    color:'#494949',
+    fontFamily:'Poppins-Medium'
   },
   signUp: {
     width: '80%',
@@ -565,7 +573,8 @@ const RegisterUserStyles = StyleSheet.create ({
     marginBottom: 10,
     borderRadius:30,
     alignSelf:'center',
-    justifyContent:'center'
+    justifyContent:'center',
+    alignItems:'center',
   },
   continueWith:{
     textAlign:'center',
@@ -582,6 +591,11 @@ const RegisterUserStyles = StyleSheet.create ({
     borderRadius: 10, 
     backgroundColor:'#ECECEC',
     marginHorizontal:10
+  },
+  signUpText:{
+    fontSize:20,
+    textAlign:'center',
+    color:'#FFFFFF',
+    fontFamily:'Poppins-Medium'
   }
- 
 })

@@ -231,7 +231,6 @@ export default function App() {
 const stylesHomeScreen = StyleSheet.create({
   startText: {
     fontSize: 20,
-    fontWeight:'500',
     color: '#000000',
     textAlign:'center',
     fontFamily:'Poppins-SemiBold',

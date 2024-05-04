@@ -88,11 +88,11 @@ export class ProfileScreen extends React.Component{
     );
 
     return (
-      <ImageBackground source = {require('../../Images/BackgroundHome.jpg')} style = {ProfileScreenStyles.imageBackground}>
+      <ImageBackground source = {require('../../Images/BackgroundProfile.jpg')} style = {ProfileScreenStyles.imageBackground}>
 
           {/* Avatar Name and Email */}
           <View style={ProfileScreenStyles.profileContainer}>
-            <UserAvatar borderRadius={100} size={100} name={fullName} bgColors={['#A0A0A0']}/>  
+            <UserAvatar borderRadius={100} size={100} name={fullName} bgColors={['#444']}/>  
             <Text style={ProfileScreenStyles.userName}>{fullName}</Text>
             <Text style={ProfileScreenStyles.email}>{userEmail}</Text>
           </View>
@@ -166,7 +166,7 @@ export class ProfileScreen extends React.Component{
 // StyleSheet for the profile screen
 const ProfileScreenStyles = StyleSheet.create({
   profileContainer: {
-    top:height*0.07,
+    top:height*0.09,
     marginBottom:30,
     alignItems:'center',
   },
@@ -179,7 +179,7 @@ const ProfileScreenStyles = StyleSheet.create({
   imageBackground:{
     flex:1, 
     width:width,
-    height:height*0.13,
+    height:height*0.16,
     backgroundColor:'#fff',
   },
   userName: {

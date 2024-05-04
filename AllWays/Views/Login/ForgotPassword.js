@@ -83,7 +83,7 @@ export class ForgotPasswordScreen extends React.Component{
             />
 
             <TouchableOpacity style = {ForgotPasswordStyles.recover} onPress={() => {handleSubmit(this.props.navigation, value)}}>
-              <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Recover Password</Text>
+              <Text style = {ForgotPasswordStyles.recoverText}>Recover</Text>
             </TouchableOpacity>
       
             <Pressable onPress={() => {this.props.navigation.reset({ index: 0,routes: [{ name: 'Login' }]})}}>
@@ -122,18 +122,18 @@ const ForgotPasswordStyles = StyleSheet.create ({
   },
   title: {
     fontSize: 30,
-    fontWeight: 'bold',
     marginBottom: 10,
     marginTop:80,
     color:'#23C2DF',
-    alignSelf:'center'
+    alignSelf:'center',
+    fontFamily:'Poppins-Bold'
   },
   subTitle: {
     fontSize: 20,
     marginBottom: 40,
     color:'#494949',
-    fontWeight:'600',
-    textAlign:'center'
+    textAlign:'center',
+    fontFamily:'Poppins-Medium'
   },
   input: {
     width: '80%',
@@ -142,14 +142,15 @@ const ForgotPasswordStyles = StyleSheet.create ({
     marginVertical: 30,
     borderRadius:30,
     alignSelf:'center',
-    backgroundColor:'#F1F4FF'
+    backgroundColor:'#F1F4FF',
+    fontFamily:'Poppins-Light'
   },
   alreadyHaveAccount: {
     textAlign: 'center',
     fontSize: 14,
     marginTop: 20,
-    fontWeight:'600',
-    color:'#494949'
+    color:'#494949',
+    fontFamily:'Poppins-Medium'
   },
   recover: {
     width: '80%',
@@ -159,23 +160,14 @@ const ForgotPasswordStyles = StyleSheet.create ({
     marginBottom: 10,
     borderRadius:30,
     alignSelf:'center',
-    justifyContent:'center'
+    justifyContent:'center',
+    alignItems:'center'
   },
-  continueWith:{
-    textAlign:'center',
-    fontSize:14,
-    color:'#23C2DF',
+  recoverText:{
+    fontSize:20,
     fontWeight:'600',
-    marginTop:30
-  },
-  icons:{
-    alignItems:'center', 
-    justifyContent:'center', 
-    width:60, 
-    height:50, 
-    borderRadius: 10, 
-    backgroundColor:'#ECECEC',
-    marginHorizontal:10
+    textAlign:'center',
+    color:'#FFFFFF',
+    fontFamily:'Poppins-Medium'
   }
- 
 })
