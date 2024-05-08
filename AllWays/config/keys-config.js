@@ -1,12 +1,12 @@
 
 //___________ GOOGLE PLACES  ___________//
-export const googleKey = 'AIzaSyBBMeeABSN3vKTm8pw12UAcf7Gwcajymj4';
+export const googleKey = 'AIzaSyCg8A6LsxIWl6jgbenjWejvfqVu4Tx2CfE';
 
 
 //___________ CUSTOM SEARCH ____________//
 
-export const customSearchKey = 'AIzaSyDW7bNgl6zvJLw1MN7PDTSXgCEoITRvYgc';
-export const searchEngineId = '81c835a580db7436d';
+export const customSearchKey = 'AIzaSyCqFDst1Q46l7hQqAh1pg5TmlKHqGMwcI0';
+export const searchEngineId = '02a2a9343b04243c6';
 
 
 //_______________ OPEN AI ______________//

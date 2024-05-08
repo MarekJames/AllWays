@@ -16,11 +16,11 @@ import Moment from 'moment';
 import "react-native-url-polyfill/auto";
 import { extendMoment } from 'moment-range';
 import { Ionicons } from '@expo/vector-icons';
-import React, {useEffect, useState} from 'react';
 import { getImageUrl } from '../../config/images-config';
+import React, {useEffect, useState, useContext} from 'react';
+import { NetworkContext } from '../../config/network-config';
 import {insertRoute, deleteRoute} from '../../config/firebase-config';
 import {Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView, ImageBackground, ActivityIndicator} from 'react-native'; 
-import { list } from 'firebase/storage';
 
 
 
@@ -49,9 +49,10 @@ export class DaysScreen extends React.Component {
   lists = () => {
     
     const { route } = this.props;
-    const { savedRoutes, listsPlan, city, startDate, endDate, imageRoute, routeId } = route.params;
     const [isLoading, setIsLoading] = useState([]);
-    
+    const isConnected = useContext(NetworkContext);
+    const { savedRoutes, listsPlan, city, startDate, endDate, imageRoute, routeId } = route.params;
+
     // Load Images
     useEffect(() => {
       
@@ -65,7 +66,7 @@ export class DaysScreen extends React.Component {
           
           // Get Image
           if(!listsPlan[index].imageUrl){
-            await getImageUrl(listsPlan, item.activities[0].name + ', ' + city, index, 0, true);
+            await getImageUrl(listsPlan, item.activities[0].name + ', ' + city, index, 0, isConnected);
           }
           
           // Update Loading State
@@ -163,7 +164,7 @@ export class DaysScreen extends React.Component {
       <View style={ParentStyles.container}>
         <View style={ParentStyles.imageBackground}>
           <ImageBackground source={{ uri: imageRoute }} style={DaysListStyles.imageBackground} >
-            <View style = {{flexDirection:'row', justifyContent:'space-between', marginRight: 20}}>
+            <View style = {{height:'45%', flexDirection:'row', justifyContent:'space-between', marginRight: 20}}>
               <View>
                 {savedRoutes && (<TouchableOpacity style = {ParentStyles.backButton} onPress={() => this.props.navigation.navigate('SavedRoutes')}>
                   <Ionicons name="chevron-back-sharp" size={30} color="black" />
@@ -178,13 +179,14 @@ export class DaysScreen extends React.Component {
                 )}
               </View>
             </View>
-            <View style = {{margin:10}}>
-            <Text style ={ParentStyles.title}>{newCity}</Text>
-              <View style = {{flexDirection:'row'}}>
-                <Text style ={ParentStyles.subtitle}>{range.diff('days') + 1} Days</Text>
-                <Text style ={ParentStyles.subtitleDate}> {startDate.substring(0,5)}-{endDate.substring(0,5)}</Text>
-              </View>  
+            <View style = {{height:'35%', padding: 10, justifyContent:'center'}}>
+              <Text style ={ParentStyles.title}>{newCity}</Text>
             </View>
+            <View style = {{height:'15%', paddingLeft: 10, alignItems:'center', flexDirection:'row'}}>
+              <Text style ={ParentStyles.subtitle}>{range.diff('days') + 1} Days</Text>
+              <Text style ={ParentStyles.subtitleDate}> {startDate.substring(0,5)}-{endDate.substring(0,5)}</Text>
+            </View>  
+            
           </ImageBackground>
         </View>
 
@@ -223,7 +225,7 @@ const ParentStyles = StyleSheet.create({
   title:{
     fontSize:64,
     color:'#fff',
-    textAlignVertical:'bottom',
+    textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
   },
   subtitle:{
@@ -242,7 +244,7 @@ const ParentStyles = StyleSheet.create({
     width: 45,
     height: 45,
     marginTop:40,
-    marginLeft:20,
+    marginLeft:10,
     borderRadius: 30,
     alignItems: 'center',
     backgroundColor: '#fff',

@@ -14,11 +14,12 @@ Activities.js
 // Imports for the react components add buttons, images, text, etc
 import "react-native-url-polyfill/auto"
 import { Ionicons } from '@expo/vector-icons';
-import React, {useState, useEffect} from 'react';
 import { getImageUrl } from "../../config/images-config";
-import { updateRoute } from '../../config/firebase-config';  
-import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, Linking, ImageBackground} from 'react-native'; 
+import { updateRoute } from '../../config/firebase-config';
+import { NetworkContext } from "../../config/network-config";  
+import React, {useState, useEffect, useContext} from 'react';
 import { showNetworkError } from "../../config/network-config";
+import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, Linking, ImageBackground} from 'react-native'; 
 
 
 
@@ -46,6 +47,7 @@ export class ActivitiesScreen extends React.Component{
 
     const { route } = this.props;
     const [isLoading, setIsLoading] = useState([]);
+    const isConnected = useContext(NetworkContext);
     const { listsPlan, routePlan, city, savedRoutes, routeId } = route.params;
 
     // Called when the screen is loaded
@@ -54,12 +56,14 @@ export class ActivitiesScreen extends React.Component{
       // Create an array of `true` values based on listsPlan length
       const initialLoading = Array(listsPlan.length).fill(true);
       setIsLoading(initialLoading);
-      
+      var counter = 0;
+
       // Loop through the activities and put the url in the routePlan object
       routePlan.activities.forEach(async (item, index) => {  
         try{
           if(index != 0 && !routePlan.activities[index].imageUrl) {
-            await getImageUrl(routePlan.activities, item.name + ', ' + city, index, 0, true);
+            await getImageUrl(routePlan.activities, item.name + ', ' + city, index, 0, isConnected);
+            counter++;
           }
 
           // Update Loading State
@@ -74,14 +78,14 @@ export class ActivitiesScreen extends React.Component{
           });
         
           // All images loaded
-          if(savedRoutes && ++counter == 5){
+          if(savedRoutes && counter == 5){
 
             // Update route in DB
             updateRoute(routeId, listsPlan);
           }
         }
         catch(error){
-          console.log('Error');
+          showNetworkError(this.props.navigation, error.message);
         }
       });
     }, []);
@@ -110,35 +114,35 @@ export class ActivitiesScreen extends React.Component{
     return routePlan.activities.map((item, index) => (   
       
       <View style={ActivitiesListStyles.square} key={index}>
+        
+        {/* Image at the top -> 40% of the square */}
+        <View style = {ActivitiesListStyles.squareImageContainer}>  
+          {!isLoading[index] ? (
+            <Image
+              source={{ uri: item.imageUrl }}
+              style={ActivitiesListStyles.image}
+            />
+          ) : (
+            <ActivityIndicator 
+              size="small"
+              style = {{justifyContent:'center', alignItems:'center', height:'30%'}}
+            />
+          )}
+        </View>
 
-        {/* Image at the top occupying 50% of the square */}
-        {!isLoading[index] ? (
-          <Image
-            source={{ uri: item.imageUrl }}
-            style={ActivitiesListStyles.image}
-          />
-        ) : (
-          <ActivityIndicator 
-            size="small"
-            style = {{justifyContent:'center', alignItems:'center', height:'30%'}}
-          />
-        )}
-
-        {/* Title and description */}
+        {/* Title and description -> 40% of the square */}
         <View style={ActivitiesListStyles.textContainer}>
           <Text style={ActivitiesListStyles.title}>{item.name}</Text>
           <Text style={ActivitiesListStyles.description}>{item.description}</Text>
         </View>
 
-        {/* Buttons at the bottom */}
+        {/* Buttons at the bottom -> 20% of the square*/}
         <View style={ActivitiesListStyles.buttonContainer}>
           <TouchableOpacity  style={ActivitiesListStyles.button} onPress = { () => {openGoogleMaps(item.name)}}>
               <Text style={ActivitiesListStyles.buttonText}>Maps</Text>
           </TouchableOpacity>
           <TouchableOpacity style={ActivitiesListStyles.button} onPress = { () => {openGoogle(item.name)}}>
-         
               <Text style={ActivitiesListStyles.buttonText}>Info</Text>
-         
           </TouchableOpacity>
         </View>
 
@@ -156,26 +160,28 @@ export class ActivitiesScreen extends React.Component{
     return (
       <View style={ParentStyles.container}>
         
-        {/* Logo */}
-        <View style = {{height:'25%', flexDirection: 'row', alignItems: 'center', marginBottom:5}}>
-          <ImageBackground source={{ uri: imageRoute }}style={ActivitiesListStyles.imageBackground} >
-            <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}
-              style={{
-                width: 45,
-                height: 45,
-                borderRadius: 30,
-                backgroundColor: '#fff',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop:40,
-                marginLeft:10
-              }}
-            >
-              <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
-            </TouchableOpacity>
-            <Text style ={ParentStyles.title}>{newCity}</Text>
-            <View style = {{flexDirection:'row'}}>
+        {/* Header */}
+        <View style = {{height:'25%', flexDirection: 'row', alignItems: 'center'}}>
+          <ImageBackground source={{ uri: imageRoute }} style={ActivitiesListStyles.imageBackground} >
+             <View style = {{height:'35%', paddingTop:40, paddingLeft:10}}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.goBack()}
+                style={{
+                  width: 45,
+                  height: 45,
+                  borderRadius: 30,
+                  backgroundColor: '#fff',
+                  justifyContent: 'center',
+                   alignItems: 'center',
+                }}
+              >
+                <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+              </TouchableOpacity>
+            </View>
+            <View style = {{height:'42%', padding: 10, justifyContent:'center'}}>
+              <Text style ={ParentStyles.title}>{newCity}</Text>
+            </View>
+            <View style = {{height:'20%', paddingLeft: 10, alignItems:'center', flexDirection:'row'}}>
               <Text style ={ParentStyles.subtitle}>{routePlan.day}</Text> 
               <Text style ={ActivitiesListStyles.activitySubtitleDate}>{routePlan.date}</Text>  
             </View>
@@ -184,7 +190,7 @@ export class ActivitiesScreen extends React.Component{
         </View>
 
         {/* Scroll view of the list of activities for the specified day */}
-        <ScrollView style={{flex:1, marginBottom:65}}>
+        <ScrollView style={{flex:1, marginTop:5, marginBottom:65}}>
 
           {/* List of activities, description and, maps and info buttons */}
           <View style={{alignItems:'center'}}>
@@ -205,48 +211,24 @@ export class ActivitiesScreen extends React.Component{
 
 const ParentStyles = StyleSheet.create({
   container: {
-    flex:1,
+    flex: 1,
     backgroundColor: '#FFFFFF',
   },
   imageBackground: {
-    width:'100%',
-    height:'30%',
-  },
-  header: {
-    marginBottom: 20,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCCCCC',
-  },
-  containerLogoHeart: {
-    flexDirection: 'row', // Arrange children horizontally
-    alignItems: 'center', // Align items vertically
-    justifyContent: 'center', // Space evenly between children
-  },
-  containerLogo: {
-    flex:1,
-    marginRight: 10, // Adjust margin as needed
-  },
-  logo: {
-    width: '100%', // Adjust logo width as needed
-    height: '100%', // Adjust logo height as needed
-    resizeMode: 'contain', // Ensure the logo fits its container
-  },
-  iconContainer: {
-    // Style heart icon container if needed
-    paddingRight:10
+    width: '100%',
+    height: '30%',
   },
   listTitle: {
     fontSize: 20,
-    marginTop:10,
+    marginTop: 10,
     textAlign: 'center',
     fontFamily: 'Poppins-Medium',
   },
   listSubtitle: {
     fontSize: 20,
+    marginTop: 10,
+    marginBottom: 20,
     textAlign: 'center',
-    marginTop: 10, // Adjust margin top as needed to bring the list name down
-    marginBottom:20,
     fontFamily: 'Poppins-Medium',
   },
   dayText: {
@@ -255,32 +237,29 @@ const ParentStyles = StyleSheet.create({
     fontFamily: 'Poppins-Medium',
   },
   saveRouteButtom:{
-    borderColor:'#000',
-    borderWidth:1,
+    margin: 10,
+    borderWidth: 1,
     borderRadius: 30,
+    borderColor: '#000',
+    alignSelf: 'center',
     paddingVertical: 20,
     paddingHorizontal: 60,
-    margin:10,
-    alignSelf:'center',
   },
   saveRouteText:{
     fontSize: 30,
-    color:'#000',
+    color: '#000',
     fontFamily: 'Poppins-Medium',
   },
   title:{
-    marginLeft:10,
-    fontWeight:'500',
-    fontSize:64,
-    color:'#fff',
+    fontSize: 64,
+    color: '#fff',
+    textAlignVertical: 'center',
     fontFamily: 'Poppins-Medium',
   },
   subtitle:{
-    marginLeft:10,
-    fontWeight:'400',
-    fontSize:30,
-    color:'#fff',
-    marginTop:-15,
+    fontSize: 30,
+    color: '#fff',
+    textAlignVertical: 'center',
     fontFamily: 'Poppins-Medium',
   }
 });
@@ -300,16 +279,22 @@ const ActivitiesListStyles = StyleSheet.create({
     margin: 10,
     justifyContent:'space-between',
   },
+  squareImageContainer:{
+    width:  '100%',
+    height: '40%',
+  },
   imageBackground: {
-    width: '100%',
-    height: '100%', // Adjusted to 100% to fill the container
+    width:  '100%',
+    height:  '100%',
   },
   image: {
     width: '100%',
-    height: '40%', // Adjusted to 100% to fill the container
+    height: '100%',
   },
   textContainer: {
-    margin:10,
+    width:'100%',
+    height:'40%',
+    padding: 10,
     alignItems:'center',
     justifyContent:'center',
     fontFamily:'Poppins-Medium',
@@ -326,7 +311,11 @@ const ActivitiesListStyles = StyleSheet.create({
   },
   buttonContainer: {
     padding: 10,
+    width:'100%',
+    height:'20%',
     flexDirection: 'row',
+    alignItems:'center',
+    alignContent:'center',
     justifyContent: 'space-around',
   },
   buttonText: {
@@ -339,7 +328,6 @@ const ActivitiesListStyles = StyleSheet.create({
     backgroundColor:'#23C2DF',
     width:'45%',
     height:35,
-    margin:10,
     justifyContent:'center',
     alignItems:'center'
   },
