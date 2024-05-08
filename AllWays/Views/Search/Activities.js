@@ -12,13 +12,13 @@ Activities.js
 /******************** Imports Section ********************/ 
 
 // Imports for the react components add buttons, images, text, etc
-import axios from 'axios';
 import "react-native-url-polyfill/auto"
 import { Ionicons } from '@expo/vector-icons';
 import React, {useState, useEffect} from 'react';
+import { getImageUrl } from "../../config/images-config";
 import { updateRoute } from '../../config/firebase-config';  
-import { customSearchKey, searchEngineId } from '../../config/keys-config'
 import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, Linking, ImageBackground} from 'react-native'; 
+import { showNetworkError } from "../../config/network-config";
 
 
 
@@ -45,63 +45,45 @@ export class ActivitiesScreen extends React.Component{
   activities = () => {
 
     const { route } = this.props;
-    const [imagesLoaded, setImagesLoaded] = useState(false);
+    const [isLoading, setIsLoading] = useState([]);
     const { listsPlan, routePlan, city, savedRoutes, routeId } = route.params;
-    
-    const getImageUrl = async (query,index, counter) => {
-      // Call the google search engine here
-      const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
-
-      try{
-        await axios.get(url)
-        .then((response) => {
-          const image = response.data.items[0];
-          return image;
-        })
-        .then((image) => {
-          const imageUrl = image.link;
-          routePlan.activities[index].imageUrl = imageUrl;
-        })
-      }catch(e){
-        console.log(e.response.data)
-        if( counter < 3 ) await getImageUrl(query,index, counter + 1);
-      }
-      
-    }
-
-    const createImagesUrls = async () => {
-      var counter = 0;
-      
-      // Loop through the activities and put the url in the routePlan object
-      await routePlan.activities.forEach(async (item, index) => {
-        if(index != 0) await getImageUrl(item.name + ', ' + city,index, 0);
-      
-        // Need a counter because the loop indexes can terminate randomly like ( index 4 returns the image first, then the index 2, etc)
-        counter++;
-        if(counter == 5){
-
-          // Activities loaded from a saved route
-          if(savedRoutes){
-
-            // Update route in DB
-            updateRoute(routeId, listsPlan);
-          }
-          setImagesLoaded(true);
-        }
-      });
-    }
 
     // Called when the screen is loaded
     useEffect(() => {
       
-      // Only call the API if the field imageUrl doesn't exist
-      if(!routePlan.activities[1].imageUrl){
-        createImagesUrls();
-      }
-      else{
-        setImagesLoaded(true)
-      }
+      // Create an array of `true` values based on listsPlan length
+      const initialLoading = Array(listsPlan.length).fill(true);
+      setIsLoading(initialLoading);
       
+      // Loop through the activities and put the url in the routePlan object
+      routePlan.activities.forEach(async (item, index) => {  
+        try{
+          if(index != 0 && !routePlan.activities[index].imageUrl) {
+            await getImageUrl(routePlan.activities, item.name + ', ' + city, index, 0, true);
+          }
+
+          // Update Loading State
+          setIsLoading((prevLoading) => {
+
+            // Create a new array based on the previous state
+            const updatedLoading = [...prevLoading];
+            
+            // Update the loading flag for the specific index
+            updatedLoading[index] = false;
+            return updatedLoading;
+          });
+        
+          // All images loaded
+          if(savedRoutes && ++counter == 5){
+
+            // Update route in DB
+            updateRoute(routeId, listsPlan);
+          }
+        }
+        catch(error){
+          console.log('Error');
+        }
+      });
     }, []);
 
     
@@ -130,15 +112,17 @@ export class ActivitiesScreen extends React.Component{
       <View style={ActivitiesListStyles.square} key={index}>
 
         {/* Image at the top occupying 50% of the square */}
-        {imagesLoaded && <Image
-          source={{ uri: item.imageUrl }}
-          style={ActivitiesListStyles.image}
-        />}
-
-        {!imagesLoaded &&  <ActivityIndicator 
-          size="small"
-          style = {{justifyContent:'center', alignItems:'center', height:'30%'}}
-        />}
+        {!isLoading[index] ? (
+          <Image
+            source={{ uri: item.imageUrl }}
+            style={ActivitiesListStyles.image}
+          />
+        ) : (
+          <ActivityIndicator 
+            size="small"
+            style = {{justifyContent:'center', alignItems:'center', height:'30%'}}
+          />
+        )}
 
         {/* Title and description */}
         <View style={ActivitiesListStyles.textContainer}>
