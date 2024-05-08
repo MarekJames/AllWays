@@ -39,7 +39,9 @@ async function getImageUrl(listsPlan2, query, index, counter, isConnected) {
                     listsPlan2.imageUrl = imageUrl;
                 }
                 else{
-                    listsPlan2[index].activities[0].imageUrl = imageUrl;
+                    if(listsPlan2[index].activities!=null){
+                        listsPlan2[index].activities[0].imageUrl = imageUrl;
+                    }
                     listsPlan2[index].imageUrl = imageUrl;
                 }
             }) 

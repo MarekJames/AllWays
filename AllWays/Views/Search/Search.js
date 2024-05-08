@@ -18,7 +18,7 @@ import "react-native-url-polyfill/auto";
 import { Feather } from '@expo/vector-icons';
 import { callAI } from '../../config/ai-config';
 import { Calendar } from 'react-native-calendars';
-import React, {useState, useCallback, useContext} from 'react';  
+import React, {useState, useCallback} from 'react';  
 import * as SplashScreen from 'expo-splash-screen';
 import { googleKey } from '../../config/keys-config';
 import { generatePrompt } from '../../config/ai-config';
@@ -93,49 +93,36 @@ export class SearchScreen extends React.Component {
     // Loops through the listsplan, calls the getImageUrl and navigates to the days list when finished
     async function createImagesUrls(navigation, city, isConnected) {
         
-      var counter = 0;
-      
-      //Loop through the activities and put the url in the listsPlan object
-      listsPlan2.forEach(async (item, index) => {
-          
-        try{
+      try{
+        
+        // Get an image for the route
+        await getImageUrl(listsPlan2, city, 10, 0, isConnected);
 
-          // Get image url
-          await getImageUrl(listsPlan2, item.activities[0].name + ', ' + city, index, 0, isConnected);
-          
-          //Check if all images were loaded
-          if(++counter == listsPlan2.length){
+        // Remove Loading page
+        setLoading(false);
 
-            // Get an image for the route
-            await getImageUrl(listsPlan2, city, 10, 0, isConnected);
+        // Reset tab bar
+        navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:45}});
+        
+        var startDate = selectedStartDate.split('-');
+        startDate = startDate[2] + '/' + startDate[1] + '/' + startDate[0];
 
-            // Remove Loading page
-            setLoading(false);
-
-            // Reset tab bar
-            navigation.getParent().setOptions({tabBarStyle: { borderTopWidth: 2, borderTopColor:'#fff',position:'absolute', elevation:0, height:45}});
-            
-            var startDate = selectedStartDate.split('-');
-            startDate = startDate[2] + '/' + startDate[1] + '/' + startDate[0];
-
-            var endDate = selectedEndDate.split('-');
-            endDate = endDate[2] + '/' + endDate[1] + '/' + endDate[0];
-            
-            // Navigate to days list
-            navigation.navigate("Days", {
-                endDate: endDate,
-                savedRoutes: false,
-                city: selectedCity,
-                startDate: startDate,
-                listsPlan : listsPlan2,
-                imageRoute: listsPlan2.imageUrl
-            }) 
-          }
-        }
-        catch(e){
-          throw Error(e);
-        }
-      });
+        var endDate = selectedEndDate.split('-');
+        endDate = endDate[2] + '/' + endDate[1] + '/' + endDate[0];
+        
+        // Navigate to days list
+        navigation.navigate("Days", {
+            endDate: endDate,
+            savedRoutes: false,
+            city: selectedCity,
+            startDate: startDate,
+            listsPlan : listsPlan2,
+            imageRoute: listsPlan2.imageUrl
+        }) 
+      }
+      catch(error){
+        showNetworkError(navigation, 'Network');
+      }
     }
     
     // Handles the next button on the right of city and number inputs

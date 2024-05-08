@@ -13,12 +13,14 @@ Days.js
 
 // Imports for the react components add buttons, images, text, etc
 import Moment from 'moment';
-import React, {useState} from 'react';
 import "react-native-url-polyfill/auto";
 import { extendMoment } from 'moment-range';
 import { Ionicons } from '@expo/vector-icons';
+import React, {useEffect, useState} from 'react';
+import { getImageUrl } from '../../config/images-config';
 import {insertRoute, deleteRoute} from '../../config/firebase-config';
-import {Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView, ImageBackground} from 'react-native'; 
+import {Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView, ImageBackground, ActivityIndicator} from 'react-native'; 
+import { list } from 'firebase/storage';
 
 
 
@@ -48,14 +50,55 @@ export class DaysScreen extends React.Component {
     
     const { route } = this.props;
     const { savedRoutes, listsPlan, city, startDate, endDate, imageRoute, routeId } = route.params;
+    const [isLoading, setIsLoading] = useState([]);
+    
+    // Load Images
+    useEffect(() => {
+      
+      // Create an array of `true` values based on listsPlan length
+      const initialLoading = Array(listsPlan.length).fill(true);
+      setIsLoading(initialLoading);
+      
+      //Loop through the activities and put the url in the listsPlan object
+      listsPlan.forEach(async (item, index) => {  
+        try{
+          
+          // Get Image
+          if(!listsPlan[index].imageUrl){
+            await getImageUrl(listsPlan, item.activities[0].name + ', ' + city, index, 0, true);
+          }
+          
+          // Update Loading State
+          setIsLoading((prevLoading) => {
 
+            // Create a new array based on the previous state
+            const updatedLoading = [...prevLoading];
+            
+            // Update the loading flag for the specific index
+            updatedLoading[index] = false;
+            return updatedLoading;
+          });
+        }
+        catch(e){
+          throw Error(e);
+        }
+      });
+    }, []);
+    
     return listsPlan.map((item, index) => (
       <TouchableOpacity key={item.day} style = {DaysListStyles.dayContainer} onPress={() => {this.props.navigation.navigate('Activities', { savedRoutes: savedRoutes, listsPlan:listsPlan, routePlan:listsPlan[index], city: city, startDate: startDate, endDate: endDate, imageRoute: imageRoute, routeId: routeId != null ? routeId : 0 })}}>
           {/* Image at the top occupying 50% of the square */}
-          <Image
-            source={{ uri: item.imageUrl }}
-            style={DaysListStyles.image}
-          />
+          {!isLoading[index] ? ( 
+            <Image
+              source={{ uri: item.imageUrl }}
+              style={DaysListStyles.image}
+            />
+          ) : (
+            <ActivityIndicator
+              size="small"
+              style = {{alignSelf:'center'}}
+            />
+          )}
 
           <View style = {{flex:1, alignItems:'left', justifyContent:'center', margin:10}}>
             <View style = {{flexDirection:'row'}}>
