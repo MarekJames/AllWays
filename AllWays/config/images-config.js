@@ -21,7 +21,7 @@ import { customSearchKey, searchEngineId } from './keys-config';
 async function getImageUrl(listsPlan2, query, index, counter, isConnected) {
     
     // Create URL
-    const url = await createUrl(query);
+    const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
 
     // Call API
     if(isConnected){
@@ -63,12 +63,6 @@ async function getImageUrl(listsPlan2, query, index, counter, isConnected) {
     
     // No network connection
     throw Error('Network');
-}
-
-// Create URL with received query
-async function createUrl(query) {
-    const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
-    return url;
 }
 
 export { getImageUrl }
