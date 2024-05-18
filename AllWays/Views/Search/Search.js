@@ -58,11 +58,11 @@ export class SearchScreen extends React.Component {
     const [isEnabled, setIsEnabled] = useState(false);                          // Flag for food search
     const [markedDates, setMarkedDates] = useState({});                         // Contains the dates 
     const [isValidInput, setValidInput] = useState('');                         // Contains the error message if a non valid city is selected
-    const [selectedCity, setSelectedCity] = useState('Porto, Portugal');                       // Contains the value of the selected city                                                                                                                     // Contains all the countries received from the API
+    const [selectedCity, setSelectedCity] = useState('');                       // Contains the value of the selected city                                                                                                                     // Contains all the countries received from the API
     const [isModalCity, setIsModalCity] = useState(false);                      // Flag to show/not show Modal to select city
     const [isModalDates, setIsModalDates] = useState(false);                    // Flag to show/not show Modal to select dates
-    const [selectedEndDate, setSelectedEndDate] = useState('2024-04-30');                 // Contains the value of the end date
-    const [selectedStartDate, setSelectedStartDate] = useState('2024-04-29');             // Contains the value of the start date
+    const [selectedEndDate, setSelectedEndDate] = useState('');                 // Contains the value of the end date
+    const [selectedStartDate, setSelectedStartDate] = useState('');             // Contains the value of the start date
     const months = [
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
@@ -344,7 +344,7 @@ export class SearchScreen extends React.Component {
     // Calls the AI 
     async function getPlan(navigation, cityName, startDate, endDate, isConnected) {
      
-      const prompt = generatePrompt(cityName, startDate, endDate);
+      const prompt = generatePrompt(cityName, startDate, endDate, isEnabled);
       
       try {
         

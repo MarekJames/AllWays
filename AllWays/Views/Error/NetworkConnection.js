@@ -30,21 +30,23 @@ export class NetworkConnectionScreen extends React.Component{
     
     render() {  
 
-        const handleRetry = (navigation) => {
-            
-            // Handle Retry
+        // Handle back button
+        const handleBack = (navigation) => {
             
             // Reset tab bar
             if(navigation.getParent() != undefined){
                 navigation.getParent().setOptions({tabBarStyle: NetworkConnectionStyles.tab});
             }
+
+            // Go back
+            navigation.goBack()
         }
 
         return (
         <View style = {NetworkConnectionStyles.container}>
 
             {/* Back button */}
-            <TouchableOpacity style={NetworkConnectionStyles.backButton} onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity style={NetworkConnectionStyles.backButton} onPress={() => handleBack(this.props.navigation)}>
                 <Ionicons name="chevron-back-sharp" size={30} color="#000" />
             </TouchableOpacity>
                 
@@ -60,11 +62,6 @@ export class NetworkConnectionScreen extends React.Component{
                 <Text style = {NetworkConnectionStyles.errorText}>connectivity.</Text>
                 <Text style = {NetworkConnectionStyles.errorText}>Please try again when you are</Text>
                 <Text style = {NetworkConnectionStyles.errorText}>back online.</Text>
-
-                {/* Retry button */}
-                <TouchableOpacity onPress={() => {handleRetry(this.props.navigation)}}>
-                    <Text style = {NetworkConnectionStyles.retryText}>Retry</Text>
-                </TouchableOpacity>
 
             </View>
         </View>
@@ -93,13 +90,6 @@ const NetworkConnectionStyles = StyleSheet.create ({
         alignItems:'center',
         backgroundColor:'#fff',
         justifyContent:'center',
-    },
-    retryText:{
-        margin:20,
-        fontSize:24,
-        color:'#23C2DF',
-        textAlign:'center',
-        fontFamily:'Poppins-Medium',
     },
     errorText:{
         fontSize:17,
