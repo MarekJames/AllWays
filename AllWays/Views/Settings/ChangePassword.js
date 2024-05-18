@@ -191,8 +191,8 @@ export class ChangePasswordScreen extends React.Component{
           />
 
         <Modal
-          animationType="slide" // Optional: Choose an animation type (e.g., 'slide', 'fade')
-          transparent={true} // Optional: Set to true for a transparent background
+          animationType="slide"
+          transparent={true}
           visible={isOpen}
           onRequestClose={()=>{setIsOpen(!isOpen)}}
         >
@@ -200,7 +200,7 @@ export class ChangePasswordScreen extends React.Component{
         </Modal>
 
           <TouchableOpacity style = {ChangePasswordStyles.recover} onPress={() => {handleSubmit(this.props.navigation, value)}}>
-            <Text style = {{fontSize:20, fontWeight:'600', textAlign:'center', color:'#FFFFFF'}}>Update</Text>
+            <Text style = {ChangePasswordStyles.updateText}>Update</Text>
           </TouchableOpacity>
     
           </ImageBackground>
@@ -304,6 +304,11 @@ const ChangePasswordStyles = StyleSheet.create ({
     borderRadius: 10, 
     backgroundColor:'#ECECEC',
     marginHorizontal:10
-  }
- 
+  },
+  updateText:{
+    fontSize:20,
+    color:'#FFF',
+    textAlign:'center',
+    fontFamily:'Poppins-SemiBold',
+  },
 })

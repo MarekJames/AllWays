@@ -29,21 +29,23 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 export class InternalProblemScreen extends React.Component{
     render() {
 
-        const handleRetry = (navigation) => {
+        // Handle back button
+        const handleBack = (navigation) => {
             
-            // Handle retry
-
             // Reset tab bar
             if(navigation.getParent() != undefined){
                 navigation.getParent().setOptions({tabBarStyle: InternalProblemStyles.tab});
             }
-        }  
+
+            // Go back
+            navigation.goBack()
+        }
 
         return (
         <View style = {InternalProblemStyles.container}>
 
             {/* Back button */}
-            <TouchableOpacity style={InternalProblemStyles.backButton} onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity style={InternalProblemStyles.backButton} onPress={() => handleBack(this.props.navigation)}>
                 <Ionicons name="chevron-back-sharp" size={30} color="black" />
             </TouchableOpacity>
                 
@@ -58,11 +60,6 @@ export class InternalProblemScreen extends React.Component{
                 <Text style = {InternalProblemStyles.errorText}>Please check your connection</Text> 
                 <Text style = {InternalProblemStyles.errorText}>while we check our systems and</Text> 
                 <Text style = {InternalProblemStyles.errorText}>try again later.</Text>
-
-                {/* Retry button */}
-                <TouchableOpacity onPress={() => {handleRetry(this.props.navigation)}}>
-                    <Text style = {InternalProblemStyles.retryText}>Retry</Text>
-                </TouchableOpacity>
 
             </View>
         </View>
