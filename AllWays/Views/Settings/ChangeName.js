@@ -15,6 +15,7 @@ import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { updateUser } from '../../config/firebase-config';
 import { NetworkContext, showNetworkError } from '../../config/network-config';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Dimensions } from 'react-native';
 
 
@@ -156,12 +157,12 @@ const ChangeNameStyles = StyleSheet.create ({
   container: {
     flex:1,
     alignItems:'center',
-    backgroundColor:'white'
+    backgroundColor:'white',
   },
   subContainer:{
-    marginTop:50,
-    marginBottom:10,
     flexDirection:'row',
+    marginTop:verticalScale(50),
+    marginBottom:verticalScale(10),
   },
   imageBackground:{
     flex:1,
@@ -170,58 +171,58 @@ const ChangeNameStyles = StyleSheet.create ({
   },
   title: {
     flex:1,
-    fontSize: 30,
-    marginRight:55,
     color:'#000000',
+    fontSize:scale(30),
     alignSelf:'center',
     textAlign:'center',
+    marginRight:scale(55),
     fontFamily:'Poppins-Bold',
   },
   subTitle: {
-    fontSize:20,
     color:'#494949',
-    marginBottom:40,
+    fontSize:scale(20),
     textAlign:'center',
     fontFamily:'Poppins-Medium',
+    marginBottom:verticalScale(40),
   },
   input: {
-    height:50,
-    paddingLeft:20,
     width:width*0.8,
     borderRadius:30,
-    marginVertical:30,
     alignSelf:'center',
+    paddingLeft:scale(20),
+    height:verticalScale(50),
     backgroundColor:'#F1F4FF',
     fontFamily:'Poppins-Light',
+    marginVertical:verticalScale(30),
   },
   recover: {
-    height:50,
-    marginTop:10,
     borderRadius:30,
     width:width*0.8,
-    marginBottom:10,
     alignSelf:'center',
     justifyContent:'center',
-    backgroundColor:'#23C2DF'
+    height:verticalScale(50),
+    backgroundColor:'#23C2DF',
+    marginTop:verticalScale(10),
+    marginBottom:verticalScale(10),
   },
   backButton:{
-    width:45,
-    height:45,
-    marginLeft:10,
+    width:scale(45),
     borderRadius:30,
+    height:scale(45),
     alignItems:'center',
     backgroundColor:'#fff',
     justifyContent:'center',
+    marginLeft:verticalScale(10),
   },
   invalidInput:{
     color:'red',
-    fontSize:12,
+    fontSize:scale(12),
     textAlign:'center',
     fontFamily:'Poppins-Medium',
   },
   updateText:{
-    fontSize:20,
     color:'#FFF',
+    fontSize:scale(20),
     textAlign:'center',
     fontFamily:'Poppins-SemiBold',
   },

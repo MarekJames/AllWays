@@ -14,6 +14,7 @@ ForgotPassword.js
 import React, { useState } from 'react';
 import { resetPassword } from '../../config/firebase-config';
 import { NetworkContext, showNetworkError } from '../../config/network-config';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground } from 'react-native';
 
 
@@ -106,68 +107,66 @@ export class ForgotPasswordScreen extends React.Component{
 
 
 
-
 /********************* Stylesheets ***********************/
 
 const ForgotPasswordStyles = StyleSheet.create ({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor:'white'
+    flex:1,
+    alignItems:'center',
+    backgroundColor:'white',
   },
   imageBackground:{
-      flex: 1,
-      width: '100%', // You can adjust width and height as needed
-      height: '100%',
+    flex:1,
+    width:'100%',
+    height:'100%',
   },
   title: {
-    fontSize: 30,
-    marginBottom: 10,
-    marginTop:80,
     color:'#23C2DF',
+    fontSize:scale(30),
     alignSelf:'center',
-    fontFamily:'Poppins-Bold'
+    fontFamily:'Poppins-Bold',
+    marginTop:verticalScale(80),
+    marginBottom:verticalScale(10),
   },
   subTitle: {
-    fontSize: 20,
-    marginBottom: 40,
     color:'#494949',
     textAlign:'center',
-    fontFamily:'Poppins-Medium'
+    fontSize:scale(20),
+    fontFamily:'Poppins-Medium',
+    marginBottom:verticalScale(40),
   },
   input: {
-    width: '80%',
-    height: 50,
-    paddingLeft: 20,
-    marginVertical: 30,
+    width:'80%',
     borderRadius:30,
     alignSelf:'center',
+    height:verticalScale(45),
     backgroundColor:'#F1F4FF',
-    fontFamily:'Poppins-Light'
+    fontFamily:'Poppins-Light',
+    paddingLeft:verticalScale(20),
+    marginVertical:verticalScale(30),
   },
   alreadyHaveAccount: {
-    textAlign: 'center',
-    fontSize: 14,
-    marginTop: 20,
     color:'#494949',
-    fontFamily:'Poppins-Medium'
+    textAlign:'center',
+    fontSize:scale(14),
+    fontFamily:'Poppins-Medium',
+    marginTop:verticalScale(20),
   },
   recover: {
-    width: '80%',
-    height: 50,
-    backgroundColor:'#23C2DF',
-    marginTop:10,
-    marginBottom: 10,
+    width:'80%',
     borderRadius:30,
     alignSelf:'center',
+    alignItems:'center',
     justifyContent:'center',
-    alignItems:'center'
+    height:verticalScale(45),
+    backgroundColor:'#23C2DF',
+    marginTop:verticalScale(10),
+    marginBottom:verticalScale(10),
   },
   recoverText:{
-    fontSize:20,
-    fontWeight:'600',
-    textAlign:'center',
     color:'#FFFFFF',
+    fontSize:scale(20),
+    textAlign:'center',
     fontFamily:'Poppins-Medium'
   }
 })

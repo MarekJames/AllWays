@@ -14,9 +14,9 @@ ChangeEmail.js
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { NetworkContext, showNetworkError } from '../../config/network-config';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { updateUserEmail, getAuth, verifyBeforeUpdate, reauthenticateUser } from '../../config/firebase-config';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Modal, ActivityIndicator, Dimensions } from 'react-native';
-import { NativeIconAPI } from '@expo/vector-icons/build/vendor/react-native-vector-icons/lib/create-icon-set';
 
 
 
@@ -25,6 +25,7 @@ import { NativeIconAPI } from '@expo/vector-icons/build/vendor/react-native-vect
 
 const width = Dimensions.get('window').width   // Get width of the user screen
 const height = Dimensions.get('window').height // Get height of the user screen
+
 
 
 
@@ -288,116 +289,115 @@ export class ChangeEmailScreen extends React.Component{
 
 
 
-
 /********************* Stylesheets ***********************/
 
 const ChangeEmailStyles = StyleSheet.create ({
   container: {
-    flex: 1,
-    alignItems: 'center',
+    flex:1,
+    alignItems:'center',
     backgroundColor:'white'
   },
   subContainer:{
     flex:1,
-    padding: 20,
     alignItems:'center',
     justifyContent:'center',
+    padding:moderateScale(20),
   },
   containerHeader:{
-    marginTop:50,
-    marginBottom:10,
     flexDirection:'row',
+    marginTop:verticalScale(50),
+    marginBottom:verticalScale(10),
   },
   imageBackground:{
-      flex:1,
-      width:width,
-      height:height,
+    flex:1,
+    width:width,
+    height:height,
   },
   title: {
     flex:1,
     color:'#000',
-    fontSize: 30,
-    marginRight:55,
+    fontSize:scale(30),
     alignSelf:'center',
     textAlign:'center',
+    marginRight:scale(55),
     fontFamily:'Poppins-Bold',
   },
   subTitle: {
-    fontSize: 20,
     color:'#494949',
-    marginBottom: 40,
+    fontSize:scale(20),
     textAlign:'center',
     fontFamily:'Poppins-Medium',
+    marginBottom:verticalScale(40),
   },
   input: {
-    height:50,
-    paddingLeft:20,
     width:width*0.8,
     borderRadius:30,
     alignSelf:'center',
-    marginVertical: 20,
+    paddingLeft:scale(20),
+    height:verticalScale(50),
     backgroundColor:'#F1F4FF',
-    fontFamily:'Poppins-Light'
+    fontFamily:'Poppins-Light',
+    marginVertical:verticalScale(20),
   },
   recover: {
-    height:50,
-    marginTop:40,
     width:width*0.8,
     borderRadius:30,
-    marginBottom:10,
     alignSelf:'center',
     justifyContent:'center',
+    height:verticalScale(50),
     backgroundColor:'#23C2DF',
+    marginTop:verticalScale(40),
+    marginBottom:verticalScale(10),
   },
   modalButtom:{
-    width: width * 0.8,
-    height: 50,
-    backgroundColor:'#23C2DF',
-    marginTop:40,
-    marginBottom: 10,
-    borderRadius:30,
-    alignSelf:'center',
-    justifyContent:'center'
-  },
-  modalInput: {
-    height:50,
-    paddingLeft:20,
     width:width*0.8,
     borderRadius:30,
-    marginVertical:20,
     alignSelf:'center',
+    justifyContent:'center',
+    height:verticalScale(50),
+    backgroundColor:'#23C2DF',
+    marginTop:verticalScale(40),
+    marginBottom:verticalScale(10),
+  },
+  modalInput: {
+    width:width*0.8,
+    borderRadius:30,
+    alignSelf:'center',
+    height:verticalScale(50),
     backgroundColor:'#F1F4FF',
     fontFamily:'Poppins-Medium',
+    paddingLeft:verticalScale(20),
+    marginVertical:verticalScale(20),
   },
   updateText:{
-    fontSize:20,
     color:'#FFF',
+    fontSize:scale(20),
     textAlign:'center', 
     fontFamily:'Poppins-SemiBold',
   },
   invalidInput:{
     color:'red',
-    fontSize:12,
+    fontSize:scale(12),
     textAlign:'center',
     fontFamily:'Poppins-Medium',
   },
   backButton:{
-    width:45,
-    height:45,
-    marginLeft:10,
+    width:scale(45),
     borderRadius:30,
     alignItems:'center',
-    justifyContent:'center',
+    marginLeft:scale(10),
     backgroundColor:'#fff',
+    justifyContent:'center',
+    height:verticalScale(45),
   },
   errorTitle:{
-    margin:40, 
-    fontSize: 20,
+    fontSize:scale(20),
     textAlign:'center',
+    margin:moderateScale(40), 
     fontFamily:'Poppins-Bold',
   },
   errorSubtitle:{
-    fontSize: 15,
+    fontSize:scale(15),
     textAlign:'center',
     fontFamily:'Poppins-Medium',
   },

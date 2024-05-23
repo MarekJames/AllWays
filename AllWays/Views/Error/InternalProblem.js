@@ -14,6 +14,7 @@ InternalProblem.js
 import React from 'react';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 
 
@@ -70,19 +71,19 @@ export class InternalProblemScreen extends React.Component{
 const InternalProblemStyles = StyleSheet.create ({
     container: {
         flex:1,
-        paddingVertical:40,
-        paddingHorizontal:20,
+        paddingVertical:verticalScale(40),
+        paddingHorizontal:verticalScale(20),
         backgroundColor:'#767676'
     },
     errorContainer:{
-        width:100,
-        height:100,
-        margin:20,
+        width:scale(100),
         borderRadius:100,
         alignSelf:'center',
         alignItems:'center',
         backgroundColor:'#fff',
         justifyContent:'center',
+        margin:moderateScale(20),
+        height:verticalScale(100),
     },
     subContainer:{
         flex:1, 
@@ -90,32 +91,32 @@ const InternalProblemStyles = StyleSheet.create ({
         justifyContent:'center'
     },
     retryText:{
-        margin:20,
-        fontSize:24,
         color:'#23C2DF',
         textAlign:'center',
+        fontSize:scale(24),
+        margin:moderateScale(20),
         fontFamily:'Poppins-Medium',
     },
     errorText:{
-        fontSize:17,
         color:'#fff',
+        fontSize:scale(17),
         textAlign:'center',
         fontFamily:'Poppins-Medium',
     },
     backButton:{
-        top:50,
-        width:45,
-        height:45,
         borderRadius:30,
+        width:scale(45),
         alignItems:'center',
+        top:verticalScale(50),
         backgroundColor:'#fff',
         justifyContent:'center',
+        height:verticalScale(45),
     },
     tab:{ 
-        height:45,
         elevation:0, 
-        borderTopWidth: 2, 
+        borderTopWidth:2, 
         position:'absolute', 
         borderTopColor:'#fff',
+        height:verticalScale(45),
     },
 })

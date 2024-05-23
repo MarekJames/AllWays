@@ -13,7 +13,8 @@ SavedRoutes.js
 
 import React from 'react';  
 import { Ionicons } from '@expo/vector-icons';
-import { deleteRoute, updateSavedRoutes } from '../../config/firebase-config'
+import { deleteRoute, updateSavedRoutes } from '../../config/firebase-config';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { Image, StyleSheet, View, Text, TouchableOpacity, Dimensions, ScrollView, ImageBackground } from 'react-native'; 
 
 
@@ -126,16 +127,16 @@ export class SavedRoutesScreen extends React.Component{
 
 const SavedRoutesStyles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex:1,
     alignItems:'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor:'#FFFFFF',
   },
   headerTitleContainer: {
     flex:1, 
-    marginLeft:20,
-    marginBottom:10, 
     alignItems:'left', 
+    marginLeft:scale(20),
     justifyContent:'flex-end', 
+    marginBottom:verticalScale(10), 
   },
   noRoutesContainer:{
     flex:1,
@@ -143,69 +144,69 @@ const SavedRoutesStyles = StyleSheet.create({
     justifyContent:'center'
   },
   noRoutesText:{
-    fontSize:15,
+    fontSize:scale(15),
     textAlign:'center',
-    fontFamily: 'Poppins-Medium',
+    fontFamily:'Poppins-Medium',
   },
   imageBackground: {
     width:'100%',
     height:'20%',
   },
   scrollView: {
-    marginBottom:65
+    marginBottom:verticalScale(65),
   },
   square: {
-    margin: 10,
-    elevation: 5,
-    borderRadius: 25,
-    width: width * 0.9,
-    overflow: 'hidden',
-    shadowRadius: 3.84,
+    elevation:5,
+    borderRadius:25,
+    width:width*0.9,
+    overflow:'hidden',
+    shadowRadius:3.84,
+    shadowColor:'#000', 
+    shadowOpacity:0.25, 
+    height:height*0.15,
     flexDirection:'row',
-    shadowColor: '#000', 
-    shadowOpacity: 0.25, 
-    height: height * 0.15,
-    backgroundColor: '#EEF6FB',
-    shadowOffset: { width: 0, height: 2 }, 
+    margin:moderateScale(10),
+    backgroundColor:'#EEF6FB',
+    shadowOffset:{ width: 0, height: 2 }, 
   },
   image: {
-    width: '30%',
-    height: '100%',
+    width:'30%',
+    height:'100%',
   },
   imageTitle: {
-    width: '100%',
-    height: '100%',
+    width:'100%',
+    height:'100%',
   },
   textContainer: {
     flex:1,
-    margin:10,
     alignItems:'left',
     justifyContent:'center',
+    margin:moderateScale(10),
   },
   deleteContainer: {
-    margin:10,
     alignSelf:'stretch',
     justifyContent:'center',
+    margin:moderateScale(10),
   },
   title: {
-    fontSize: 40,
     color:'#FFFFFF',
-    marginBottom: 10,
-    fontFamily: 'Poppins-Medium',
+    marginBottom:10,
+    fontSize:scale(40),
+    fontFamily:'Poppins-Medium',
   },
   subtitle: {
-    margin:10,
-    fontSize:20,  
-    fontFamily: 'Poppins-Medium',
+    fontSize:scale(20),  
+    margin:moderateScale(10),
+    fontFamily:'Poppins-Medium',
   },
   titleSquare: {
-    fontSize: 27,
     color:'#000000',
-    marginBottom: 10,
+    fontSize:scale(27),
     fontFamily: 'Poppins-Medium',
+    marginBottom:verticalScale(10),
   },
   description: {
-    fontSize: 13,
-    fontFamily: 'Poppins-Light',
+    fontSize:scale(13),
+    fontFamily:'Poppins-Light',
   },
 });

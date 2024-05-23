@@ -14,13 +14,11 @@ User.js
 
 import React, { useState } from 'react';
 import { CheckBox } from 'react-native-elements';
-import  Ionicons  from '@expo/vector-icons/Ionicons';
 import { getAuth, sendValidationEmail } from '../../config/firebase-config';
 import { NetworkContext, showNetworkError } from '../../config/network-config';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { StyleSheet, Text, View, TextInput, Pressable, TouchableOpacity, ImageBackground} from 'react-native';
-
-/******************* Global Variables ********************/
 
 
 
@@ -303,7 +301,7 @@ export class RegisterUserScreen extends React.Component{
       
         <View style={RegisterUserStyles.container}>
           <ImageBackground
-            source={require('../../Images/LoginBackground.png')} // Replace with your image path
+            source={require('../../Images/LoginBackground.png')}
             style={RegisterUserStyles.imageBackground}
             resizeMode="cover" // You can adjust the resizeMode property as needed
           >
@@ -417,185 +415,180 @@ export class RegisterUserScreen extends React.Component{
 
 const LoginUserStyles = StyleSheet.create ({
   container: {
-    flex: 1,
-    alignItems: 'center',
+    flex:1,
+    alignItems:'center',
     backgroundColor:'white'
   },
   imageBackground:{
     flex:1,
-    width: '100%', // You can adjust width and height as needed
-    height: '100%',
+    width:'100%',
+    height:'100%',
 },
   title: {
-    fontSize: 30,
-    marginBottom: 20,
-    marginTop:100,
     color:'#23C2DF',
+    fontSize:scale(30),
     alignSelf:'center',
     fontFamily:'Poppins-Bold',
+    marginTop:verticalScale(80),
+    marginBottom:verticalScale(20),
   },
   subTitle:{
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 70,
+    width:'50%',
     color:'#494949',
     textAlign:'center',
-    width:'50%',
     alignSelf:'center',
+    fontSize:scale(20),
     fontFamily:'Poppins-SemiBold',
+    marginBottom:verticalScale(70),
   },
   input: {
-    width: '80%',
-    height: 50,
-    paddingLeft: 20,
-    marginBottom: 20,
+    width:'80%',
     borderRadius:30,
     alignSelf:'center',
+    height:verticalScale(40),
     backgroundColor:'#F1F4FF',
     fontFamily:'Poppins-Light',
+    paddingLeft:moderateScale(10),
+    marginBottom:verticalScale(10),
   },
   forgotPassword: {
-    textAlign: 'center',
-    marginBottom: 20,
-    marginTop: 20,
-    fontSize: 14,
-    fontWeight: '600',
     color:'#23C2DF',
+    fontSize:scale(14),
+    textAlign:'center',
+    marginTop:moderateScale(10),
     fontFamily:'Poppins-SemiBold',
+    marginBottom:moderateScale(20),
   },
   forgotPasswordModal:{
-    backgroundColor:'rgba(220, 220, 220, 0.95)',
-    justifyContent:'center',
-    alignItems:'center',
-    alignSelf:'center',
+    top:'32.5%',
     width:'90%',
     height:'35%',
-    borderWidth: 1,
-    borderColor: '#23C2DF',
-    borderRadius: 30,
-    top:'32.5%'
+    borderWidth:1,
+    borderRadius:30,
+    alignSelf:'center',
+    alignItems:'center',
+    borderColor:'#23C2DF',
+    justifyContent:'center',
+    backgroundColor:'rgba(220, 220, 220, 0.95)',
   },
   createAccount: {
-    marginTop: 5,
-    textAlign: 'center',
-    fontSize:14,
     color:'#494949',
-    fontWeight: '600',
+    textAlign:'center',
+    fontSize:scale(14),
+    marginTop:moderateScale(5),
     fontFamily:'Poppins-SemiBold',
   },
   socialLogin: {
-    marginTop: 20,
+    marginTop:moderateScale(20),
   },
   continueWith: {
-    textAlign:'center',
-    fontSize:14,
     color:'#23C2DF',
-    fontWeight:'600',
-    marginTop:50,
+    textAlign:'center',
+    fontSize:scale(14),
+    marginTop:moderateScale(50),
     fontFamily:'Poppins-SemiBold',
   },
   signIn: {
-    width: '80%',
-    height: 50,
-    backgroundColor:'#23C2DF',
-    padding: 10,
-    marginBottom: 20,
+    width:'80%',
     borderRadius:30,
     alignSelf:'center',
+    justifyContent:'center',
+    height:verticalScale(45),
+    backgroundColor:'#23C2DF',
     fontFamily:'Poppins-SemiBold',
+    marginBottom:verticalScale(20),
   },
   icons:{
+    width:scale(60), 
+    borderRadius:10, 
     alignItems:'center', 
     justifyContent:'center', 
-    width:60, 
-    height:50, 
-    borderRadius: 10, 
+    height:verticalScale(50), 
     backgroundColor:'#ECECEC',
-    marginHorizontal:10
+    marginHorizontal:scale(10),
   },
   signInText:{
-    fontSize:20,
-    textAlign:'center',
     color:'#FFFFFF',
+    fontSize:scale(20),
+    textAlign:'center',
     fontFamily:'Poppins-Medium'
   }
 })
 
-const RegisterUserStyles = StyleSheet.create ({
+const RegisterUserStyles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
+    flex:1,
+    alignItems:'center',
     backgroundColor:'white'
   },
   imageBackground:{
-      flex: 1,
-      width: '100%', // You can adjust width and height as needed
-      height: '100%',
+    flex:1,
+    width:'100%',
+    height:'100%',
   },
   title: {
-    fontSize: 30,
-    marginBottom: 10,
-    marginTop:80,
+    fontSize:scale(30),
     color:'#23C2DF',
     alignSelf:'center',
-    fontFamily:'Poppins-Bold'
+    fontFamily:'Poppins-Bold',
+    marginTop:verticalScale(50),
+    marginBottom:verticalScale(10),
   },
   subTitle: {
-    fontSize: 20,
-    marginBottom: 40,
-    marginHorizontal:20,
     color:'#494949',
+    fontSize:scale(20),
     textAlign:'center',
-    fontFamily:'Poppins-Medium'
+    fontFamily:'Poppins-Medium',
+    marginBottom:verticalScale(30),
+    marginHorizontal:verticalScale(20),
   },
   input: {
-    width: '80%',
-    height: 50,
-    paddingLeft: 20,
-    marginBottom: 20,
+    width:'80%',
     borderRadius:30,
     alignSelf:'center',
+    paddingLeft:scale(20),
+    height:verticalScale(40),
     backgroundColor:'#F1F4FF',
-    fontFamily:'Poppins-Light'
+    fontFamily:'Poppins-Light',
+    marginBottom:verticalScale(10),
   },
   alreadyHaveAccount: {
-    textAlign: 'center',
-    fontSize: 14,
-    marginTop: 20,
     color:'#494949',
-    fontFamily:'Poppins-Medium'
+    textAlign:'center',
+    fontSize:scale(14),
+    fontFamily:'Poppins-Medium',
+    marginTop:verticalScale(20),
   },
   signUp: {
-    width: '80%',
-    height: 50,
-    backgroundColor:'#23C2DF',
-    marginTop:10,
-    marginBottom: 10,
+    width:'80%',
     borderRadius:30,
     alignSelf:'center',
-    justifyContent:'center',
     alignItems:'center',
+    justifyContent:'center',
+    height:verticalScale(45),
+    backgroundColor:'#23C2DF',
+    marginTop:verticalScale(10),
+    marginBottom:verticalScale(10),
   },
   continueWith:{
-    textAlign:'center',
-    fontSize:14,
+    marginTop:30,
     color:'#23C2DF',
-    fontWeight:'600',
-    marginTop:30
+    textAlign:'center',
+    fontSize:scale(14),
   },
   icons:{
+    width:scale(60), 
+    borderRadius:10, 
     alignItems:'center', 
     justifyContent:'center', 
-    width:60, 
-    height:50, 
-    borderRadius: 10, 
+    height:verticalScale(40), 
     backgroundColor:'#ECECEC',
-    marginHorizontal:10
+    marginHorizontal:verticalScale(10),
   },
   signUpText:{
-    fontSize:20,
-    textAlign:'center',
     color:'#FFFFFF',
-    fontFamily:'Poppins-Medium'
+    fontSize:scale(20),
+    textAlign:'center',
+    fontFamily:'Poppins-Medium',
   }
 })
