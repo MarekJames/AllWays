@@ -16,6 +16,7 @@ import { getAuth } from 'firebase/auth';
 import UserAvatar from 'react-native-user-avatar';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 import { useFocusEffect } from '@react-navigation/native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Dimensions } from 'react-native';
 
 
@@ -167,14 +168,14 @@ export class ProfileScreen extends React.Component{
 const ProfileScreenStyles = StyleSheet.create({
   profileContainer: {
     top:height*0.09,
-    marginBottom:30,
     alignItems:'center',
+    marginBottom:verticalScale(30),
   },
   logoutContainer:{
     width:width*0.9,
     bottom:height*0.1,
     position:'absolute',
-    marginHorizontal:20,
+    marginHorizontal:scale(20),
   },
   imageBackground:{
     flex:1, 
@@ -183,44 +184,44 @@ const ProfileScreenStyles = StyleSheet.create({
     backgroundColor:'#fff',
   },
   userName: {
-    fontSize:32,
     color:'#000',
-    marginVertical:15,
+    fontSize:scale(32),
     fontFamily:'Poppins-SemiBold',
+    marginVertical:verticalScale(15),
   },
   email: {
-    fontSize:16,
     color:'#000',
-    marginBottom:30,
+    fontSize:scale(16),
     fontFamily:'Poppins-Medium',
+    marginBottom:verticalScale(30),
   },
   optionsContainer: {
-    marginHorizontal:20,
     justifyContent:'center',
+    marginHorizontal:scale(20),
   },
   optionItem: {
-    marginVertical:10,
     flexDirection:'row',
     alignItems:'center',
-    justifyContent:'space-between'
+    justifyContent:'space-between',
+    marginVertical:verticalScale(10),
   },
   optionName: {
-    fontSize:16,
-    fontFamily:'Poppins-Medium'
+    fontSize:scale(16),
+    fontFamily:'Poppins-Medium',
   },
   optionTitle:{
-    fontSize:20,
-    marginVertical:20,
+    fontSize:scale(20),
     fontFamily:'Poppins-SemiBold',
+    marginVertical:verticalScale(20),
   },
   separator:{
     height:1,
-    marginVertical:5,
     backgroundColor:'#C2C2C2',
+    marginVertical:verticalScale(5),
   },
   logout:{
-    fontSize:16,
     color:'#EA0000',
+    fontSize:scale(16),
     fontFamily:'Poppins-Medium',
   },
 });

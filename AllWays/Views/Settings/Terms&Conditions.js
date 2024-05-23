@@ -12,8 +12,9 @@ Terms&Conditions.js
 /******************** Imports Section ********************/ 
 
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 
 
 
@@ -57,36 +58,36 @@ const TermsConditionsStyles = StyleSheet.create ({
   container: {
     flex:1,
     alignItems:'center',
-    backgroundColor:'#FFF'
+    backgroundColor:'#FFF',
   },
   titleContainer:{
-    marginTop:50, 
-    marginBottom:50,
     flexDirection:'row',
+    marginTop:verticalScale(50), 
+    marginBottom:verticalScale(50),
   },
   title: {
     flex:1,
-    fontSize:30,
-    marginRight:55,
     color:'#000000',
     alignSelf:'center',
     textAlign:'center',
+    fontSize:scale(30),
+    marginRight:scale(55),
     fontFamily:'Poppins-Bold',
   },
   subTitle: {
-    fontSize:20,
-    marginLeft:25,
-    marginBottom:30,
     color:'#494949',
+    fontSize:scale(20),
+    marginLeft:scale(25),
     fontFamily:'Poppins-Medium',
+    marginBottom:verticalScale(30),
   },
   backButton:{
-    width:45,
-    height:45,
-    marginLeft:10,
+    width:scale(45),
     borderRadius:30,
     alignItems:'center',
+    marginLeft:scale(10),
     backgroundColor:'#fff',
     justifyContent:'center',
+    height:verticalScale(45),
   }
 })

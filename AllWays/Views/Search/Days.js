@@ -20,6 +20,7 @@ import { getImageUrl } from '../../config/images-config';
 import React, {useEffect, useState, useContext} from 'react';
 import { NetworkContext } from '../../config/network-config';
 import {insertRoute, deleteRoute} from '../../config/firebase-config';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import {Image, View, Text, StyleSheet, Dimensions, TouchableOpacity, ScrollView, ImageBackground, ActivityIndicator} from 'react-native'; 
 
 
@@ -101,7 +102,7 @@ export class DaysScreen extends React.Component {
             />
           )}
 
-          <View style = {{flex:1, alignItems:'left', justifyContent:'center', margin:10}}>
+          <View style = {{flex:1, alignItems:'left', justifyContent:'center', margin:moderateScale(10)}}>
             <View style = {{flexDirection:'row'}}>
               <Text style = {DaysListStyles.dayTitle}>{item.day}</Text>
               <Text style = {DaysListStyles.dayTitleDate}>{item.date}</Text>
@@ -141,14 +142,14 @@ export class DaysScreen extends React.Component {
         <TouchableOpacity  
           onPress = {toggleSave}
           style={{
-          width: 45,
-          height: 45,
+          width:scale(45),
+          height:verticalScale(45),
           borderRadius: 30,
           backgroundColor: '#fff',
           justifyContent: 'center',
           alignItems: 'center',
-          marginTop:40,
-          marginLeft:20
+          marginTop:verticalScale(40),
+          marginLeft:scale(20)
           }}
         >
           <View>
@@ -164,7 +165,7 @@ export class DaysScreen extends React.Component {
       <View style={ParentStyles.container}>
         <View style={ParentStyles.imageBackground}>
           <ImageBackground source={{ uri: imageRoute }} style={DaysListStyles.imageBackground} >
-            <View style = {{height:'45%', flexDirection:'row', justifyContent:'space-between', marginRight: 20}}>
+            <View style = {{height:'45%', flexDirection:'row', justifyContent:'space-between', marginRight: scale(20)}}>
               <View>
                 {savedRoutes && (<TouchableOpacity style = {ParentStyles.backButton} onPress={() => this.props.navigation.navigate('SavedRoutes')}>
                   <Ionicons name="chevron-back-sharp" size={30} color="black" />
@@ -179,10 +180,10 @@ export class DaysScreen extends React.Component {
                 )}
               </View>
             </View>
-            <View style = {{height:'35%', padding: 10, justifyContent:'center'}}>
+            <View style = {{height:'35%', padding: moderateScale(10), justifyContent:'center'}}>
               <Text style ={ParentStyles.title}>{newCity}</Text>
             </View>
-            <View style = {{height:'15%', paddingLeft: 10, alignItems:'center', flexDirection:'row'}}>
+            <View style = {{height:'15%', paddingLeft: scale(10), alignItems:'center', flexDirection:'row'}}>
               <Text style ={ParentStyles.subtitle}>{range.diff('days') + 1} Days</Text>
               <Text style ={ParentStyles.subtitleDate}> {startDate.substring(0,5)}-{endDate.substring(0,5)}</Text>
             </View>  
@@ -191,7 +192,7 @@ export class DaysScreen extends React.Component {
         </View>
 
         {/* Scroll view with the list of days */}
-        <ScrollView style={{flex:1, marginBottom:65}}>
+        <ScrollView style={{flex:1, marginBottom:verticalScale(65)}}>
             {/* Title and description */}
           <Text style={ParentStyles.listTitle}> Select a day to discover your journey</Text>
           <this.lists/>
@@ -217,54 +218,54 @@ const ParentStyles = StyleSheet.create({
     height:'30%',
   },
   listTitle:{
-    fontSize:20,
-    marginTop:10,
+    fontSize:scale(20),
     textAlign:'center',
+    marginTop:verticalScale(10),
     fontFamily:'Poppins-Medium',
   },
   title:{
-    fontSize:64,
     color:'#fff',
+    fontSize:scale(64),
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
   },
   subtitle:{
-    fontSize:24,
     color:'#fff',
+    fontSize:scale(24),
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
   },
   subtitleDate:{
-    fontSize:16,
     color:'#fff',
+    fontSize:scale(16),
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium', 
   },
   backButton:{
-    width: 45,
-    height: 45,
-    marginTop:40,
-    marginLeft:10,
-    borderRadius: 30,
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    justifyContent: 'center',
+    width:scale(45),
+    borderRadius:30,
+    alignItems:'center',
+    marginLeft:scale(10),
+    backgroundColor:'#fff',
+    justifyContent:'center',
+    height:verticalScale(45),
+    marginTop:verticalScale(40),
   },
 });
 
 const DaysListStyles = StyleSheet.create({
   dayContainer:{
-      margin:10,
+      margin:moderateScale(10),
       elevation:5, 
       borderRadius:25,
       overflow:'hidden',
-      width:width * 0.9,
+      width:width*0.9,
       shadowRadius:3.84,
       alignSelf:'center',
       shadowOpacity:0.25,
       shadowColor:'#000',
       flexDirection:'row',
-      height:height * 0.15,
+      height:height*0.15,
       backgroundColor:'#EEF6FB',
       shadowOffset:{width:0, height:2},
   },
@@ -277,21 +278,21 @@ const DaysListStyles = StyleSheet.create({
     height:'100%',
   },
   dayTitle:{
-    fontSize: 30,
     color:'#000',
+    fontSize:scale(30),
     textAlign:'center',
     fontFamily:'Poppins-Medium',
   },  
   dayTitleDate:{
-    margin:10,
-    fontSize:15,
+    fontSize:scale(15),
     textAlign:'center',
     color:'rgba(0,0,0,0.5)',
+    margin:moderateScale(10),
     fontFamily:'Poppins-Medium',
   },
   daySubtitle:{
-    fontSize: 13,
     color:'#000',
+    fontSize:scale(13),
     fontFamily:'Poppins-Light',
   }
 });

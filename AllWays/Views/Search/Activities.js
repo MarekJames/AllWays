@@ -19,6 +19,7 @@ import { updateRoute } from '../../config/firebase-config';
 import { NetworkContext } from "../../config/network-config";  
 import React, {useState, useEffect, useContext} from 'react';
 import { showNetworkError } from "../../config/network-config";
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableOpacity, ScrollView, Linking, ImageBackground} from 'react-native'; 
 
 
@@ -163,12 +164,12 @@ export class ActivitiesScreen extends React.Component{
         {/* Header */}
         <View style = {{height:'25%', flexDirection: 'row', alignItems: 'center'}}>
           <ImageBackground source={{ uri: imageRoute }} style={ActivitiesListStyles.imageBackground} >
-             <View style = {{height:'35%', paddingTop:40, paddingLeft:10}}>
+             <View style = {{height:'35%', paddingTop:verticalScale(40), paddingLeft:scale(10)}}>
               <TouchableOpacity
                 onPress={() => this.props.navigation.goBack()}
                 style={{
-                  width: 45,
-                  height: 45,
+                  width:scale(45),
+                  height:verticalScale(45),
                   borderRadius: 30,
                   backgroundColor: '#fff',
                   justifyContent: 'center',
@@ -178,10 +179,10 @@ export class ActivitiesScreen extends React.Component{
                 <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
               </TouchableOpacity>
             </View>
-            <View style = {{height:'42%', padding: 10, justifyContent:'center'}}>
+            <View style = {{height:'42%', padding: moderateScale(10), justifyContent:'center'}}>
               <Text style ={ParentStyles.title}>{newCity}</Text>
             </View>
-            <View style = {{height:'20%', paddingLeft: 10, alignItems:'center', flexDirection:'row'}}>
+            <View style = {{height:'20%', paddingLeft: scale(10), alignItems:'center', flexDirection:'row'}}>
               <Text style ={ParentStyles.subtitle}>{routePlan.day}</Text> 
               <Text style ={ActivitiesListStyles.activitySubtitleDate}>{routePlan.date}</Text>  
             </View>
@@ -190,7 +191,7 @@ export class ActivitiesScreen extends React.Component{
         </View>
 
         {/* Scroll view of the list of activities for the specified day */}
-        <ScrollView style={{flex:1, marginTop:5, marginBottom:65}}>
+        <ScrollView style={{flex:1, marginTop:verticalScale(5), marginBottom:verticalScale(65)}}>
 
           {/* List of activities, description and, maps and info buttons */}
           <View style={{alignItems:'center'}}>
@@ -211,130 +212,130 @@ export class ActivitiesScreen extends React.Component{
 
 const ParentStyles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
+    flex:1,
+    backgroundColor:'#FFFFFF',
   },
   imageBackground: {
-    width: '100%',
-    height: '30%',
+    width:'100%',
+    height:'30%',
   },
   listTitle: {
-    fontSize: 20,
-    marginTop: 10,
-    textAlign: 'center',
-    fontFamily: 'Poppins-Medium',
+    fontSize:scale(20),
+    marginTop:verticalScale(10),
+    textAlign:'center',
+    fontFamily:'Poppins-Medium',
   },
   listSubtitle: {
-    fontSize: 20,
-    marginTop: 10,
-    marginBottom: 20,
-    textAlign: 'center',
-    fontFamily: 'Poppins-Medium',
+    fontSize:scale(20),
+    textAlign:'center',
+    marginTop:verticalScale(10),
+    fontFamily:'Poppins-Medium',
+    marginBottom:verticalScale(20),
   },
   dayText: {
-    fontSize: 30,
-    textAlign: 'center',
-    fontFamily: 'Poppins-Medium',
+    fontSize:scale(30),
+    textAlign:'center',
+    fontFamily:'Poppins-Medium',
   },
   saveRouteButtom:{
-    margin: 10,
-    borderWidth: 1,
-    borderRadius: 30,
-    borderColor: '#000',
-    alignSelf: 'center',
-    paddingVertical: 20,
-    paddingHorizontal: 60,
+    borderWidth:1,
+    borderRadius:30,
+    borderColor:'#000',
+    alignSelf:'center',
+    margin:moderateScale(10),
+    paddingHorizontal:scale(60),
+    paddingVertical:verticalScale(20),
   },
   saveRouteText:{
-    fontSize: 30,
-    color: '#000',
-    fontFamily: 'Poppins-Medium',
+    color:'#000',
+    fontSize:scale(30),
+    fontFamily:'Poppins-Medium',
   },
   title:{
-    fontSize: 64,
-    color: '#fff',
-    textAlignVertical: 'center',
-    fontFamily: 'Poppins-Medium',
+    color:'#fff',
+    fontSize:scale(64),
+    textAlignVertical:'center',
+    fontFamily:'Poppins-Medium',
   },
   subtitle:{
-    fontSize: 30,
-    color: '#fff',
-    textAlignVertical: 'center',
-    fontFamily: 'Poppins-Medium',
+    color:'#fff',
+    fontSize:scale(30),
+    textAlignVertical:'center',
+    fontFamily:'Poppins-Medium',
   }
 });
   
 const ActivitiesListStyles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center',
   },
   square: {
-    width: width * 0.90, // 90% of the device width
-    height: height * 0.35,
-    backgroundColor: '#EEF6FB',
-    borderRadius: 30,
-    overflow: 'hidden',
-    margin: 10,
+    borderRadius:30,
+    width:width*0.90,
+    overflow:'hidden',
+    height:height*0.35,
+    margin:moderateScale(10),
+    backgroundColor:'#EEF6FB',
     justifyContent:'space-between',
   },
   squareImageContainer:{
-    width:  '100%',
-    height: '40%',
+    width:'100%',
+    height:'40%',
   },
   imageBackground: {
-    width:  '100%',
-    height:  '100%',
+    width:'100%',
+    height:'100%',
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width:'100%',
+    height:'100%',
   },
   textContainer: {
     width:'100%',
     height:'40%',
-    padding: 10,
     alignItems:'center',
     justifyContent:'center',
+    padding:moderateScale(10),
     fontFamily:'Poppins-Medium',
   },
   title: {
-    fontSize: 24,
+    fontSize:scale(24),
     textAlign:'center',
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily:'Poppins-SemiBold',
   },
   description: {
-    fontSize: 16,
+    fontSize:scale(16),
     textAlign:'center',
-    fontFamily: 'Poppins-Light',
+    fontFamily:'Poppins-Light',
   },
   buttonContainer: {
-    padding: 10,
     width:'100%',
     height:'20%',
-    flexDirection: 'row',
+    flexDirection:'row',
     alignItems:'center',
     alignContent:'center',
-    justifyContent: 'space-around',
+    padding:moderateScale(10),
+    justifyContent:'space-around',
   },
   buttonText: {
-    fontSize:16,
-    color: 'white',
-    fontFamily: 'Poppins-Bold',
+    color:'white',
+    fontSize:scale(16),
+    fontFamily:'Poppins-Bold',
   },
   button: {
-    borderRadius:30,
-    backgroundColor:'#23C2DF',
     width:'45%',
-    height:35,
+    borderRadius:30,
+    alignItems:'center',
     justifyContent:'center',
-    alignItems:'center'
+    height:verticalScale(35),
+    backgroundColor:'#23C2DF',
   },
   activitySubtitleDate: {
-    fontSize:15,
-    marginLeft:10,
+    fontSize:scale(15),
     textAlign:'center',
+    marginLeft:scale(10),
     color:'rgba(255,255,255,1)',
     fontFamily:'Poppins-Medium',
   },

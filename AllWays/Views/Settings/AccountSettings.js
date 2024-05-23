@@ -14,8 +14,9 @@ AccountSettings.js
 import React from 'react';
 import { deleteUser } from 'firebase/auth';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 import { NetworkContext, showNetworkError } from '../../config/network-config';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 
 
 
@@ -131,68 +132,68 @@ const AccountSettingsStyles = StyleSheet.create({
   deleteContainer:{
     width:width*0.9,
     bottom:height*0.1,
-    marginHorizontal:20,
     position:'absolute',
+    marginHorizontal:scale(20),
   },
   profileContainer:{
-    marginTop:50,
-    marginBottom:40,
     flexDirection:'row',
+    marginBottom:scale(40),
+    marginTop:verticalScale(50),
   },
   userName:{
     flex:1,
-    fontSize:32,
-    marginRight:55,
     color:'#000000',
     textAlign:'center',
-    fontFamily:'Poppins-SemiBold'
+    fontSize:scale(32),
+    marginRight:scale(55),
+    fontFamily:'Poppins-SemiBold',
   },
   email:{
-    fontSize:16,
-    marginBottom:30,
     color:'#454545',
+    fontSize:scale(16),
     fontFamily:'Poppins-Medium',
+    marginBottom:verticalScale(30),
   },
   optionsContainer:{
-    marginHorizontal:20,
     justifyContent:'center',
+    marginHorizontal:scale(20),
   },
   optionItem:{
-    marginVertical:15,
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'space-between',
+    marginVertical:verticalScale(15),
   },
   optionIcon:{
-    margin:10,
-    marginRight:10,
+    marginRight:scale(10),
+    margin:moderateScale(10),
   },
   optionName:{
-    fontSize:16,
+    fontSize:scale(16),
     fontFamily:'Poppins-Medium',
   },
   optionTitle:{
-    fontSize: 20,
-    marginVertical:20,
+    fontSize:scale(20),
     fontFamily:'Poppins-SemiBold',
+    marginVertical:verticalScale(20),
   },
   separator:{
     height:1,
-    marginVertical:5,
+    marginVertical:verticalScale(5),
     backgroundColor:'#C2C2C2',
   },
   backButton:{
-    width: 45,
-    height: 45,
-    marginLeft:10,
-    borderRadius: 30,
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    justifyContent: 'center',
+    width:scale(45),
+    borderRadius:30,
+    alignItems:'center',
+    marginLeft:scale(10),
+    backgroundColor:'#fff',
+    justifyContent:'center',
+    height:verticalScale(45),
   },
   deleteText:{
-    fontSize:16,
     color:'#EA0000',
+    fontSize:scale(16),
     fontFamily:'Poppins-Medium',
   }
 });

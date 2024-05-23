@@ -13,6 +13,7 @@ HelpCenter.js
 
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Linking, Dimensions } from 'react-native';
 
 
@@ -91,51 +92,51 @@ export class HelpCenterScreen extends React.Component{
 
 const HelpCenterStyles = StyleSheet.create ({
   container: {
-    flex: 1,
+    flex:1,
     alignItems:'center',
     backgroundColor:'white',
   },
   subContainer:{
-    marginTop:50,
-    marginBottom:50,
     flexDirection:'row',
+    marginTop:verticalScale(50),
+    marginBottom:verticalScale(50),
   },
   imageBackground:{
-    flex: 1,
+    flex:1,
     width:width,
     height:height,
   },
   title: {
     flex:1,
-    fontSize:30,
     color:'#000',
-    marginRight:55,
+    fontSize:scale(30),
     alignSelf:'center',
     textAlign:'center',
+    marginRight:scale(55),
     fontFamily:'Poppins-Bold',
   },
   subTitle: {
-    fontSize:20,
-    marginLeft:25,
     color:'#494949',
     marginBottom:30,
+    fontSize:scale(20),
+    marginLeft:scale(25),
     fontFamily:'Poppins-Medium',
   },
   email: {
-    fontSize:20,
-    marginLeft:25,
     color:'#2100E8',
     textAlign:'left',
+    fontSize:scale(20),
+    marginLeft:scale(25),
     fontFamily:'Poppins-Medium',
     textDecorationLine:'underline',
   },
   backButton:{
-    width:45,
-    height:45,
-    marginLeft:10,
+    width:scale(45),
     borderRadius:30,
     alignItems:'center',
+    marginLeft:scale(10),
     backgroundColor:'#fff',
     justifyContent:'center',
+    height:verticalScale(45),
   }
 })

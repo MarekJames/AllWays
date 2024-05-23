@@ -8,6 +8,7 @@ import { NetworkProvider } from './config/network-config.js';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Animated } from 'react-native';
 
 // Import Views
@@ -230,7 +231,7 @@ export default function App() {
 
 const stylesHomeScreen = StyleSheet.create({
   startText: {
-    fontSize: 20,
+    fontSize: scale(20),
     color: '#000000',
     textAlign:'center',
     fontFamily:'Poppins-SemiBold',
@@ -245,23 +246,23 @@ const stylesHomeScreen = StyleSheet.create({
     alignItems:'center',
   },
   createButton: {
-    margin:10,
-    height: 60,
     width:'80%',
     borderRadius:30,
     alignItems:'center',
     alignSelf: 'center',
     justifyContent:'center',
+    height:verticalScale(50),
+    margin:moderateScale(10),
     backgroundColor:'#23C2DF',
   },
   loginButton: {
-    margin:10,
-    height: 60,
     width:'80%',
     borderRadius:30,
     alignItems:'center',
     alignSelf: 'center',
     justifyContent:'center',
+    margin:moderateScale(10),
+    height:verticalScale(50),
     backgroundColor:'#FFFFFF',
   },
 });

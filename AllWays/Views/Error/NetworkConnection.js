@@ -12,8 +12,9 @@ NetworkConnection.js
 /******************** Imports Section ********************/ 
 
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 
 
@@ -72,9 +73,9 @@ export class NetworkConnectionScreen extends React.Component{
 const NetworkConnectionStyles = StyleSheet.create ({
     container: {
         flex:1,
-        paddingVertical:40,
-        paddingHorizontal:20,
-        backgroundColor:'#767676'
+        backgroundColor:'#767676',
+        paddingHorizontal:scale(20),
+        paddingVertical:verticalScale(40),
     },
     subContainer:{
         flex:1, 
@@ -82,35 +83,35 @@ const NetworkConnectionStyles = StyleSheet.create ({
         justifyContent:'center'
     },
     errorContainer:{
-        width:100,
-        height:100,
-        margin:20,
         borderRadius:100,
+        width:scale(100),
         alignSelf:'center',
         alignItems:'center',
         backgroundColor:'#fff',
         justifyContent:'center',
+        margin:moderateScale(20),
+        height:verticalScale(100),
     },
     errorText:{
-        fontSize:17,
         color:'#fff',
         textAlign:'center',
+        fontSize:scale(17),
         fontFamily:'Poppins-Medium',
     },
     backButton:{
-        top:50,
-        width:45,
-        height:45,
+        width:scale(45),
         borderRadius:30,
         alignItems:'center',
+        top:verticalScale(50),
         backgroundColor:'#fff',
         justifyContent:'center',
+        height:verticalScale(45),
     },
     tab:{ 
-        height:45,
         elevation:0, 
-        borderTopWidth: 2, 
+        borderTopWidth:2, 
         position:'absolute', 
         borderTopColor:'#fff',
+        height:verticalScale(45),
     },
 })
