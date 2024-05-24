@@ -109,7 +109,7 @@ const HelpCenterStyles = StyleSheet.create ({
   title: {
     flex:1,
     color:'#000',
-    fontSize:scale(30),
+    fontSize:scale(25),
     alignSelf:'center',
     textAlign:'center',
     marginRight:scale(55),
@@ -118,14 +118,14 @@ const HelpCenterStyles = StyleSheet.create ({
   subTitle: {
     color:'#494949',
     marginBottom:30,
-    fontSize:scale(20),
+    fontSize:scale(16),
     marginLeft:scale(25),
     fontFamily:'Poppins-Medium',
   },
   email: {
     color:'#2100E8',
     textAlign:'left',
-    fontSize:scale(20),
+    fontSize:scale(16),
     marginLeft:scale(25),
     fontFamily:'Poppins-Medium',
     textDecorationLine:'underline',
