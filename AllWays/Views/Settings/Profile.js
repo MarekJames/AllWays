@@ -185,13 +185,13 @@ const ProfileScreenStyles = StyleSheet.create({
   },
   userName: {
     color:'#000',
-    fontSize:scale(32),
+    fontSize:scale(27),
     fontFamily:'Poppins-SemiBold',
     marginVertical:verticalScale(15),
   },
   email: {
     color:'#000',
-    fontSize:scale(16),
+    fontSize:scale(13),
     fontFamily:'Poppins-Medium',
     marginBottom:verticalScale(30),
   },
@@ -206,11 +206,11 @@ const ProfileScreenStyles = StyleSheet.create({
     marginVertical:verticalScale(10),
   },
   optionName: {
-    fontSize:scale(16),
+    fontSize:scale(13),
     fontFamily:'Poppins-Medium',
   },
   optionTitle:{
-    fontSize:scale(20),
+    fontSize:scale(16),
     fontFamily:'Poppins-SemiBold',
     marginVertical:verticalScale(20),
   },
@@ -221,7 +221,7 @@ const ProfileScreenStyles = StyleSheet.create({
   },
   logout:{
     color:'#EA0000',
-    fontSize:scale(16),
+    fontSize:scale(13),
     fontFamily:'Poppins-Medium',
   },
 });

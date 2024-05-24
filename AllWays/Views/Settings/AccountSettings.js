@@ -126,7 +126,7 @@ export class AccountSettingsScreen extends React.Component{
 
 const AccountSettingsStyles = StyleSheet.create({
   container:{
-    flex: 1,
+    flex:1,
     backgroundColor:"#fff",
   },
   deleteContainer:{
@@ -137,6 +137,7 @@ const AccountSettingsStyles = StyleSheet.create({
   },
   profileContainer:{
     flexDirection:'row',
+    alignItems:'center',
     marginBottom:scale(40),
     marginTop:verticalScale(50),
   },
@@ -144,15 +145,9 @@ const AccountSettingsStyles = StyleSheet.create({
     flex:1,
     color:'#000000',
     textAlign:'center',
-    fontSize:scale(32),
+    fontSize:scale(25),
     marginRight:scale(55),
     fontFamily:'Poppins-SemiBold',
-  },
-  email:{
-    color:'#454545',
-    fontSize:scale(16),
-    fontFamily:'Poppins-Medium',
-    marginBottom:verticalScale(30),
   },
   optionsContainer:{
     justifyContent:'center',
@@ -169,18 +164,18 @@ const AccountSettingsStyles = StyleSheet.create({
     margin:moderateScale(10),
   },
   optionName:{
-    fontSize:scale(16),
+    fontSize:scale(13),
     fontFamily:'Poppins-Medium',
   },
   optionTitle:{
-    fontSize:scale(20),
+    fontSize:scale(16),
     fontFamily:'Poppins-SemiBold',
     marginVertical:verticalScale(20),
   },
   separator:{
     height:1,
-    marginVertical:verticalScale(5),
     backgroundColor:'#C2C2C2',
+    marginVertical:verticalScale(5),
   },
   backButton:{
     width:scale(45),
@@ -193,7 +188,7 @@ const AccountSettingsStyles = StyleSheet.create({
   },
   deleteText:{
     color:'#EA0000',
-    fontSize:scale(16),
+    fontSize:scale(13),
     fontFamily:'Poppins-Medium',
   }
 });
