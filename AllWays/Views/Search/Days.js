@@ -243,11 +243,11 @@ const ParentStyles = StyleSheet.create({
   backButton:{
     width:scale(45),
     borderRadius:30,
+    height:scale(45),
     alignItems:'center',
     marginLeft:scale(10),
     backgroundColor:'#fff',
     justifyContent:'center',
-    height:verticalScale(45),
     marginTop:verticalScale(40),
   },
 });

@@ -169,7 +169,7 @@ export class ActivitiesScreen extends React.Component{
                 onPress={() => this.props.navigation.goBack()}
                 style={{
                   width:scale(45),
-                  height:verticalScale(45),
+                  height:scale(45),
                   borderRadius: 30,
                   backgroundColor: '#fff',
                   justifyContent: 'center',
