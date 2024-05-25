@@ -130,7 +130,7 @@ export class SearchScreen extends React.Component {
     const handleNext = async (isConnected) => {
 
       // Check network connection
-      if( selectedStartDate != '' && selectedStartDate != '' & selectedEndDate != '' ){
+      if( selectedCity!= '' && selectedStartDate != '' && selectedStartDate != '' & selectedEndDate != '' ){
     
         // Call AI
         try{
@@ -219,13 +219,13 @@ export class SearchScreen extends React.Component {
     ModalSelectCity = () => {
       return(
         <View style = {{flex:1}}>
-          <View style = {{flexDirection:'row', justifyContent:'space-between', margin:20}}>
+          <View style = {{flexDirection:'row', justifyContent:'space-between', margin:moderateScale(20)}}>
             <TouchableOpacity onPress={() => {setSelectedCity(''); setIsModalCity(false);}}>
               <Feather name="x" size={20} color="#979797"/>
             </TouchableOpacity>
-            <Text style = {{fontFamily:'Poppins-Medium', fontSize:scale(17), textAlign:'center', color:'#000000'}}>Search city</Text>
+            <Text style = {{fontFamily:'Poppins-Medium', fontSize:scale(16), textAlign:'center', color:'#000000'}}>Search city</Text>
             <TouchableOpacity  style = {{opacity:selectedCity == '' ? 0.5 : 1}} disabled={selectedCity == '' ? true : false} onPress={() => {setSelectedCity('')}}>
-              <Text style = {{fontFamily:'Poppins-Medium', fontSize:scale(17), textAlign:'center', color:'#23C2DF'}}>Clear</Text>  
+              <Text style = {{fontFamily:'Poppins-Medium', fontSize:scale(13), textAlign:'center', color:'#23C2DF'}}>Clear</Text>  
             </TouchableOpacity>
           </View>
           <View style = {{alignItems:'center', flex:1}}>
@@ -241,9 +241,9 @@ export class SearchScreen extends React.Component {
                   borderRadius:30,
                   color:'#1B115C',
                   textAlign: 'left',
-                  fontSize:scale(15),
+                  fontSize:scale(13),
                   paddingLeft:scale(30),
-                  height:verticalScale(50),
+                  height:verticalScale(40),
                   backgroundColor: '#F1F4FF',
                 },
                 separator: {
@@ -266,8 +266,8 @@ export class SearchScreen extends React.Component {
               onNotFound={() => console.log('no results')}
             />
 
-            <TouchableOpacity style = {{width: width * 0.9, justifyContent:'center', borderRadius:30, height:verticalScale(56), backgroundColor: '#23C2DF', margin:moderateScale(20), opacity:selectedCity == '' ? 0.5 : 1}} disabled={selectedCity == '' ? true : false} onPress={() => {setIsModalCity(false)}}>
-              <Text style = {{textAlign:'center', fontSize:scale(17), color:'#fff', fontFamily:'Poppins-Medium'}}>Done</Text>
+            <TouchableOpacity style = {{width: width * 0.9, justifyContent:'center', borderRadius:30, height:verticalScale(50), backgroundColor: '#23C2DF', margin:moderateScale(20), opacity:selectedCity == '' ? 0.5 : 1}} disabled={selectedCity == '' ? true : false} onPress={() => {setIsModalCity(false)}}>
+              <Text style = {{textAlign:'center', fontSize:scale(16), color:'#fff', fontFamily:'Poppins-Medium'}}>Done</Text>
             </TouchableOpacity> 
           </View>
         </View>
@@ -282,16 +282,16 @@ export class SearchScreen extends React.Component {
             <TouchableOpacity onPress={() => {setSelectedStartDate(''); setSelectedEndDate(''); setMarkedDates({}); setIsModalDates(false);}}>
               <Feather name="x" size={20} color="#979797"/>
             </TouchableOpacity>
-            <Text style = {{fontFamily:'Poppins-Medium', fontSize:17, textAlign:'center', color:'#000000'}}>Search date range</Text>
+            <Text style = {{fontFamily:'Poppins-Medium', fontSize:scale(16), textAlign:'center', color:'#000000'}}>Search date range</Text>
             <TouchableOpacity  style = {{opacity:selectedStartDate == '' ? 0.5 : 1}} disabled={selectedStartDate == '' ? true : false} onPress={() => {setSelectedStartDate(''); setSelectedEndDate(''); setMarkedDates({});}}>
-              <Text style = {{fontFamily:'Poppins-Medium', fontSize:17, textAlign:'center', color:'#23C2DF'}}>Clear</Text>  
+              <Text style = {{fontFamily:'Poppins-Medium', fontSize:13, textAlign:'center', color:'#23C2DF'}}>Clear</Text>  
             </TouchableOpacity>
           </View>
 
           <View style = {{flexDirection:'row', justifyContent:'space-between', margin:moderateScale(20), alignItems:'center'}}>
-            <Text style = {{width:width*0.4, fontFamily:'Poppins-Medium', fontSize:scale(17), textAlign:'center', color:'#949494', margin:moderateScale(5)}}>{selectedStartDate != '' ? formatDate(selectedStartDate) : 'Earliest outbound date'}</Text>
+            <Text style = {{width:width*0.4, fontFamily:'Poppins-Medium', fontSize:scale(13), textAlign:'center', color:'#949494', margin:moderateScale(5)}}>{selectedStartDate != '' ? formatDate(selectedStartDate) : 'Earliest outbound date'}</Text>
             <Feather style= {{alignSelf:'center'}} name="arrow-right" size={20} color="#1B115C"/>
-            <Text style = {{textAlignVertical:'center', width:width*0.4, fontFamily:'Poppins-Medium', fontSize:scale(17), textAlign:'center', color:'#949494', margin:moderateScale(5)}}>{selectedEndDate != '' ? formatDate(selectedEndDate) : 'Latest return date'}</Text>
+            <Text style = {{textAlignVertical:'center', width:width*0.4, fontFamily:'Poppins-Medium', fontSize:scale(13), textAlign:'center', color:'#949494', margin:moderateScale(5)}}>{selectedEndDate != '' ? formatDate(selectedEndDate) : 'Latest return date'}</Text>
           </View>
 
           <View style = {{flex:1, marginTop:verticalScale(50)}}>
@@ -299,17 +299,17 @@ export class SearchScreen extends React.Component {
               theme={{
                 'stylesheet.calendar.header':{
                   header: {
-                  flexDirection: 'row',
-                  justifyContent: 'flex-start',
-                  paddingLeft: 10,
-                  backgroundColor: 'rgba(35, 194, 223, 0.3)',
-                },
-                monthText: {
-                  fontSize: 17,
-                  color: '#1B115C',
-                  fontFamily:'Poppins-Medium',
-                  opacity:1
-                },
+                    flexDirection:'row',
+                    justifyContent:'flex-start',
+                    paddingLeft:scale(10),
+                    backgroundColor:'rgba(35, 194, 223, 0.3)',
+                  },
+                  monthText: {
+                    fontSize:scale(16),
+                    color:'#1B115C',
+                    fontFamily:'Poppins-Medium',
+                    opacity:1
+                  },
                 },
               }}
               onDayPress={onDayPress}
@@ -322,8 +322,8 @@ export class SearchScreen extends React.Component {
             /> 
           </View>
 
-          <TouchableOpacity style = {{width: width * 0.9, justifyContent:'center', borderRadius:30, height:verticalScale(56), backgroundColor: '#23C2DF', margin:moderateScale(20), opacity:selectedEndDate == '' ? 0.5 : 1 }} disabled={selectedEndDate == '' ? true : false} onPress={() => {setIsModalDates(false)}}>
-              <Text style = {{textAlign:'center', fontSize:scale(17), color:'#fff', fontFamily:'Poppins-Medium'}}>Done</Text>
+          <TouchableOpacity style = {{width: width * 0.9, justifyContent:'center', borderRadius:30, height:verticalScale(50), backgroundColor: '#23C2DF', margin:moderateScale(20), opacity:selectedEndDate == '' ? 0.5 : 1 }} disabled={selectedEndDate == '' ? true : false} onPress={() => {setIsModalDates(false)}}>
+              <Text style = {{textAlign:'center', fontSize:scale(16), color:'#fff', fontFamily:'Poppins-Medium'}}>Done</Text>
           </TouchableOpacity> 
         </View>
       )
@@ -396,36 +396,36 @@ export class SearchScreen extends React.Component {
 
                   <Image
                     source={require('../../Images/Logo.png')}
-                    style = {LoadingScreenStyle.imageLogo}
+                    style = {PlansScreenStyles.imageLogo}
                     resizeMode='contain'
                   />
               
                   <View style = {{alignSelf:'flex-start', justifyContent:'center', width:width*0.8, paddingLeft: width*0.075}}>
-                  <Text style = {{fontSize:scale(42), fontFamily:'Poppins-SemiBold', color:'#fff' }}>Where and when to go?</Text>
+                  <Text style = {{fontSize:scale(30), fontFamily:'Poppins-SemiBold', color:'#fff' }}>Where and when to go?</Text>
                   </View>
                 
                   {isValidInput != null && (
-                    <Text style = {{paddingLeft:scale(30), fontSize:scale(15), color:'red'}}>{isValidInput}</Text>
+                    <Text style = {{textAlign:'center', fontFamily:'Poppins-SemiBold', fontSize:scale(13), color:'red'}}>{isValidInput}</Text>
                   )}
 
                     {/* Where ? Button */}
-                    <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:verticalScale(56), backgroundColor: '#F1F4FF', margin:moderateScale(5)}} onPress={() => {setIsModalCity(true)}}>
+                    <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:verticalScale(45), backgroundColor: '#F1F4FF', margin:moderateScale(10)}} onPress={() => {setIsModalCity(true)}}>
                       <View style = {{flexDirection:'row', alignItems:'center'}}>
-                        <Feather name="map-pin" size={20} color="#1B115C" style = {{margin:moderateScale(15)}}/>
+                        <Feather name="map-pin" size={15} color="#1B115C" style = {{margin:moderateScale(15)}}/>
                         <View>
-                          <Text style = {{color:'#1B115C', fontSize:scale(14), fontFamily:'Poppins-Medium'}}>Where</Text>
-                          <Text style = {{color:'#585858', fontSize:scale(14), fontFamily:'Poppins-Medium'}}>{selectedCity == '' ? 'Select City' : selectedCity}</Text>
+                          <Text style = {{color:'#1B115C', fontSize:scale(13), fontFamily:'Poppins-Medium'}}>Where</Text>
+                          <Text style = {{color:'#585858', fontSize:scale(13), fontFamily:'Poppins-Medium'}}>{selectedCity == '' ? 'Select City' : selectedCity}</Text>
                         </View>
                       </View>
                     </TouchableOpacity> 
                   
                     {/* When ?  Button*/}
-                    <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:verticalScale(56), backgroundColor: '#F1F4FF', margin:moderateScale(5)}} onPress={() => {setIsModalDates(true)}}>
+                    <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:verticalScale(45), backgroundColor: '#F1F4FF', margin:moderateScale(10)}} onPress={() => {setIsModalDates(true)}}>
                       <View style = {{flexDirection:'row', alignItems:'center'}}>
-                        <Feather name="calendar" size={20} color="#1B115C" style = {{margin:moderateScale(15)}}/>
+                        <Feather name="calendar" size={15} color="#1B115C" style = {{margin:moderateScale(15)}}/>
                         <View>
-                          <Text style = {{color:'#1B115C', fontSize:scale(14), fontFamily:'Poppins-Medium'}}>When</Text>
-                          <Text style = {{color:'#585858', fontSize:scale(14), fontFamily:'Poppins-Medium'}}>{selectedEndDate != '' ? formatDate(selectedStartDate) + ' - ' + formatDate(selectedEndDate) : 'Select Dates'}</Text>
+                          <Text style = {{color:'#1B115C', fontSize:scale(13), fontFamily:'Poppins-Medium'}}>When</Text>
+                          <Text style = {{color:'#585858', fontSize:scale(13), fontFamily:'Poppins-Medium'}}>{selectedEndDate != '' ? formatDate(selectedStartDate) + ' - ' + formatDate(selectedEndDate) : 'Select Dates'}</Text>
                         </View>
                       </View>
                     </TouchableOpacity> 
@@ -438,15 +438,15 @@ export class SearchScreen extends React.Component {
                         onValueChange={toggleSwitch}
                         value={isEnabled}
                       />
-                      <Text style = {{textAlignVertical:'center', fontFamily:'Poppins-SemiBold', fontSize:scale(16), color:'#fff'}}>Include food sugestions</Text>
+                      <Text style = {{textAlignVertical:'center', fontFamily:'Poppins-SemiBold', fontSize:scale(13), color:'#fff'}}>Include food sugestions</Text>
                     </View>
 
-                    <TouchableOpacity onPress={() => {handleNext(value)}} style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:verticalScale(56), backgroundColor: '#23C2DF', margin:moderateScale(5)}}>
+                    <TouchableOpacity onPress={() => {handleNext(value)}} style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:verticalScale(50), backgroundColor: '#23C2DF', margin:moderateScale(5)}}>
                       <Text style = {{textAlign:'center', fontSize:scale(24), color:'#fff', fontFamily:'Poppins-Medium'}}>Go</Text>
                     </TouchableOpacity> 
 
                     <TouchableOpacity style = {{margin:moderateScale(20)}} onPress={() => {handleClear()}}>
-                      <Text style = {{fontFamily:'Poppins-Medium', fontSize:scale(16), textAlign:'center', color:'#fff'}}>Clear Search</Text>
+                      <Text style = {{fontFamily:'Poppins-Medium', fontSize:scale(13), textAlign:'center', color:'#fff'}}>Clear Search</Text>
                     </TouchableOpacity>
                 </View>
               </ImageBackground>
@@ -502,11 +502,10 @@ const PlansScreenStyles = StyleSheet.create({
     flex:1,
     alignItems: 'center',
   },
-  imageLogo: {
-    width:'80%',
-    resizeMode:'contain',
-    height:verticalScale(250),
-    margin:moderateScale(10),
+  imageLogo:{
+    width:'50%',
+    height:'20%',
+    margin:moderateScale(20)
   },
 });
 
@@ -525,12 +524,12 @@ const LoadingScreenStyle = StyleSheet.create({
   },
   titleText:{
     color:'#fff',
-    fontSize:scale(20),
+    fontSize:scale(16),
     fontFamily:'Poppins-Bold',
   },
   subtitleText:{
     color:'#fff',
-    fontSize:scale(15),
+    fontSize:scale(13),
     fontFamily:'Poppins-Medium'
   },
 })

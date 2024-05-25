@@ -359,7 +359,7 @@ export class RegisterUserScreen extends React.Component{
             <Text style = {{color:'red',fontSize:12,fontWeight:'600',textAlign:'center'}}>{checkTerms}</Text>
           )}
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent:'flex-start', marginHorizontal:40}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent:'flex-start', marginHorizontal:scale(20)}}>
               <CheckBox
                 checked={isChecked}
                 onPress={() => setIsChecked(!isChecked)}
@@ -426,7 +426,7 @@ const LoginUserStyles = StyleSheet.create ({
 },
   title: {
     color:'#23C2DF',
-    fontSize:scale(30),
+    fontSize:scale(25),
     alignSelf:'center',
     fontFamily:'Poppins-Bold',
     marginTop:verticalScale(80),
@@ -437,7 +437,7 @@ const LoginUserStyles = StyleSheet.create ({
     color:'#494949',
     textAlign:'center',
     alignSelf:'center',
-    fontSize:scale(20),
+    fontSize:scale(16),
     fontFamily:'Poppins-SemiBold',
     marginBottom:verticalScale(70),
   },
@@ -448,12 +448,12 @@ const LoginUserStyles = StyleSheet.create ({
     height:verticalScale(40),
     backgroundColor:'#F1F4FF',
     fontFamily:'Poppins-Light',
-    paddingLeft:moderateScale(10),
+    paddingLeft:scale(20),
     marginBottom:verticalScale(10),
   },
   forgotPassword: {
     color:'#23C2DF',
-    fontSize:scale(14),
+    fontSize:scale(13),
     textAlign:'center',
     marginTop:moderateScale(10),
     fontFamily:'Poppins-SemiBold',
@@ -474,7 +474,7 @@ const LoginUserStyles = StyleSheet.create ({
   createAccount: {
     color:'#494949',
     textAlign:'center',
-    fontSize:scale(14),
+    fontSize:scale(13),
     marginTop:moderateScale(5),
     fontFamily:'Poppins-SemiBold',
   },
@@ -484,7 +484,7 @@ const LoginUserStyles = StyleSheet.create ({
   continueWith: {
     color:'#23C2DF',
     textAlign:'center',
-    fontSize:scale(14),
+    fontSize:scale(13),
     marginTop:moderateScale(50),
     fontFamily:'Poppins-SemiBold',
   },
@@ -503,13 +503,13 @@ const LoginUserStyles = StyleSheet.create ({
     borderRadius:10, 
     alignItems:'center', 
     justifyContent:'center', 
-    height:verticalScale(50), 
+    height:verticalScale(45), 
     backgroundColor:'#ECECEC',
     marginHorizontal:scale(10),
   },
   signInText:{
     color:'#FFFFFF',
-    fontSize:scale(20),
+    fontSize:scale(16),
     textAlign:'center',
     fontFamily:'Poppins-Medium'
   }
@@ -527,7 +527,7 @@ const RegisterUserStyles = StyleSheet.create({
     height:'100%',
   },
   title: {
-    fontSize:scale(30),
+    fontSize:scale(25),
     color:'#23C2DF',
     alignSelf:'center',
     fontFamily:'Poppins-Bold',
@@ -536,7 +536,7 @@ const RegisterUserStyles = StyleSheet.create({
   },
   subTitle: {
     color:'#494949',
-    fontSize:scale(20),
+    fontSize:scale(16),
     textAlign:'center',
     fontFamily:'Poppins-Medium',
     marginBottom:verticalScale(30),
@@ -555,7 +555,7 @@ const RegisterUserStyles = StyleSheet.create({
   alreadyHaveAccount: {
     color:'#494949',
     textAlign:'center',
-    fontSize:scale(14),
+    fontSize:scale(13),
     fontFamily:'Poppins-Medium',
     marginTop:verticalScale(20),
   },
@@ -574,7 +574,7 @@ const RegisterUserStyles = StyleSheet.create({
     marginTop:30,
     color:'#23C2DF',
     textAlign:'center',
-    fontSize:scale(14),
+    fontSize:scale(13),
   },
   icons:{
     width:scale(60), 
@@ -587,7 +587,7 @@ const RegisterUserStyles = StyleSheet.create({
   },
   signUpText:{
     color:'#FFFFFF',
-    fontSize:scale(20),
+    fontSize:scale(16),
     textAlign:'center',
     fontFamily:'Poppins-Medium',
   }
