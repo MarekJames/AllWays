@@ -44,7 +44,7 @@ export class TermsConditionsScreen extends React.Component{
           </View>
 
           {/* Scroll View with terms & conditions */}
-          <ScrollView style = {{alignSelf:'center', height:'90%', paddingHorizontal:moderateScale(25), marginBottom:verticalScale(65)}}>
+          <ScrollView style = {{alignSelf:'center', height:'90%', paddingHorizontal:moderateScale(25), marginBottom:verticalScale(45)}}>
 
               <Text style={TermsConditionsStyles.textTitle}>Welcome to AllWays. By accessing or using our app, you agree to be bound by the following terms and conditions. Please read them carefully.</Text>
               

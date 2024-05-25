@@ -122,7 +122,7 @@ const ForgotPasswordStyles = StyleSheet.create ({
   },
   title: {
     color:'#23C2DF',
-    fontSize:scale(30),
+    fontSize:scale(25),
     alignSelf:'center',
     fontFamily:'Poppins-Bold',
     marginTop:verticalScale(80),
@@ -131,7 +131,7 @@ const ForgotPasswordStyles = StyleSheet.create ({
   subTitle: {
     color:'#494949',
     textAlign:'center',
-    fontSize:scale(20),
+    fontSize:scale(16),
     fontFamily:'Poppins-Medium',
     marginBottom:verticalScale(40),
   },
@@ -139,7 +139,7 @@ const ForgotPasswordStyles = StyleSheet.create ({
     width:'80%',
     borderRadius:30,
     alignSelf:'center',
-    height:verticalScale(45),
+    height:verticalScale(40),
     backgroundColor:'#F1F4FF',
     fontFamily:'Poppins-Light',
     paddingLeft:verticalScale(20),
@@ -148,7 +148,7 @@ const ForgotPasswordStyles = StyleSheet.create ({
   alreadyHaveAccount: {
     color:'#494949',
     textAlign:'center',
-    fontSize:scale(14),
+    fontSize:scale(13),
     fontFamily:'Poppins-Medium',
     marginTop:verticalScale(20),
   },
@@ -165,7 +165,7 @@ const ForgotPasswordStyles = StyleSheet.create ({
   },
   recoverText:{
     color:'#FFFFFF',
-    fontSize:scale(20),
+    fontSize:scale(16),
     textAlign:'center',
     fontFamily:'Poppins-Medium'
   }

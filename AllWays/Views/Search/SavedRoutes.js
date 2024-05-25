@@ -144,8 +144,9 @@ const SavedRoutesStyles = StyleSheet.create({
     justifyContent:'center'
   },
   noRoutesText:{
-    fontSize:scale(15),
+    fontSize:scale(13),
     textAlign:'center',
+    marginHorizontal:scale(30),
     fontFamily:'Poppins-Medium',
   },
   imageBackground: {
@@ -191,17 +192,17 @@ const SavedRoutesStyles = StyleSheet.create({
   title: {
     color:'#FFFFFF',
     marginBottom:10,
-    fontSize:scale(40),
+    fontSize:scale(30),
     fontFamily:'Poppins-Medium',
   },
   subtitle: {
-    fontSize:scale(20),  
+    fontSize:scale(16),  
     margin:moderateScale(10),
     fontFamily:'Poppins-Medium',
   },
   titleSquare: {
     color:'#000000',
-    fontSize:scale(27),
+    fontSize:scale(20),
     fontFamily: 'Poppins-Medium',
     marginBottom:verticalScale(10),
   },

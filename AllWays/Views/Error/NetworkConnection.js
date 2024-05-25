@@ -95,7 +95,7 @@ const NetworkConnectionStyles = StyleSheet.create ({
     errorText:{
         color:'#fff',
         textAlign:'center',
-        fontSize:scale(17),
+        fontSize:scale(16),
         fontFamily:'Poppins-Medium',
     },
     backButton:{

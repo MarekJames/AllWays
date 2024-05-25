@@ -90,16 +90,9 @@ const InternalProblemStyles = StyleSheet.create ({
         alignSelf:'center', 
         justifyContent:'center'
     },
-    retryText:{
-        color:'#23C2DF',
-        textAlign:'center',
-        fontSize:scale(24),
-        margin:moderateScale(20),
-        fontFamily:'Poppins-Medium',
-    },
     errorText:{
         color:'#fff',
-        fontSize:scale(17),
+        fontSize:scale(16),
         textAlign:'center',
         fontFamily:'Poppins-Medium',
     },
