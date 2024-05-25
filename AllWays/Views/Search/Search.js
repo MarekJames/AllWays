@@ -130,7 +130,7 @@ export class SearchScreen extends React.Component {
     const handleNext = async (isConnected) => {
 
       // Check network connection
-      if( selectedStartDate != '' && selectedStartDate != '' & selectedEndDate != '' ){
+      if( selectedCity!= '' && selectedStartDate != '' && selectedStartDate != '' & selectedEndDate != '' ){
     
         // Call AI
         try{

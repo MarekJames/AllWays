@@ -102,7 +102,7 @@ export class DaysScreen extends React.Component {
             />
           )}
 
-          <View style = {{flex:1, alignItems:'left', justifyContent:'center', margin:moderateScale(10)}}>
+          <View style = {{flex:1, justifyContent:'center', margin:moderateScale(10)}}>
             <View style = {{flexDirection:'row'}}>
               <Text style = {DaysListStyles.dayTitle}>{item.day}</Text>
               <Text style = {DaysListStyles.dayTitleDate}>{item.date}</Text>
@@ -183,7 +183,7 @@ export class DaysScreen extends React.Component {
             <View style = {{height:'30%', paddingLeft:scale(10), justifyContent:'center'}}>
               <Text style ={ParentStyles.title}>{newCity}</Text>
             </View>
-            <View style = {{height:'15%', paddingLeft:scale(10),  flexDirection:'row'}}>
+            <View style = {{paddingLeft:scale(10),  flexDirection:'row'}}>
               <Text style ={ParentStyles.subtitle}>{range.diff('days') + 1} Days</Text>
               <Text style ={ParentStyles.subtitleDate}> {startDate.substring(0,5)}-{endDate.substring(0,5)}</Text>
             </View>  
@@ -231,7 +231,7 @@ const ParentStyles = StyleSheet.create({
   subtitle:{
     color:'#fff',
     fontSize:scale(25),
-    textAlign:'center',
+    textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
   },
   subtitleDate:{

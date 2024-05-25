@@ -164,7 +164,7 @@ export class ActivitiesScreen extends React.Component{
         {/* Header */}
         <View style = {{height:'25%', flexDirection: 'row', alignItems: 'center'}}>
           <ImageBackground source={{ uri: imageRoute }} style={ActivitiesListStyles.imageBackground} >
-             <View style = {{height:'35%', paddingTop:verticalScale(40), paddingLeft:scale(10)}}>
+             <View style = {{height:'45%', paddingTop:verticalScale(40), paddingLeft:scale(10)}}>
               <TouchableOpacity
                 onPress={() => this.props.navigation.goBack()}
                 style={{
@@ -173,16 +173,16 @@ export class ActivitiesScreen extends React.Component{
                   borderRadius: 30,
                   backgroundColor: '#fff',
                   justifyContent: 'center',
-                   alignItems: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
               </TouchableOpacity>
             </View>
-            <View style = {{height:'42%', padding: moderateScale(10), justifyContent:'center'}}>
+            <View style = {{height:'32%', paddingLeft: scale(10), justifyContent:'center'}}>
               <Text style ={ParentStyles.title}>{newCity}</Text>
             </View>
-            <View style = {{height:'20%', paddingLeft: scale(10), alignItems:'center', flexDirection:'row'}}>
+            <View style = {{paddingLeft: scale(10), alignItems:'center', flexDirection:'row'}}>
               <Text style ={ParentStyles.subtitle}>{routePlan.day}</Text> 
               <Text style ={ActivitiesListStyles.activitySubtitleDate}>{routePlan.date}</Text>  
             </View>
@@ -219,47 +219,15 @@ const ParentStyles = StyleSheet.create({
     width:'100%',
     height:'30%',
   },
-  listTitle: {
-    fontSize:scale(20),
-    marginTop:verticalScale(10),
-    textAlign:'center',
-    fontFamily:'Poppins-Medium',
-  },
-  listSubtitle: {
-    fontSize:scale(20),
-    textAlign:'center',
-    marginTop:verticalScale(10),
-    fontFamily:'Poppins-Medium',
-    marginBottom:verticalScale(20),
-  },
-  dayText: {
-    fontSize:scale(30),
-    textAlign:'center',
-    fontFamily:'Poppins-Medium',
-  },
-  saveRouteButtom:{
-    borderWidth:1,
-    borderRadius:30,
-    borderColor:'#000',
-    alignSelf:'center',
-    margin:moderateScale(10),
-    paddingHorizontal:scale(60),
-    paddingVertical:verticalScale(20),
-  },
-  saveRouteText:{
-    color:'#000',
-    fontSize:scale(30),
-    fontFamily:'Poppins-Medium',
-  },
   title:{
     color:'#fff',
-    fontSize:scale(64),
+    fontSize:scale(50),
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
   },
   subtitle:{
     color:'#fff',
-    fontSize:scale(30),
+    fontSize:scale(25),
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
   }
@@ -301,12 +269,12 @@ const ActivitiesListStyles = StyleSheet.create({
     fontFamily:'Poppins-Medium',
   },
   title: {
-    fontSize:scale(24),
+    fontSize:scale(20),
     textAlign:'center',
     fontFamily:'Poppins-SemiBold',
   },
   description: {
-    fontSize:scale(16),
+    fontSize:scale(13),
     textAlign:'center',
     fontFamily:'Poppins-Light',
   },
@@ -316,27 +284,27 @@ const ActivitiesListStyles = StyleSheet.create({
     flexDirection:'row',
     alignItems:'center',
     alignContent:'center',
-    padding:moderateScale(10),
     justifyContent:'space-around',
+    paddingBottom:verticalScale(10),
   },
   buttonText: {
     color:'white',
-    fontSize:scale(16),
+    fontSize:scale(13),
     fontFamily:'Poppins-Bold',
   },
   button: {
-    width:'45%',
+    width:'40%',
     borderRadius:30,
     alignItems:'center',
     justifyContent:'center',
-    height:verticalScale(35),
+    height:verticalScale(30),
     backgroundColor:'#23C2DF',
   },
   activitySubtitleDate: {
-    fontSize:scale(15),
+    fontSize:scale(16),
     textAlign:'center',
     marginLeft:scale(10),
     color:'rgba(255,255,255,1)',
-    fontFamily:'Poppins-Medium',
+    fontFamily:'Poppins-Light',
   },
 });
