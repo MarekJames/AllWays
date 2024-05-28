@@ -315,7 +315,7 @@ export class SearchScreen extends React.Component {
                                       height:verticalScale(50),
                                       margin:moderateScale(20),
                                       backgroundColor:'#23C2DF',
-                                      opacity:selectedCity == '' ? 0.5 : 1,
+                                      opacity:selectedEndDate == '' ? 0.5 : 1,
                                     }} 
                               disabled={selectedEndDate == '' ? true : false} 
                               onPress={() => {setIsModalDates(false)}}
@@ -414,7 +414,7 @@ export class SearchScreen extends React.Component {
                       <Feather name="map-pin" size={15} color="#1B115C" style = {PlansScreenStyles.icon}/>
                       <View>
                         <Text style = {PlansScreenStyles.selectText}>Where</Text>
-                        <Text style = {PlansScreenStyles.selectValue}>{selectedCity == '' ? 'Select City' : selectedCity}</Text>
+                        <Text style = {PlansScreenStyles.selectValue}>{selectedCity == '' ? 'Select City' : selectedCity.split(',')[0] + "," + selectedCity.split(',')[selectedCity.split(',').length - 1]}</Text>
                       </View>
                     </View>
                   </TouchableOpacity> 

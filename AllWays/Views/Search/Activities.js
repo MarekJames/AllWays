@@ -216,13 +216,13 @@ const ParentStyles = StyleSheet.create({
   },
   title:{
     color:'#fff',
-    fontSize:scale(50),
+    fontSize:scale(45),
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
   },
   subtitle:{
     color:'#fff',
-    fontSize:scale(25),
+    fontSize:scale(20),
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
   }
