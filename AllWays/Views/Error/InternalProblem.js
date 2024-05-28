@@ -98,12 +98,12 @@ const InternalProblemStyles = StyleSheet.create ({
     },
     backButton:{
         borderRadius:30,
-        width:scale(45),
         alignItems:'center',
         top:verticalScale(50),
         backgroundColor:'#fff',
+        width:moderateScale(45),
         justifyContent:'center',
-        height:verticalScale(45),
+        height:moderateScale(45),
     },
     tab:{ 
         elevation:0, 

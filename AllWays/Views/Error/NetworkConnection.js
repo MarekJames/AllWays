@@ -99,13 +99,13 @@ const NetworkConnectionStyles = StyleSheet.create ({
         fontFamily:'Poppins-Medium',
     },
     backButton:{
-        width:scale(45),
         borderRadius:30,
         alignItems:'center',
         top:verticalScale(50),
         backgroundColor:'#fff',
+        width:moderateScale(45),
         justifyContent:'center',
-        height:verticalScale(45),
+        height:moderateScale(45),
     },
     tab:{ 
         elevation:0, 

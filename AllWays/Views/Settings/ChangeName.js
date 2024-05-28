@@ -206,13 +206,13 @@ const ChangeNameStyles = StyleSheet.create ({
     marginBottom:verticalScale(10),
   },
   backButton:{
-    width:scale(45),
     borderRadius:30,
     height:scale(45),
     alignItems:'center',
     backgroundColor:'#fff',
+    width:moderateScale(45),
     justifyContent:'center',
-    marginLeft:verticalScale(10),
+    marginLeft:moderateScale(10),
   },
   invalidInput:{
     color:'red',

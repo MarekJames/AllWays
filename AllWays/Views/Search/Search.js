@@ -241,7 +241,18 @@ export class SearchScreen extends React.Component {
               onNotFound={() => console.log('no results')}
             />
 
-            <TouchableOpacity style = {CityScreenStyles.doneButton} disabled={selectedCity == '' ? true : false} onPress={() => {setIsModalCity(false)}}>
+            <TouchableOpacity style = {{
+                                        width:width*0.9,
+                                        borderRadius:30,
+                                        justifyContent:'center',
+                                        height:verticalScale(50),
+                                        margin:moderateScale(20),
+                                        backgroundColor:'#23C2DF',
+                                        opacity:selectedCity == '' ? 0.5 : 1,
+                                      }} 
+                                disabled={selectedCity == '' ? true : false} 
+                                onPress={() => {setIsModalCity(false)}}
+                              >
               <Text style = {CityScreenStyles.doneText}>Done</Text>
             </TouchableOpacity> 
           </View>
@@ -297,7 +308,18 @@ export class SearchScreen extends React.Component {
             /> 
           </View>
 
-          <TouchableOpacity style = {DatesScreenStyles.doneButton} disabled={selectedEndDate == '' ? true : false} onPress={() => {setIsModalDates(false)}}>
+          <TouchableOpacity style = {{
+                                      width:width*0.9,
+                                      borderRadius:30,
+                                      justifyContent:'center',
+                                      height:verticalScale(50),
+                                      margin:moderateScale(20),
+                                      backgroundColor:'#23C2DF',
+                                      opacity:selectedCity == '' ? 0.5 : 1,
+                                    }} 
+                              disabled={selectedEndDate == '' ? true : false} 
+                              onPress={() => {setIsModalDates(false)}}
+                            >
               <Text style = {DatesScreenStyles.doneText}>Done</Text>
           </TouchableOpacity> 
         </View>
@@ -624,15 +646,6 @@ const CityScreenStyles = StyleSheet.create({
       backgroundColor:'#F1F4FF',
     },
   },
-  doneButton:{
-    width:width*0.9,
-    borderRadius:30,
-    justifyContent:'center',
-    height:verticalScale(50),
-    margin:moderateScale(20),
-    backgroundColor:'#23C2DF',
-    opacity:selectedCity == '' ? 0.5 : 1,
-  },
   doneText:{
     color:'#fff',
     textAlign:'center',
@@ -662,15 +675,6 @@ const DatesScreenStyles = StyleSheet.create({
     textAlign:'center',
     fontSize:scale(16),
     fontFamily:'Poppins-Medium',
-  },
-  doneButton:{
-    width:width*0.9,
-    borderRadius:30,
-    justifyContent:'center',
-    height:verticalScale(50),
-    margin:moderateScale(20),
-    backgroundColor:'#23C2DF',
-    opacity:selectedCity == '' ? 0.5 : 1,
   },
   doneText:{
     color:'#fff',

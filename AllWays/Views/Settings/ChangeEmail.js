@@ -382,13 +382,13 @@ const ChangeEmailStyles = StyleSheet.create ({
     fontFamily:'Poppins-Medium',
   },
   backButton:{
-    width:scale(45),
     borderRadius:30,
     alignItems:'center',
     marginLeft:scale(10),
     backgroundColor:'#fff',
+    width:moderateScale(45),
     justifyContent:'center',
-    height:verticalScale(45),
+    height:moderateScale(45),
   },
   errorTitle:{
     fontSize:scale(16),
