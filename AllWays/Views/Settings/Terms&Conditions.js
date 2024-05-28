@@ -155,13 +155,13 @@ const TermsConditionsStyles = StyleSheet.create ({
     marginBottom:verticalScale(5),
   },
   backButton:{
-    width:scale(45),
     borderRadius:30,
     alignItems:'center',
     marginLeft:scale(10),
     backgroundColor:'#fff',
     justifyContent:'center',
-    height:verticalScale(45),
+    width:moderateScale(45),
+    height:moderateScale(45),
   },
   text:{
     color:'#494949',

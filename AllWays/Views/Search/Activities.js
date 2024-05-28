@@ -13,7 +13,7 @@ Activities.js
 
 // Imports for the react components add buttons, images, text, etc
 import "react-native-url-polyfill/auto"
-import { Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import { getImageUrl } from "../../config/images-config";
 import { updateRoute } from '../../config/firebase-config';
 import { NetworkContext } from "../../config/network-config";  
@@ -140,9 +140,11 @@ export class ActivitiesScreen extends React.Component{
         {/* Buttons at the bottom -> 20% of the square*/}
         <View style={ActivitiesListStyles.buttonContainer}>
           <TouchableOpacity  style={ActivitiesListStyles.button} onPress = { () => {openGoogleMaps(item.name)}}>
+              <Feather name="map" size={moderateScale(15)} color="#fff" style={ActivitiesListStyles.icon}/>
               <Text style={ActivitiesListStyles.buttonText}>Maps</Text>
           </TouchableOpacity>
           <TouchableOpacity style={ActivitiesListStyles.button} onPress = { () => {openGoogle(item.name)}}>
+              <Feather name="info" size={moderateScale(15)} color="#fff" style={ActivitiesListStyles.icon}/>
               <Text style={ActivitiesListStyles.buttonText}>Info</Text>
           </TouchableOpacity>
         </View>
@@ -162,27 +164,20 @@ export class ActivitiesScreen extends React.Component{
       <View style={ParentStyles.container}>
         
         {/* Header */}
-        <View style = {{height:'25%', flexDirection: 'row', alignItems: 'center'}}>
+        <View style = {ActivitiesListStyles.headerView}>
           <ImageBackground source={{ uri: imageRoute }} style={ActivitiesListStyles.imageBackground} >
-             <View style = {{height:'45%', paddingTop:verticalScale(40), paddingLeft:scale(10)}}>
+             <View style = {ActivitiesListStyles.headerSubview}>
               <TouchableOpacity
                 onPress={() => this.props.navigation.goBack()}
-                style={{
-                  width:scale(45),
-                  height:scale(45),
-                  borderRadius: 30,
-                  backgroundColor: '#fff',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
+                style={ActivitiesListStyles.backButton}
               >
                 <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
               </TouchableOpacity>
             </View>
-            <View style = {{height:'32%', paddingLeft: scale(10), justifyContent:'center'}}>
+            <View style = {ActivitiesListStyles.headerTitle}>
               <Text style ={ParentStyles.title}>{newCity}</Text>
             </View>
-            <View style = {{paddingLeft: scale(10), alignItems:'center', flexDirection:'row'}}>
+            <View style = {ActivitiesListStyles.headerSubtitle}>
               <Text style ={ParentStyles.subtitle}>{routePlan.day}</Text> 
               <Text style ={ActivitiesListStyles.activitySubtitleDate}>{routePlan.date}</Text>  
             </View>
@@ -191,10 +186,10 @@ export class ActivitiesScreen extends React.Component{
         </View>
 
         {/* Scroll view of the list of activities for the specified day */}
-        <ScrollView style={{flex:1, marginTop:verticalScale(5), marginBottom:verticalScale(65)}}>
+        <ScrollView style={ActivitiesListStyles.scrollView}>
 
           {/* List of activities, description and, maps and info buttons */}
-          <View style={{alignItems:'center'}}>
+          <View style={ActivitiesListStyles.activitiesView}>
             <this.activities/>
           </View>
           
@@ -221,13 +216,13 @@ const ParentStyles = StyleSheet.create({
   },
   title:{
     color:'#fff',
-    fontSize:scale(50),
+    fontSize:scale(45),
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
   },
   subtitle:{
     color:'#fff',
-    fontSize:scale(25),
+    fontSize:scale(20),
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
   }
@@ -238,6 +233,46 @@ const ActivitiesListStyles = StyleSheet.create({
     flex:1,
     justifyContent:'center',
     alignItems:'center',
+  },
+  scrollView:{
+    flex:1,
+    marginTop:verticalScale(5),
+    marginBottom:verticalScale(65),
+  },
+  activitiesView:{
+    alignItems:'center',
+  },
+  headerView:{
+    height:'25%',
+    alignItems:'center',
+    flexDirection: 'row',
+  },
+  headerSubview:{
+    height:'45%',
+    paddingLeft:scale(10),
+    paddingTop:verticalScale(40),
+  },
+  headerTitle:{
+    height:'32%',
+    paddingLeft:scale(10),
+    justifyContent:'center',
+  },
+  headerSubtitle:{
+    alignItems:'center',
+    flexDirection:'row',
+    paddingLeft:scale(10),
+  },
+  backButton:{
+    borderRadius:30,
+    alignItems:'center',
+    backgroundColor:'#fff',
+    justifyContent:'center',
+    width:moderateScale(45),
+    height:moderateScale(45),
+  },
+  icon:{
+    alignSelf:'center',
+    marginHorizontal:scale(10),
   },
   square: {
     borderRadius:30,
@@ -288,15 +323,18 @@ const ActivitiesListStyles = StyleSheet.create({
     paddingBottom:verticalScale(10),
   },
   buttonText: {
+    flex:1,
     color:'white',
+    alignSelf:'center',
+    textAlign:'center',
     fontSize:scale(13),
+    marginRight:scale(35),
     fontFamily:'Poppins-Bold',
   },
   button: {
     width:'40%',
     borderRadius:30,
-    alignItems:'center',
-    justifyContent:'center',
+    flexDirection:'row',
     height:verticalScale(30),
     backgroundColor:'#23C2DF',
   },

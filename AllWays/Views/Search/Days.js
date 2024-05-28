@@ -102,7 +102,7 @@ export class DaysScreen extends React.Component {
             />
           )}
 
-          <View style = {{flex:1, justifyContent:'center', margin:moderateScale(10)}}>
+          <View style = {DaysListStyles.dayHeader}>
             <View style = {{flexDirection:'row'}}>
               <Text style = {DaysListStyles.dayTitle}>{item.day}</Text>
               <Text style = {DaysListStyles.dayTitleDate}>{item.date}</Text>
@@ -141,16 +141,7 @@ export class DaysScreen extends React.Component {
       return (
         <TouchableOpacity  
           onPress = {toggleSave}
-          style={{
-          width:scale(45),
-          height:verticalScale(45),
-          borderRadius: 30,
-          backgroundColor: '#fff',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop:verticalScale(40),
-          marginLeft:scale(20)
-          }}
+          style={DaysListStyles.heart}
         >
           <View>
             {!isSaved && <Ionicons name="heart-outline" size={30} color="black" /> }
@@ -165,7 +156,7 @@ export class DaysScreen extends React.Component {
       <View style={ParentStyles.container}>
         <View style={ParentStyles.imageBackground}>
           <ImageBackground source={{ uri: imageRoute }} style={DaysListStyles.imageBackground} >
-            <View style = {{height:'45%', flexDirection:'row', justifyContent:'space-between', marginRight: scale(20)}}>
+            <View style = {DaysListStyles.headerView}>
               <View>
                 {savedRoutes && (<TouchableOpacity style = {ParentStyles.backButton} onPress={() => this.props.navigation.navigate('SavedRoutes')}>
                   <Ionicons name="chevron-back-sharp" size={30} color="black" />
@@ -180,10 +171,10 @@ export class DaysScreen extends React.Component {
                 )}
               </View>
             </View>
-            <View style = {{height:'30%', paddingLeft:scale(10), justifyContent:'center'}}>
+            <View style = {DaysListStyles.headerTitle}>
               <Text style ={ParentStyles.title}>{newCity}</Text>
             </View>
-            <View style = {{paddingLeft:scale(10),  flexDirection:'row'}}>
+            <View style = {DaysListStyles.headerSubtitle}>
               <Text style ={ParentStyles.subtitle}>{range.diff('days') + 1} Days</Text>
               <Text style ={ParentStyles.subtitleDate}> {startDate.substring(0,5)}-{endDate.substring(0,5)}</Text>
             </View>  
@@ -192,7 +183,7 @@ export class DaysScreen extends React.Component {
         </View>
 
         {/* Scroll view with the list of days */}
-        <ScrollView style={{flex:1, marginBottom:verticalScale(65)}}>
+        <ScrollView style={DaysListStyles.scrollView}>
             {/* Title and description */}
           <Text style={ParentStyles.listTitle}> Select a day to discover your journey</Text>
           <this.lists/>
@@ -225,12 +216,12 @@ const ParentStyles = StyleSheet.create({
   },
   title:{
     color:'#fff',
-    fontSize:scale(50),
+    fontSize:scale(45),
     fontFamily:'Poppins-Medium',
   },
   subtitle:{
     color:'#fff',
-    fontSize:scale(25),
+    fontSize:scale(20),
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
   },
@@ -241,32 +232,56 @@ const ParentStyles = StyleSheet.create({
     fontFamily:'Poppins-Light', 
   },
   backButton:{
-    width:scale(45),
     borderRadius:30,
-    height:scale(45),
     alignItems:'center',
     marginLeft:scale(10),
     backgroundColor:'#fff',
+    width:moderateScale(45),
     justifyContent:'center',
+    height:moderateScale(45),
     marginTop:verticalScale(40),
   },
 });
 
 const DaysListStyles = StyleSheet.create({
   dayContainer:{
-      margin:moderateScale(10),
-      elevation:5, 
-      borderRadius:25,
-      overflow:'hidden',
-      width:width*0.9,
-      shadowRadius:3.84,
-      alignSelf:'center',
-      shadowOpacity:0.25,
-      shadowColor:'#000',
-      flexDirection:'row',
-      height:height*0.15,
-      backgroundColor:'#EEF6FB',
-      shadowOffset:{width:0, height:2},
+    margin:moderateScale(10),
+    elevation:5, 
+    borderRadius:25,
+    overflow:'hidden',
+    width:width*0.9,
+    shadowRadius:3.84,
+    alignSelf:'center',
+    shadowOpacity:0.25,
+    shadowColor:'#000',
+    flexDirection:'row',
+    height:height*0.15,
+    backgroundColor:'#EEF6FB',
+    shadowOffset:{width:0, height:2},
+  },
+  scrollView:{
+    flex:1,
+    marginBottom:verticalScale(65),
+  },
+  headerView:{
+    height:'45%',
+    flexDirection:'row',
+    marginRight: scale(20),
+    justifyContent:'space-between',
+  },
+  headerTitle:{
+    height:'30%',
+    paddingLeft:scale(10),
+    justifyContent:'center',
+  },
+  headerSubtitle:{
+    flexDirection:'row',
+    paddingLeft:scale(10),
+  },
+  dayHeader:{
+    flex:1,
+    justifyContent:'center',
+    margin:moderateScale(10),
   },
   image:{
     height:'100%',
@@ -293,7 +308,17 @@ const DaysListStyles = StyleSheet.create({
     color:'#000',
     fontSize:scale(13),
     fontFamily:'Poppins-Light',
-  }
+  },
+  heart:{
+    borderRadius:30,
+    alignItems:'center',
+    marginLeft:scale(20),
+    backgroundColor:'#fff',
+    width:moderateScale(45),
+    justifyContent:'center',
+    height:moderateScale(45),
+    marginTop:verticalScale(40),
+  },
 });
 
 

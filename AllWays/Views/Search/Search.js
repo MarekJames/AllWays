@@ -218,45 +218,20 @@ export class SearchScreen extends React.Component {
     // Modal Select City
     ModalSelectCity = () => {
       return(
-        <View style = {{flex:1}}>
-          <View style = {{flexDirection:'row', justifyContent:'space-between', margin:moderateScale(20)}}>
+        <View style = {CityScreenStyles.container}>
+          <View style = {CityScreenStyles.headerView}>
             <TouchableOpacity onPress={() => {setSelectedCity(''); setIsModalCity(false);}}>
               <Feather name="x" size={20} color="#979797"/>
             </TouchableOpacity>
-            <Text style = {{fontFamily:'Poppins-Medium', fontSize:scale(16), textAlign:'center', color:'#000000'}}>Search city</Text>
+            <Text style = {CityScreenStyles.title}>Search city</Text>
             <TouchableOpacity  style = {{opacity:selectedCity == '' ? 0.5 : 1}} disabled={selectedCity == '' ? true : false} onPress={() => {setSelectedCity('')}}>
-              <Text style = {{fontFamily:'Poppins-Medium', fontSize:scale(13), textAlign:'center', color:'#23C2DF'}}>Clear</Text>  
+              <Text style = {CityScreenStyles.clearText}>Clear</Text>  
             </TouchableOpacity>
           </View>
-          <View style = {{alignItems:'center', flex:1}}>
+          <View style = {CityScreenStyles.googleView}>
             <GooglePlacesAutocomplete
               placeholder = {selectedCity == '' ? "Search" : selectedCity}
-              styles={{
-                container: {
-                  flex:1,
-                  width: width*0.9,
-                  height:'100%',
-                },
-                textInput: {
-                  borderRadius:30,
-                  color:'#1B115C',
-                  textAlign: 'left',
-                  fontSize:scale(13),
-                  paddingLeft:scale(30),
-                  height:verticalScale(40),
-                  backgroundColor: '#F1F4FF',
-                },
-                separator: {
-                  height:1,
-                  backgroundColor: '#23C2DF',
-                },
-                row: {
-                  flexDirection:'row',
-                  height:verticalScale(44),
-                  padding:moderateScale(13),
-                  backgroundColor:'#F1F4FF',
-                },
-              }}
+              styles={CityScreenStyles.googleInput}
               enablePoweredByContainer = {false}
               minLength={2}
               debounce={500}
@@ -266,8 +241,19 @@ export class SearchScreen extends React.Component {
               onNotFound={() => console.log('no results')}
             />
 
-            <TouchableOpacity style = {{width: width * 0.9, justifyContent:'center', borderRadius:30, height:verticalScale(50), backgroundColor: '#23C2DF', margin:moderateScale(20), opacity:selectedCity == '' ? 0.5 : 1}} disabled={selectedCity == '' ? true : false} onPress={() => {setIsModalCity(false)}}>
-              <Text style = {{textAlign:'center', fontSize:scale(16), color:'#fff', fontFamily:'Poppins-Medium'}}>Done</Text>
+            <TouchableOpacity style = {{
+                                        width:width*0.9,
+                                        borderRadius:30,
+                                        justifyContent:'center',
+                                        height:verticalScale(50),
+                                        margin:moderateScale(20),
+                                        backgroundColor:'#23C2DF',
+                                        opacity:selectedCity == '' ? 0.5 : 1,
+                                      }} 
+                                disabled={selectedCity == '' ? true : false} 
+                                onPress={() => {setIsModalCity(false)}}
+                              >
+              <Text style = {CityScreenStyles.doneText}>Done</Text>
             </TouchableOpacity> 
           </View>
         </View>
@@ -277,24 +263,24 @@ export class SearchScreen extends React.Component {
     // Modal Select Dates
     ModalSelectDates = () => {
       return(
-        <View style = {{flex:1}}> 
-          <View style = {{flexDirection:'row', justifyContent:'space-between', margin:moderateScale(20)}}>
+        <View style = {DatesScreenStyles.container}> 
+          <View style = {DatesScreenStyles.headerView}>
             <TouchableOpacity onPress={() => {setSelectedStartDate(''); setSelectedEndDate(''); setMarkedDates({}); setIsModalDates(false);}}>
               <Feather name="x" size={20} color="#979797"/>
             </TouchableOpacity>
-            <Text style = {{fontFamily:'Poppins-Medium', fontSize:scale(16), textAlign:'center', color:'#000000'}}>Search date range</Text>
+            <Text style = {DatesScreenStyles.title}>Search date range</Text>
             <TouchableOpacity  style = {{opacity:selectedStartDate == '' ? 0.5 : 1}} disabled={selectedStartDate == '' ? true : false} onPress={() => {setSelectedStartDate(''); setSelectedEndDate(''); setMarkedDates({});}}>
-              <Text style = {{fontFamily:'Poppins-Medium', fontSize:13, textAlign:'center', color:'#23C2DF'}}>Clear</Text>  
+              <Text style = {DatesScreenStyles.clearText}>Clear</Text>  
             </TouchableOpacity>
           </View>
 
-          <View style = {{flexDirection:'row', justifyContent:'space-between', margin:moderateScale(20), alignItems:'center'}}>
-            <Text style = {{width:width*0.4, fontFamily:'Poppins-Medium', fontSize:scale(13), textAlign:'center', color:'#949494', margin:moderateScale(5)}}>{selectedStartDate != '' ? formatDate(selectedStartDate) : 'Earliest outbound date'}</Text>
+          <View style = {DatesScreenStyles.datesView}>
+            <Text style = {DatesScreenStyles.calendarDates}>{selectedStartDate != '' ? formatDate(selectedStartDate) : 'Earliest outbound date'}</Text>
             <Feather style= {{alignSelf:'center'}} name="arrow-right" size={20} color="#1B115C"/>
-            <Text style = {{textAlignVertical:'center', width:width*0.4, fontFamily:'Poppins-Medium', fontSize:scale(13), textAlign:'center', color:'#949494', margin:moderateScale(5)}}>{selectedEndDate != '' ? formatDate(selectedEndDate) : 'Latest return date'}</Text>
+            <Text style = {DatesScreenStyles.calendarDates}>{selectedEndDate != '' ? formatDate(selectedEndDate) : 'Latest return date'}</Text>
           </View>
 
-          <View style = {{flex:1, marginTop:verticalScale(50)}}>
+          <View style = {DatesScreenStyles.calendarView}>
             <Calendar
               theme={{
                 'stylesheet.calendar.header':{
@@ -322,8 +308,19 @@ export class SearchScreen extends React.Component {
             /> 
           </View>
 
-          <TouchableOpacity style = {{width: width * 0.9, justifyContent:'center', borderRadius:30, height:verticalScale(50), backgroundColor: '#23C2DF', margin:moderateScale(20), opacity:selectedEndDate == '' ? 0.5 : 1 }} disabled={selectedEndDate == '' ? true : false} onPress={() => {setIsModalDates(false)}}>
-              <Text style = {{textAlign:'center', fontSize:scale(16), color:'#fff', fontFamily:'Poppins-Medium'}}>Done</Text>
+          <TouchableOpacity style = {{
+                                      width:width*0.9,
+                                      borderRadius:30,
+                                      justifyContent:'center',
+                                      height:verticalScale(50),
+                                      margin:moderateScale(20),
+                                      backgroundColor:'#23C2DF',
+                                      opacity:selectedEndDate == '' ? 0.5 : 1,
+                                    }} 
+                              disabled={selectedEndDate == '' ? true : false} 
+                              onPress={() => {setIsModalDates(false)}}
+                            >
+              <Text style = {DatesScreenStyles.doneText}>Done</Text>
           </TouchableOpacity> 
         </View>
       )
@@ -390,64 +387,70 @@ export class SearchScreen extends React.Component {
               </Modal>
             
               {/* Search Screen */}
-              <ImageBackground style={{flex:1, width:'100%', height:'100%', resizeMode:'contain',paddingTop:verticalScale(30)}} source = {require('../../Images/SearchBackground.jpg')}>
-
-                <View style = {{ justifyContent:'center', alignItems:'center'}}>
-
+              <ImageBackground style={PlansScreenStyles.backgroundContainer} source = {require('../../Images/SearchBackground.jpg')}>
+                
+                {/* Search View  */}
+                <View style = {PlansScreenStyles.searchContainer}>
+                  
+                  {/* Logo */}
                   <Image
                     source={require('../../Images/Logo.png')}
                     style = {PlansScreenStyles.imageLogo}
                     resizeMode='contain'
                   />
-              
-                  <View style = {{alignSelf:'flex-start', justifyContent:'center', width:width*0.8, paddingLeft: width*0.075}}>
-                  <Text style = {{fontSize:scale(30), fontFamily:'Poppins-SemiBold', color:'#fff' }}>Where and when to go?</Text>
+
+                  {/* Where and when to go */}
+                  <View style = {PlansScreenStyles.whereView}>
+                    <Text style = {PlansScreenStyles.whereText}>Where and when to go?</Text>
                   </View>
                 
                   {isValidInput != null && (
-                    <Text style = {{textAlign:'center', fontFamily:'Poppins-SemiBold', fontSize:scale(13), color:'red'}}>{isValidInput}</Text>
+                    <Text style = {PlansScreenStyles.invalidText}>{isValidInput}</Text>
                   )}
 
-                    {/* Where ? Button */}
-                    <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:verticalScale(45), backgroundColor: '#F1F4FF', margin:moderateScale(10)}} onPress={() => {setIsModalCity(true)}}>
-                      <View style = {{flexDirection:'row', alignItems:'center'}}>
-                        <Feather name="map-pin" size={15} color="#1B115C" style = {{margin:moderateScale(15)}}/>
-                        <View>
-                          <Text style = {{color:'#1B115C', fontSize:scale(13), fontFamily:'Poppins-Medium'}}>Where</Text>
-                          <Text style = {{color:'#585858', fontSize:scale(13), fontFamily:'Poppins-Medium'}}>{selectedCity == '' ? 'Select City' : selectedCity}</Text>
-                        </View>
+                  {/* Select City Button */}
+                  <TouchableOpacity style = {PlansScreenStyles.selectButton} onPress={() => {setIsModalCity(true)}}>
+                    <View style = {PlansScreenStyles.selectView}>
+                      <Feather name="map-pin" size={15} color="#1B115C" style = {PlansScreenStyles.icon}/>
+                      <View>
+                        <Text style = {PlansScreenStyles.selectText}>Where</Text>
+                        <Text style = {PlansScreenStyles.selectValue}>{selectedCity == '' ? 'Select City' : selectedCity.split(',')[0] + "," + selectedCity.split(',')[selectedCity.split(',').length - 1]}</Text>
                       </View>
-                    </TouchableOpacity> 
-                  
-                    {/* When ?  Button*/}
-                    <TouchableOpacity style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:verticalScale(45), backgroundColor: '#F1F4FF', margin:moderateScale(10)}} onPress={() => {setIsModalDates(true)}}>
-                      <View style = {{flexDirection:'row', alignItems:'center'}}>
-                        <Feather name="calendar" size={15} color="#1B115C" style = {{margin:moderateScale(15)}}/>
-                        <View>
-                          <Text style = {{color:'#1B115C', fontSize:scale(13), fontFamily:'Poppins-Medium'}}>When</Text>
-                          <Text style = {{color:'#585858', fontSize:scale(13), fontFamily:'Poppins-Medium'}}>{selectedEndDate != '' ? formatDate(selectedStartDate) + ' - ' + formatDate(selectedEndDate) : 'Select Dates'}</Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity> 
-                    
-                    <View style = {{flexDirection:'row', justifyContent:'left', width:width, paddingLeft: width*0.075}}>
-                      <Switch
-                        trackColor={{false: '#767577', true: '#FFFFFF'}}
-                        thumbColor={isEnabled ? '#23C2DF' : '#f4f3f4'}
-                        ios_backgroundColor="#3e3e3e"
-                        onValueChange={toggleSwitch}
-                        value={isEnabled}
-                      />
-                      <Text style = {{textAlignVertical:'center', fontFamily:'Poppins-SemiBold', fontSize:scale(13), color:'#fff'}}>Include food sugestions</Text>
                     </View>
+                  </TouchableOpacity> 
+                
+                  {/* Select Dates Button*/}
+                  <TouchableOpacity style = {PlansScreenStyles.selectButton} onPress={() => {setIsModalDates(true)}}>
+                    <View style = {PlansScreenStyles.selectView}>
+                      <Feather name="calendar" size={15} color="#1B115C" style = {PlansScreenStyles.icon}/>
+                      <View>
+                        <Text style = {PlansScreenStyles.selectText}>When</Text>
+                        <Text style = {PlansScreenStyles.selectValue}>{selectedEndDate != '' ? formatDate(selectedStartDate) + ' - ' + formatDate(selectedEndDate) : 'Select Dates'}</Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity> 
+                  
+                  {/* Include Food Switch */}
+                  <View style = {PlansScreenStyles.foodView}>
+                    <Switch
+                      trackColor={{false: '#767577', true: '#FFFFFF'}}
+                      thumbColor={isEnabled ? '#23C2DF' : '#f4f3f4'}
+                      ios_backgroundColor="#3e3e3e"
+                      onValueChange={toggleSwitch}
+                      value={isEnabled}
+                    />
+                    <Text style = {PlansScreenStyles.foodText}>Include food sugestions</Text>
+                  </View>
 
-                    <TouchableOpacity onPress={() => {handleNext(value)}} style = {{width: width*0.85,justifyContent:'center', borderRadius:30, height:verticalScale(50), backgroundColor: '#23C2DF', margin:moderateScale(5)}}>
-                      <Text style = {{textAlign:'center', fontSize:scale(24), color:'#fff', fontFamily:'Poppins-Medium'}}>Go</Text>
-                    </TouchableOpacity> 
+                  {/* Go Button */}
+                  <TouchableOpacity onPress={() => {handleNext(value)}} style = {PlansScreenStyles.goButton}>
+                    <Text style = {PlansScreenStyles.goText}>Go</Text>
+                  </TouchableOpacity> 
 
-                    <TouchableOpacity style = {{margin:moderateScale(20)}} onPress={() => {handleClear()}}>
-                      <Text style = {{fontFamily:'Poppins-Medium', fontSize:scale(13), textAlign:'center', color:'#fff'}}>Clear Search</Text>
-                    </TouchableOpacity>
+                  {/* Clear Button */}
+                  <TouchableOpacity style = {PlansScreenStyles.clearButton} onPress={() => {handleClear()}}>
+                    <Text style = {PlansScreenStyles.clearText}>Clear Search</Text>
+                  </TouchableOpacity>
                 </View>
               </ImageBackground>
           </View>
@@ -502,12 +505,208 @@ const PlansScreenStyles = StyleSheet.create({
     flex:1,
     alignItems: 'center',
   },
+  backgroundContainer:{
+    flex:1,
+    width:'100%',
+    height:'100%',
+    resizeMode:'contain',
+    paddingTop:verticalScale(30)
+  },
+  searchContainer:{
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  whereView:{
+    width:width*0.8,
+    alignSelf:'flex-start',
+    justifyContent:'center',
+    paddingLeft:width*0.075,
+  },
+  whereText:{
+    color:'#fff',
+    fontSize:scale(30),
+    fontFamily:'Poppins-SemiBold',
+  },
+  invalidText:{
+    color:'red',
+    textAlign:'center',
+    fontSize:scale(13),
+    fontFamily:'Poppins-SemiBold',
+  },
+  selectButton:{
+    borderRadius:30,
+    width: width*0.85,
+    justifyContent:'center',
+    height:verticalScale(45),
+    margin:moderateScale(10),
+    backgroundColor:'#F1F4FF',
+  },
+  selectView:{
+    flexDirection:'row',
+    alignItems:'center',
+  },
+  selectText:{
+    color:'#1B115C',
+    fontSize:scale(13),
+    fontFamily:'Poppins-Medium',
+  },
+  selectValue:{
+    color:'#585858',
+    fontSize:scale(13),
+    fontFamily:'Poppins-Medium',
+  },
+  foodView:{
+    width:width,
+    flexDirection:'row',
+    justifyContent:'left',
+    paddingLeft: width*0.075,
+  },
+  icon:{
+    margin:moderateScale(15),
+  },
+  foodText:{
+    color:'#fff',
+    fontSize:scale(13),
+    textAlignVertical:'center',
+    fontFamily:'Poppins-SemiBold',
+  },
+  goButton:{
+    borderRadius:30,
+    width: width*0.85,
+    justifyContent:'center',
+    margin:moderateScale(5),
+    height:verticalScale(50),
+    backgroundColor: '#23C2DF',
+  },
+  goText:{
+    color:'#fff',
+    textAlign:'center',
+    fontSize:scale(24),
+    fontFamily:'Poppins-Medium',
+  },
+  clearButton:{
+    margin:moderateScale(20),
+  },
+  clearText:{
+    color:'#fff',
+    textAlign:'center',
+    fontSize:scale(13),
+    fontFamily:'Poppins-Medium',
+  },
   imageLogo:{
     width:'50%',
     height:'20%',
-    margin:moderateScale(20)
+    margin:moderateScale(20),
   },
 });
+
+// Used for the ModalCity class
+const CityScreenStyles = StyleSheet.create({
+  container:{
+    flex:1,
+  },
+  headerView:{
+    flexDirection:'row',
+    margin:moderateScale(20),
+    justifyContent:'space-between',
+  },
+  title:{
+    color:'#000000',
+    textAlign:'center',
+    fontSize:scale(16),
+    fontFamily:'Poppins-Medium',
+  },
+  googleView:{
+    flex:1,
+    alignItems:'center',
+  },
+  googleInput:{
+    container: {
+      flex:1,
+      width: width*0.9,
+      height:'100%',
+    },
+    textInput: {
+      borderRadius:30,
+      color:'#1B115C',
+      textAlign: 'left',
+      fontSize:scale(13),
+      paddingLeft:scale(30),
+      height:verticalScale(40),
+      backgroundColor: '#F1F4FF',
+    },
+    separator: {
+      height:1,
+      backgroundColor: '#23C2DF',
+    },
+    row: {
+      flexDirection:'row',
+      height:verticalScale(44),
+      padding:moderateScale(13),
+      backgroundColor:'#F1F4FF',
+    },
+  },
+  doneText:{
+    color:'#fff',
+    textAlign:'center',
+    fontSize:scale(16),
+    fontFamily:'Poppins-Medium',
+  },
+  clearText:{
+    color:'#23C2DF',
+    textAlign:'center',
+    fontSize:scale(13),
+    fontFamily:'Poppins-Medium',
+  }
+})
+
+// Used for the ModalCity class
+const DatesScreenStyles = StyleSheet.create({
+  container:{
+    flex:1,
+  },
+  headerView:{
+    flexDirection:'row',
+    margin:moderateScale(20),
+    justifyContent:'space-between',
+  },
+  title:{
+    color:'#000000',
+    textAlign:'center',
+    fontSize:scale(16),
+    fontFamily:'Poppins-Medium',
+  },
+  doneText:{
+    color:'#fff',
+    textAlign:'center',
+    fontSize:scale(16),
+    fontFamily:'Poppins-Medium',
+  },
+  clearText:{
+    color:'#23C2DF',
+    textAlign:'center',
+    fontSize:scale(13),
+    fontFamily:'Poppins-Medium',
+  },
+  datesView:{
+    flexDirection:'row',
+    alignItems:'center',
+    margin:moderateScale(20),
+    justifyContent:'space-between', 
+  },
+  calendarDates:{
+    width:width*0.4,
+    color:'#949494',
+    fontSize:scale(13),
+    textAlign:'center',
+    margin:moderateScale(5),
+    fontFamily:'Poppins-Medium',
+  },
+  calendarView:{
+    flex:1,
+    marginTop:verticalScale(50),
+  },
+ })
 
 // Used for the LoadingScreen class
 const LoadingScreenStyle = StyleSheet.create({
