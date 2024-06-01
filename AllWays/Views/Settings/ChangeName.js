@@ -64,7 +64,7 @@ export class ChangeNameScreen extends React.Component{
 
           if(regex.test(name)){
             // Call updateUser to chage name
-            const result = await updateUser(name);
+            const result = await updateUser(name.trim());
             if(result == 'success') {
 
               // If successfull navigate to the Profile screen

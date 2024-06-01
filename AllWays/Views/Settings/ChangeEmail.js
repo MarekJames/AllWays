@@ -135,9 +135,9 @@ export class ChangeEmailScreen extends React.Component{
         }
         if(email && confirmEmail && email == confirmEmail){
           if(isConnected){
-            const result = await updateUserEmail(email);
+            const result = await updateUserEmail(email.trim());
             if(result == 'success'){
-              navigation.replace('Profile', {email : email});
+              navigation.replace('Profile', {email : email.trim()});
             }
             if(result == 'auth/invalid-email'){
               setInvalidEmail('Invalid email, try again');
@@ -153,7 +153,7 @@ export class ChangeEmailScreen extends React.Component{
             if(result == 'auth/operation-not-allowed'){
               
               // Send verify email to new email
-              const resultVerify = await verifyBeforeUpdate(email);
+              const resultVerify = await verifyBeforeUpdate(email.trim());
               
               // If email is sent successfully
               if(resultVerify == 'success'){

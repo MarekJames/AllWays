@@ -43,7 +43,7 @@ export class ForgotPasswordScreen extends React.Component{
             setInvalidEmail('Please input your email');
         }
         else{
-          const result = await resetPassword(email);
+          const result = await resetPassword(email.trim());
           if(result == 'success'){
             console.log('Reset email sent!');
           }
