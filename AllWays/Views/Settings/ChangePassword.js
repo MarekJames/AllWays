@@ -51,7 +51,7 @@ export class ChangePasswordScreen extends React.Component{
       if(!confirmPassword){
         setInvalidConfirmPassword('Please input new password confirmation');
       }
-      if((confirmPassword && newPassword) && (confirmPassword != newPassword)){
+      if((confirmPassword && newPassword) && (confirmPassword.trim() != newPassword.trim())){
         setInvalidConfirmPassword('Your password and password confirmation are not the same');
       }
       if(oldPassword && invalidOldPassword){
@@ -60,10 +60,10 @@ export class ChangePasswordScreen extends React.Component{
       if(newPassword && invalidNewPassword){
         setInvalidNewPassword('');
       }
-      if(confirmPassword && invalidConfirmPassword && confirmPassword == newPassword){
+      if(confirmPassword && invalidConfirmPassword && confirmPassword.trim() == newPassword.trim()){
         setInvalidConfirmPassword('');
       }
-      if(oldPassword && newPassword && confirmPassword && (newPassword == confirmPassword)){
+      if(oldPassword && newPassword && confirmPassword && (newPassword.trim() == confirmPassword.trim())){
           return true;
       }
       else{
@@ -75,7 +75,7 @@ export class ChangePasswordScreen extends React.Component{
     const handleSubmit = async (navigation, isConnected) => {
       if(validateInputs()){
         if(isConnected){
-          const result = await changePassword(oldPassword, newPassword);
+          const result = await changePassword(oldPassword.trim(), newPassword.trim());
         
           if(result == 'auth/invalid-credential'){
             setInvalidOldPassword('Incorrect password');
@@ -88,7 +88,7 @@ export class ChangePasswordScreen extends React.Component{
           }
           else if(result == 'auth/requires-recent-login'){
             if(isConnected){ 
-              const result = await reauthenticateUser(oldPassword);
+              const result = await reauthenticateUser(oldPassword.trim());
               if(result == 'auth/too-many-requests'){
                 setInvalidOldPassword('Too many requests, try again later');
               }

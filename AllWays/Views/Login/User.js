@@ -56,7 +56,7 @@ export class LoginUserScreen extends React.Component{
     const handleSubmit = async (navigation, isConnected) => {
       if(isConnected){
         if(email && password){
-          await signInWithEmailAndPassword(getAuth(),email,password)
+          await signInWithEmailAndPassword(getAuth(),email.trim(),password.trim())
             .then((response) => {
               console.log('Signed In : ' + response.user.uid);
               this.props.navigation.push('Tabs');
@@ -199,7 +199,7 @@ export class RegisterUserScreen extends React.Component{
       if(isConnected){
         if(( name && email && password && confirmPassword) && (password == confirmPassword) && isChecked){
         
-            await createUserWithEmailAndPassword(getAuth(),email,password)
+            await createUserWithEmailAndPassword(getAuth(),email.trim(),password.trim())
             .then((response) =>{
               console.log("User uid: " + response.user.uid);
 
