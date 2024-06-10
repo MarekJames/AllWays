@@ -55,9 +55,6 @@ async function getImageUrl(listsPlan2, query, index, counter, isConnected) {
             if(counter++ < 3){
                 await getImageUrl(listsPlan2, query, index, counter, isConnected);
             }
-            else{
-                console.log('After three tries the image for : ' + query + ' could not be loaded.');
-            }
         }
 
         // Leave without throwing the error

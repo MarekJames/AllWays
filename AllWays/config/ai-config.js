@@ -19,7 +19,6 @@ async function callAI (prompt, isConnected){
     
     const apiKey = process.env.EXPO_PUBLIC_GPT_KEY;
 
-    console.log('Network Connection? : ' + isConnected);
     if(isConnected){
         try{
             const result = await axios.post(

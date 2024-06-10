@@ -80,19 +80,17 @@ export class ChangeEmailScreen extends React.Component{
         // Check email verified
 
         if(user.email == email && user.emailVerified){
-          console.log(user.email + ":" + user.emailVerified);
         
           // Log user out
           try {
             await getAuth().signOut();
           }
           catch(error){
-            console.log('Error Sign Out: ' + error);
             showNetworkError(navigation, error.message);
           }
         }
         else{
-          console.log(user.email + ":" + user.emailVerified);
+          showNetworkError(navigation, error.message);
         }
       }
       else{
@@ -141,14 +139,12 @@ export class ChangeEmailScreen extends React.Component{
             }
             if(result == 'auth/invalid-email'){
               setInvalidEmail('Invalid email, try again');
-              console.log(result);
             }
             if(result == 'auth/email-already-in-use'){
               setInvalidEmail('Email already in use, try again');
-              console.log(result);
             }
             if(result == 'auth/requires-recent-login'){
-              console.log(result);
+              showNetworkError(navigation, result);
             }
             if(result == 'auth/operation-not-allowed'){
               

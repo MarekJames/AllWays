@@ -238,7 +238,6 @@ export class SearchScreen extends React.Component {
               onPress={ (data) => {setSelectedCity(data.description)}}
               query={{ key: googleKey, language: 'en', types : '(cities)'}}
               onFail={(error) => console.error(error)}
-              onNotFound={() => console.log('no results')}
             />
 
             <TouchableOpacity style = {{
