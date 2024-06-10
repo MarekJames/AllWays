@@ -8,8 +8,6 @@
 /******************** Imports Section ********************/ 
 
 import axios from 'axios';
-import { useState } from 'react';
-import { apiKey } from "./keys-config";
 
     
 
@@ -19,6 +17,8 @@ import { apiKey } from "./keys-config";
 // Call ChatGPT
 async function callAI (prompt, isConnected){
     
+    const apiKey = process.env.EXPO_PUBLIC_GPT_KEY;
+
     console.log('Network Connection? : ' + isConnected);
     if(isConnected){
         try{

@@ -10,7 +10,6 @@ images-config.js
 /******************** Imports Section ********************/ 
 
 import axios from 'axios';
-import { customSearchKey, searchEngineId } from './keys-config';
 
 
 
@@ -20,6 +19,10 @@ import { customSearchKey, searchEngineId } from './keys-config';
 // Calls the API with a parameter query and updates the listsplan
 async function getImageUrl(listsPlan2, query, index, counter, isConnected) {
     
+    const customSearchKey = process.env.EXPO_PUBLIC_CUSTOM_SEARCH_KEY;
+    const searchEngineId = process.env.EXPO_PUBLIC_SEARCH_ENGINE_ID;
+
+
     // Create URL
     const url = `https://www.googleapis.com/customsearch/v1?key=${customSearchKey}&cx=${searchEngineId}&q=${query}&searchType=image&num=1&fileType=jpg`;
 
