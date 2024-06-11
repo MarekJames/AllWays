@@ -121,7 +121,7 @@ const ForgotPasswordStyles = StyleSheet.create ({
     color:'#23C2DF',
     fontSize:scale(25),
     alignSelf:'center',
-    fontFamily:'Poppins-Bold',
+    fontFamily:'Poppins-SemiBold',
     marginTop:verticalScale(80),
     marginBottom:verticalScale(10),
   },

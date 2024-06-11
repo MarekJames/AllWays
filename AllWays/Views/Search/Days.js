@@ -159,7 +159,7 @@ export class DaysScreen extends React.Component {
             <View style = {DaysListStyles.headerView}>
               <View>
                 {savedRoutes && (<TouchableOpacity style = {ParentStyles.backButton} onPress={() => this.props.navigation.navigate('SavedRoutes')}>
-                  <Ionicons name="chevron-back-sharp" size={30} color="black" />
+                  <Ionicons name="chevron-back-sharp" size={25} color="black" />
                 </TouchableOpacity>
                 )}
               </View>
@@ -236,9 +236,9 @@ const ParentStyles = StyleSheet.create({
     alignItems:'center',
     marginLeft:scale(10),
     backgroundColor:'#fff',
-    width:moderateScale(45),
+    width:moderateScale(40),
     justifyContent:'center',
-    height:moderateScale(45),
+    height:moderateScale(40),
     marginTop:verticalScale(40),
   },
 });

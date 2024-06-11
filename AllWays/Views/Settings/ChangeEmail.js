@@ -234,7 +234,7 @@ export class ChangeEmailScreen extends React.Component{
                   onPress={() => this.props.navigation.goBack()}
                   style={ChangeEmailStyles.backButton}
                 >
-                  <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+                  <Text><Ionicons name="chevron-back-sharp" size={25} color="black" /></Text>
             </TouchableOpacity>
 
             <Text style={ChangeEmailStyles.title}>Change Email</Text>
@@ -316,7 +316,7 @@ const ChangeEmailStyles = StyleSheet.create ({
     alignSelf:'center',
     textAlign:'center',
     marginRight:scale(55),
-    fontFamily:'Poppins-Bold',
+    fontFamily:'Poppins-SemiBold',
   },
   subTitle: {
     color:'#494949',
@@ -382,15 +382,15 @@ const ChangeEmailStyles = StyleSheet.create ({
     alignItems:'center',
     marginLeft:scale(10),
     backgroundColor:'#fff',
-    width:moderateScale(45),
+    width:moderateScale(40),
     justifyContent:'center',
-    height:moderateScale(45),
+    height:moderateScale(40),
   },
   errorTitle:{
     fontSize:scale(16),
     textAlign:'center',
     margin:moderateScale(40), 
-    fontFamily:'Poppins-Bold',
+    fontFamily:'Poppins-SemiBold',
   },
   errorSubtitle:{
     fontSize:scale(13),

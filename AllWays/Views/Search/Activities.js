@@ -140,11 +140,9 @@ export class ActivitiesScreen extends React.Component{
         {/* Buttons at the bottom -> 20% of the square*/}
         <View style={ActivitiesListStyles.buttonContainer}>
           <TouchableOpacity  style={ActivitiesListStyles.button} onPress = { () => {openGoogleMaps(item.name)}}>
-              <Feather name="map" size={moderateScale(15)} color="#fff" style={ActivitiesListStyles.icon}/>
               <Text style={ActivitiesListStyles.buttonText}>Maps</Text>
           </TouchableOpacity>
           <TouchableOpacity style={ActivitiesListStyles.button} onPress = { () => {openGoogle(item.name)}}>
-              <Feather name="info" size={moderateScale(15)} color="#fff" style={ActivitiesListStyles.icon}/>
               <Text style={ActivitiesListStyles.buttonText}>Info</Text>
           </TouchableOpacity>
         </View>
@@ -171,7 +169,7 @@ export class ActivitiesScreen extends React.Component{
                 onPress={() => this.props.navigation.goBack()}
                 style={ActivitiesListStyles.backButton}
               >
-                <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+                <Ionicons name="chevron-back-sharp" size={25} color="black" />
               </TouchableOpacity>
             </View>
             <View style = {ActivitiesListStyles.headerTitle}>
@@ -265,16 +263,17 @@ const ActivitiesListStyles = StyleSheet.create({
   backButton:{
     borderRadius:30,
     alignItems:'center',
-    backgroundColor:'#fff',
+    backgroundColor:'#ffffff',
     justifyContent:'center',
-    width:moderateScale(45),
-    height:moderateScale(45),
+    width:moderateScale(40),
+    height:moderateScale(40),
   },
   icon:{
     alignSelf:'center',
     marginHorizontal:scale(10),
   },
   square: {
+    elevation:5,
     borderRadius:30,
     width:width*0.90,
     overflow:'hidden',
@@ -323,18 +322,18 @@ const ActivitiesListStyles = StyleSheet.create({
     paddingBottom:verticalScale(10),
   },
   buttonText: {
-    flex:1,
     color:'white',
     alignSelf:'center',
     textAlign:'center',
     fontSize:scale(13),
-    marginRight:scale(35),
-    fontFamily:'Poppins-Bold',
+    fontFamily:'Poppins-SemiBold',
   },
   button: {
     width:'40%',
+    elevation:2,
     borderRadius:30,
-    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
     height:verticalScale(30),
     backgroundColor:'#23C2DF',
   },

@@ -69,7 +69,7 @@ export class AccountSettingsScreen extends React.Component{
           {/* Title and back button */}
           <View style={AccountSettingsStyles.profileContainer}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={AccountSettingsStyles.backButton}>
-              <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+              <Text><Ionicons name="chevron-back-sharp" size={25} color="black" /></Text>
             </TouchableOpacity>
             <Text style={AccountSettingsStyles.userName}>Account</Text>
           </View>
@@ -182,9 +182,9 @@ const AccountSettingsStyles = StyleSheet.create({
     alignItems:'center',
     marginLeft:scale(10),
     backgroundColor:'#fff',
-    width:moderateScale(45),
+    width:moderateScale(40),
     justifyContent:'center',
-    height:moderateScale(45),
+    height:moderateScale(40),
   },
   deleteText:{
     color:'#EA0000',

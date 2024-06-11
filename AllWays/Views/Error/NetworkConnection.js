@@ -48,7 +48,7 @@ export class NetworkConnectionScreen extends React.Component{
 
             {/* Back button */}
             <TouchableOpacity style={NetworkConnectionStyles.backButton} onPress={() => handleBack(this.props.navigation)}>
-                <Ionicons name="chevron-back-sharp" size={30} color="#000" />
+                <Ionicons name="chevron-back-sharp" size={25} color="#000" />
             </TouchableOpacity>
                 
             {/* Error Message container */}
@@ -103,9 +103,9 @@ const NetworkConnectionStyles = StyleSheet.create ({
         alignItems:'center',
         top:verticalScale(50),
         backgroundColor:'#fff',
-        width:moderateScale(45),
+        width:moderateScale(40),
         justifyContent:'center',
-        height:moderateScale(45),
+        height:moderateScale(40),
     },
     tab:{ 
         elevation:0, 
