@@ -58,7 +58,6 @@ export class LoginUserScreen extends React.Component{
         if(email && password){
           await signInWithEmailAndPassword(getAuth(),email.trim(),password.trim())
             .then((response) => {
-              console.log('Signed In : ' + response.user.uid);
               this.props.navigation.push('Tabs');
             })
             .catch(error => {
@@ -201,13 +200,11 @@ export class RegisterUserScreen extends React.Component{
         
             await createUserWithEmailAndPassword(getAuth(),email.trim(),password.trim())
             .then((response) =>{
-              console.log("User uid: " + response.user.uid);
 
               updateProfile(response.user, {
                 displayName: name,
               }).then(() => {
                 // Additional information updated successfully
-                console.log('User created successfully with additional information');
                 this.props.navigation.navigate('Tabs', {userUID: response.user.uid});
 
               }).catch((error) => {
@@ -428,7 +425,7 @@ const LoginUserStyles = StyleSheet.create ({
     color:'#23C2DF',
     fontSize:scale(25),
     alignSelf:'center',
-    fontFamily:'Poppins-Bold',
+    fontFamily:'Poppins-SemiBold',
     marginTop:verticalScale(80),
     marginBottom:verticalScale(20),
   },
@@ -530,7 +527,7 @@ const RegisterUserStyles = StyleSheet.create({
     fontSize:scale(25),
     color:'#23C2DF',
     alignSelf:'center',
-    fontFamily:'Poppins-Bold',
+    fontFamily:'Poppins-SemiBold',
     marginTop:verticalScale(50),
     marginBottom:verticalScale(10),
   },

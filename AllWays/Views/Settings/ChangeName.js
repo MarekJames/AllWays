@@ -104,7 +104,7 @@ export class ChangeNameScreen extends React.Component{
                     onPress={() => this.props.navigation.goBack()}
                     style={ChangeNameStyles.backButton}
                   >
-                    <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+                    <Text><Ionicons name="chevron-back-sharp" size={25} color="black" /></Text>
               </TouchableOpacity>
 
               {/* Title */}
@@ -176,7 +176,7 @@ const ChangeNameStyles = StyleSheet.create ({
     alignSelf:'center',
     textAlign:'center',
     marginRight:scale(55),
-    fontFamily:'Poppins-Bold',
+    fontFamily:'Poppins-SemiBold',
   },
   subTitle: {
     color:'#494949',
@@ -207,11 +207,11 @@ const ChangeNameStyles = StyleSheet.create ({
   },
   backButton:{
     borderRadius:30,
-    height:scale(45),
     alignItems:'center',
     backgroundColor:'#fff',
-    width:moderateScale(45),
+    width:moderateScale(40),
     justifyContent:'center',
+    height:moderateScale(40),
     marginLeft:moderateScale(10),
   },
   invalidInput:{

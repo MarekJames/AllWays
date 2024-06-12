@@ -93,7 +93,7 @@ export class ProfileScreen extends React.Component{
 
           {/* Avatar Name and Email */}
           <View style={ProfileScreenStyles.profileContainer}>
-            <UserAvatar borderRadius={100} size={moderateScale(100)} name={fullName} bgColors={['#444']}/>  
+            <UserAvatar borderRadius={100} size={moderateScale(100)} name={fullName} style={{backgroundColor:'#444'}}/>  
             <Text style={ProfileScreenStyles.userName}>{fullName}</Text>
             <Text style={ProfileScreenStyles.email}>{userEmail}</Text>
           </View>

@@ -20,7 +20,6 @@ import { callAI } from '../../config/ai-config';
 import { Calendar } from 'react-native-calendars';
 import React, {useState, useCallback} from 'react';  
 import * as SplashScreen from 'expo-splash-screen';
-import { googleKey } from '../../config/keys-config';
 import { generatePrompt } from '../../config/ai-config';
 import { getImageUrl } from '../../config/images-config';
 import { NetworkContext, showNetworkError } from '../../config/network-config';
@@ -35,7 +34,8 @@ import {Image, ActivityIndicator, StyleSheet, View, Text, Dimensions, TouchableO
 
 const width = Dimensions.get('window').width   // Get width of the user screen
 const height = Dimensions.get('window').height // Get height of the user screen
-
+const googleKey = process.env.EXPO_PUBLIC_GOOGLE_KEY;
+    
 
 
 
@@ -238,7 +238,6 @@ export class SearchScreen extends React.Component {
               onPress={ (data) => {setSelectedCity(data.description)}}
               query={{ key: googleKey, language: 'en', types : '(cities)'}}
               onFail={(error) => console.error(error)}
-              onNotFound={() => console.log('no results')}
             />
 
             <TouchableOpacity style = {{

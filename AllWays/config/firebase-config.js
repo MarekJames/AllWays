@@ -53,11 +53,9 @@ const db = getFirestore(app);
 async function updateUser(name){
   try{
     await updateProfile( getAuth().currentUser, {displayName: name});
-    console.log('Profile updated successfully.');
     return 'success';
   }
   catch(error){
-    console.log('Error updating user name : ' + error);
     return error.code;
   };
 }
@@ -66,28 +64,22 @@ async function updateUser(name){
 async function updateUserEmail(userEmail){
   try{
     await updateEmail(getAuth().currentUser, userEmail);
-    console.log('Profile updated successfully.');
     return 'success';
   }catch(error){
-    console.log('WW: ' + error);
     if(error.code == 'auth/invalid-email'){
-      console.log('Error updating user email : ' + error);
       return error.code;
     }
     if(error.code == 'auth/email-already-in-use'){
-      console.log('Error updating user email : ' + error);
       return error.code;
     }
     if(error.code == 'auth/requires-recent-login'){
-      console.log('Error updating user email : ' + error);
       return error.code;
     }
     if(error.code == 'auth/operation-not-allowed'){
-      console.log('Error updating user email : ' + error);
       return error.code;
     }
     else{
-      console.log(error);
+      return error.code;
     }
   };
 }
@@ -98,15 +90,12 @@ async function changePassword(oldPassword, newPassword){
     const result = await reauthenticateUser(oldPassword);
     if(result == 'success'){
       await updatePassword(getAuth().currentUser, newPassword);
-      console.log('Password updated successfully.');
       return 'success';
     }
     else{
-      console.log(result);
       return result;
     }
   } catch (error) {
-    console.log('An error has occurred : ' + error.code);
     return error.code;
   }
 }
@@ -155,7 +144,6 @@ async function deleteRoute(routeId){
     await deleteDoc(doc(db, "routes", routeId));
   }
   catch(error){
-    console.log('Error deleting route: ' + error.message);
     throw Error(error.message);
   }
 
@@ -189,7 +177,6 @@ async function updateSavedRoutes() {
         };
       }
       catch(error){
-        console.log('Error getting user routes: ' + error.message);
         throw Error(error.message);
       }
     }, ['routes', 'userId', getAuth().currentUser.uid]);
@@ -212,7 +199,6 @@ async function deleteRoutes(){
     });
   }
   catch(error){
-    console.log('Error deleting user routes: ' + error.message);
     throw Error(error.message);
   }
 
@@ -231,7 +217,6 @@ async function deleteUser(){
     user.delete();
   }
   catch(error){
-    console.log('Error deleting user: ' + error.message);
     throw Error(error.message);
   }
 }
@@ -243,11 +228,9 @@ async function reauthenticateUser(password){
 
   try{
     await reauthenticateWithCredential(getAuth().currentUser, credential);
-    console.log('User authenticated successfully.');
     return 'success';
   }
   catch(error){
-    console.log('An error has occurred : ' + error);
     return error.code;
   };
 }
@@ -263,7 +246,6 @@ async function sendValidationEmail(){
    
   }
   catch(error){
-    console.log('Error sending verification email: ' + error.message);
     throw Error(error.message);
   }  
 }
@@ -272,10 +254,8 @@ async function sendValidationEmail(){
 async function verifyBeforeUpdate(email){
   try{
     await verifyBeforeUpdateEmail(getAuth().currentUser, email);
-    console.log('Verification Email Sent to '+ email + " -> User : " + getAuth().currentUser.email);
     return 'success';
   }catch(error){
-    console.log(error);
     return error.code;
   } 
 }
@@ -291,11 +271,8 @@ async function updateRoute(id, route){
 
     // Perform the update
     await updateDoc(docRef, {route: route});
-    console.log('Route updated successfully');
-
   }
   catch (error) {
-    console.error("Error updating route: ", error.message);
     throw Error(error.message);
   }
 }

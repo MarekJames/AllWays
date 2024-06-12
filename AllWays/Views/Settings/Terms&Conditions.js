@@ -38,7 +38,7 @@ export class TermsConditionsScreen extends React.Component{
                   onPress={() => this.props.navigation.goBack()}
                   style={TermsConditionsStyles.backButton}
                 >
-                  <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+                  <Text><Ionicons name="chevron-back-sharp" size={25} color="black" /></Text>
             </TouchableOpacity>
             <Text style = {TermsConditionsStyles.title}>Terms & Conditions</Text>
           </View>
@@ -138,7 +138,7 @@ const TermsConditionsStyles = StyleSheet.create ({
     textAlign:'center',
     fontSize:scale(25),
     marginRight:scale(55),
-    fontFamily:'Poppins-Bold',
+    fontFamily:'Poppins-SemiBold',
   },
   subTitle: {
     color:'#494949',
@@ -160,8 +160,8 @@ const TermsConditionsStyles = StyleSheet.create ({
     marginLeft:scale(10),
     backgroundColor:'#fff',
     justifyContent:'center',
-    width:moderateScale(45),
-    height:moderateScale(45),
+    width:moderateScale(40),
+    height:moderateScale(40),
   },
   text:{
     color:'#494949',
