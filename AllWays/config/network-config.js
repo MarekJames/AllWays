@@ -43,8 +43,6 @@ const NetworkProvider = ({ children }) => {
 
 const showNetworkError = (navigation, error) => {
       
-  console.error('Oops: ', error);
-  
   // Remove nav bar
   if(navigation.getParent() != undefined) navigation.getParent().setOptions({tabBarStyle: {display: 'none'}});
 

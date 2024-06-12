@@ -214,15 +214,21 @@ const ParentStyles = StyleSheet.create({
   },
   title:{
     color:'#fff',
-    fontSize:scale(45),
+    fontSize:scale(40),
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10,
   },
   subtitle:{
     color:'#fff',
     fontSize:scale(20),
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10,
   }
 });
   
@@ -279,7 +285,7 @@ const ActivitiesListStyles = StyleSheet.create({
     overflow:'hidden',
     height:height*0.35,
     margin:moderateScale(10),
-    backgroundColor:'#EEF6FB',
+    backgroundColor:'#E8E8E8',
     justifyContent:'space-between',
   },
   squareImageContainer:{
@@ -343,5 +349,8 @@ const ActivitiesListStyles = StyleSheet.create({
     marginLeft:scale(10),
     color:'rgba(255,255,255,1)',
     fontFamily:'Poppins-Light',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10,
   },
 });

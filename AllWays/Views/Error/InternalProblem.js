@@ -11,10 +11,10 @@ InternalProblem.js
 
 /******************** Imports Section ********************/ 
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { StyleSheet, Text, View, TouchableOpacity, BackHandler } from 'react-native';
 
 
 
@@ -28,43 +28,58 @@ import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 */
 
 export class InternalProblemScreen extends React.Component{
+
     render() {
 
-        // Handle back button
-        const handleBack = (navigation) => {
-            
-            // Reset tab bar
-            if(navigation.getParent() != undefined){
-                navigation.getParent().setOptions({tabBarStyle: InternalProblemStyles.tab});
-            }
+        const ErrorView = () => {
 
-            // Go back
-            navigation.goBack()
-        }
-
-        return (
-        <View style = {InternalProblemStyles.container}>
-
-            {/* Back button */}
-            <TouchableOpacity style={InternalProblemStyles.backButton} onPress={() => handleBack(this.props.navigation)}>
-                <Ionicons name="chevron-back-sharp" size={25} color="black" />
-            </TouchableOpacity>
+            useEffect(() => {
+              const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true)
+              return () => backHandler.remove()
+            }, [])
+        
+            const handleBackPress = (navigation) => {
                 
-            {/* Error Message container */}
-            <View style = {InternalProblemStyles.subContainer}>
-                
-                {/* Error message */}
-                <View style = {InternalProblemStyles.errorContainer}>
-                    <MaterialCommunityIcons name="parachute-outline" size={70} color="#23C2DF"/>
+                // Reset tab bar
+                if(navigation.getParent() != undefined){
+                    navigation.getParent().setOptions({tabBarStyle: InternalProblemStyles.tab});
+                }
+    
+                // Go back
+                navigation.goBack()
+            };
+    
+            return (
+            <View style = {InternalProblemStyles.container}>
+    
+                {/* Back button */}
+                <TouchableOpacity style={InternalProblemStyles.backButton} onPress={() => handleBackPress(this.props.navigation)}>
+                    <Ionicons name="chevron-back-sharp" size={25} color="black" />
+                </TouchableOpacity>
+                    
+                {/* Error Message container */}
+                <View style = {InternalProblemStyles.subContainer}>
+                    
+                    {/* Error message */}
+                    <View style = {InternalProblemStyles.errorContainer}>
+                        <MaterialCommunityIcons name="parachute-outline" size={70} color="#23C2DF"/>
+                    </View>
+                    <Text style = {InternalProblemStyles.errorText}>Oops! Something went wrong</Text>
+                    <Text style = {InternalProblemStyles.errorText}>Please check your connection</Text> 
+                    <Text style = {InternalProblemStyles.errorText}>while we check our systems and</Text> 
+                    <Text style = {InternalProblemStyles.errorText}>try again later.</Text>
+    
                 </View>
-                <Text style = {InternalProblemStyles.errorText}>Oops! Something went wrong</Text>
-                <Text style = {InternalProblemStyles.errorText}>Please check your connection</Text> 
-                <Text style = {InternalProblemStyles.errorText}>while we check our systems and</Text> 
-                <Text style = {InternalProblemStyles.errorText}>try again later.</Text>
-
             </View>
-        </View>
-        )    
+            ) 
+        } 
+
+        return(
+            <View style = {{flex:1}}>
+                <ErrorView/>
+            </View>
+        )
+          
     }
 }
 
