@@ -142,7 +142,7 @@ export class ChangePasswordScreen extends React.Component{
           {/* Header */}
           <View style = {ChangePasswordStyles.headerView}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={ChangePasswordStyles.backButton}>
-              <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+              <Text><Ionicons name="chevron-back-sharp" size={25} color="black" /></Text>
             </TouchableOpacity>
             <Text style={ChangePasswordStyles.title}>Change Password</Text>
           </View>
@@ -264,13 +264,13 @@ const ChangePasswordStyles = StyleSheet.create ({
     alignSelf:'center',
     textAlign:'center',
     marginRight:scale(55),
-    fontFamily:'Poppins-Bold',
+    fontFamily:'Poppins-SemiBold',
   },
   titleModal: {
     color:'#000000',
     textAlign:'center',
     fontSize:scale(25),
-    fontFamily:'Poppins-Bold',
+    fontFamily:'Poppins-SemiBold',
   },
   subTitle: {
     color:'#494949',
@@ -324,9 +324,9 @@ const ChangePasswordStyles = StyleSheet.create ({
     alignItems:'center',
     marginLeft:scale(10),
     backgroundColor:'#fff',
-    width:moderateScale(45),
+    width:moderateScale(40),
     justifyContent:'center',
-    height:moderateScale(45),
+    height:moderateScale(40),
   },
   errorMessage: {
     color:'red', 

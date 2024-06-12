@@ -144,8 +144,8 @@ export class DaysScreen extends React.Component {
           style={DaysListStyles.heart}
         >
           <View>
-            {!isSaved && <Ionicons name="heart-outline" size={30} color="black" /> }
-            {isSaved && <Ionicons name="heart" size={30} color="black" /> }
+            {!isSaved && <Ionicons name="heart-outline" size={25} color="black" /> }
+            {isSaved && <Ionicons name="heart" size={25} color="#D22B2B" /> }
           </View>
         </TouchableOpacity>
       );
@@ -159,7 +159,7 @@ export class DaysScreen extends React.Component {
             <View style = {DaysListStyles.headerView}>
               <View>
                 {savedRoutes && (<TouchableOpacity style = {ParentStyles.backButton} onPress={() => this.props.navigation.navigate('SavedRoutes')}>
-                  <Ionicons name="chevron-back-sharp" size={30} color="black" />
+                  <Ionicons name="chevron-back-sharp" size={25} color="black" />
                 </TouchableOpacity>
                 )}
               </View>
@@ -216,29 +216,38 @@ const ParentStyles = StyleSheet.create({
   },
   title:{
     color:'#fff',
-    fontSize:scale(45),
-    fontFamily:'Poppins-Medium',
+    fontSize:scale(40),
+    fontFamily:'Poppins-Medium', 
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10, 
   },
   subtitle:{
     color:'#fff',
     fontSize:scale(20),
     textAlignVertical:'center',
     fontFamily:'Poppins-Medium',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10,
   },
   subtitleDate:{
     color:'#fff',
     fontSize:scale(16),
     textAlignVertical:'center',
-    fontFamily:'Poppins-Light', 
+    fontFamily:'Poppins-Light',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10, 
   },
   backButton:{
     borderRadius:30,
     alignItems:'center',
     marginLeft:scale(10),
     backgroundColor:'#fff',
-    width:moderateScale(45),
+    width:moderateScale(40),
     justifyContent:'center',
-    height:moderateScale(45),
+    height:moderateScale(40),
     marginTop:verticalScale(40),
   },
 });
@@ -256,7 +265,7 @@ const DaysListStyles = StyleSheet.create({
     shadowColor:'#000',
     flexDirection:'row',
     height:height*0.15,
-    backgroundColor:'#EEF6FB',
+    backgroundColor:'#E8E8E8',
     shadowOffset:{width:0, height:2},
   },
   scrollView:{
@@ -314,9 +323,9 @@ const DaysListStyles = StyleSheet.create({
     alignItems:'center',
     marginLeft:scale(20),
     backgroundColor:'#fff',
-    width:moderateScale(45),
+    width:moderateScale(40),
     justifyContent:'center',
-    height:moderateScale(45),
+    height:moderateScale(40),
     marginTop:verticalScale(40),
   },
 });

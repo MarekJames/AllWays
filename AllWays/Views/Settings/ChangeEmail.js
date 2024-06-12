@@ -80,19 +80,17 @@ export class ChangeEmailScreen extends React.Component{
         // Check email verified
 
         if(user.email == email && user.emailVerified){
-          console.log(user.email + ":" + user.emailVerified);
         
           // Log user out
           try {
             await getAuth().signOut();
           }
           catch(error){
-            console.log('Error Sign Out: ' + error);
             showNetworkError(navigation, error.message);
           }
         }
         else{
-          console.log(user.email + ":" + user.emailVerified);
+          showNetworkError(navigation, error.message);
         }
       }
       else{
@@ -141,14 +139,12 @@ export class ChangeEmailScreen extends React.Component{
             }
             if(result == 'auth/invalid-email'){
               setInvalidEmail('Invalid email, try again');
-              console.log(result);
             }
             if(result == 'auth/email-already-in-use'){
               setInvalidEmail('Email already in use, try again');
-              console.log(result);
             }
             if(result == 'auth/requires-recent-login'){
-              console.log(result);
+              showNetworkError(navigation, result);
             }
             if(result == 'auth/operation-not-allowed'){
               
@@ -238,7 +234,7 @@ export class ChangeEmailScreen extends React.Component{
                   onPress={() => this.props.navigation.goBack()}
                   style={ChangeEmailStyles.backButton}
                 >
-                  <Text><Ionicons name="chevron-back-sharp" size={30} color="black" /></Text>
+                  <Text><Ionicons name="chevron-back-sharp" size={25} color="black" /></Text>
             </TouchableOpacity>
 
             <Text style={ChangeEmailStyles.title}>Change Email</Text>
@@ -320,7 +316,7 @@ const ChangeEmailStyles = StyleSheet.create ({
     alignSelf:'center',
     textAlign:'center',
     marginRight:scale(55),
-    fontFamily:'Poppins-Bold',
+    fontFamily:'Poppins-SemiBold',
   },
   subTitle: {
     color:'#494949',
@@ -386,15 +382,15 @@ const ChangeEmailStyles = StyleSheet.create ({
     alignItems:'center',
     marginLeft:scale(10),
     backgroundColor:'#fff',
-    width:moderateScale(45),
+    width:moderateScale(40),
     justifyContent:'center',
-    height:moderateScale(45),
+    height:moderateScale(40),
   },
   errorTitle:{
     fontSize:scale(16),
     textAlign:'center',
     margin:moderateScale(40), 
-    fontFamily:'Poppins-Bold',
+    fontFamily:'Poppins-SemiBold',
   },
   errorSubtitle:{
     fontSize:scale(13),

@@ -44,10 +44,7 @@ export class ForgotPasswordScreen extends React.Component{
         }
         else{
           const result = await resetPassword(email.trim());
-          if(result == 'success'){
-            console.log('Reset email sent!');
-          }
-          else if(result == 'auth/invalid-email'){
+          if(result == 'auth/invalid-email'){
             setInvalidEmail('Please input a valid email');
           }
         }
@@ -124,7 +121,7 @@ const ForgotPasswordStyles = StyleSheet.create ({
     color:'#23C2DF',
     fontSize:scale(25),
     alignSelf:'center',
-    fontFamily:'Poppins-Bold',
+    fontFamily:'Poppins-SemiBold',
     marginTop:verticalScale(80),
     marginBottom:verticalScale(10),
   },
