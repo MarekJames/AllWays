@@ -41,8 +41,8 @@ export class LoginUserScreen extends React.Component{
     const [invalidEmail, setInvalidEmail] = useState('');
     const [invalidPassword, setInvalidPassword] = useState('');
 
-    const signInGoogle = async () => {
-      /* try {
+    /* const signInGoogle = async () => {
+      try {
         await GoogleSignin.configure({
           scopes: ['https://www.googleapis.com/auth/userinfo.email'],
         });
@@ -50,8 +50,8 @@ export class LoginUserScreen extends React.Component{
         firebase.auth().signInWithIdToken(idToken);
       } catch (error) {
         console.error('Google Sign-in error:', error);
-      } */
-    };
+      } 
+    }; */
     
     const handleSubmit = async (navigation, isConnected) => {
       if(isConnected){
@@ -101,9 +101,9 @@ export class LoginUserScreen extends React.Component{
         <View style={LoginUserStyles.container}>
 
           <ImageBackground
-            source={require('../../Images/LoginBackground.png')} // Replace with your image path
+            source={require('../../Images/LoginBackground.png')}
             style={RegisterUserStyles.imageBackground}
-            resizeMode="cover" // You can adjust the resizeMode property as needed
+            resizeMode="cover" 
           >
 
           <Text style={LoginUserStyles.title}>Login here</Text>
@@ -141,7 +141,7 @@ export class LoginUserScreen extends React.Component{
             <Text style = {LoginUserStyles.signInText}>Sign In</Text>
           </TouchableOpacity>
     
-          <Pressable onPress={() => {this.props.navigation.reset({ index: 0,routes: [{ name: 'Register' }]})}}>
+          <Pressable onPress={() => {this.props.navigation.navigate('Register')}}>
             <Text style={LoginUserStyles.createAccount}>Create new account</Text>
           </Pressable>
     
@@ -273,7 +273,7 @@ export class RegisterUserScreen extends React.Component{
           setCheckTerms('');
         }
         else if(password!=confirmPassword){
-          setInvalidConfirmPassword('Your password and password confirmation are not the same')
+          setInvalidConfirmPassword('Password inputs don’t match')
           setInvalidEmail('')
           setInvalidName('');
           setInvalidPassword('');
@@ -373,7 +373,7 @@ export class RegisterUserScreen extends React.Component{
             <Text style = {RegisterUserStyles.signUpText}>Sign Up</Text>
           </TouchableOpacity>
     
-          <Pressable onPress={() => {this.props.navigation.reset({ index: 0,routes: [{ name: 'Login' }]})}}>
+          <Pressable onPress={() => {this.props.navigation.navigate('Login')}}>
             <Text style={RegisterUserStyles.alreadyHaveAccount}>Already have an account</Text>
           </Pressable>
 
