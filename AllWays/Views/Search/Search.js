@@ -56,6 +56,7 @@ export class SearchScreen extends React.Component {
     
     // Variables for storing purposes
     var listsPlan2 = [];                                                        // Contains the route plan after the AI is called
+    var warningMessageText = '6 full days is the maximum';                                                       
     const [isEnabled, setIsEnabled] = useState(false);                          // Flag for food search
     const [markedDates, setMarkedDates] = useState({});                         // Contains the dates 
     const [isValidInput, setValidInput] = useState('');                         // Contains the error message if a non valid city is selected
@@ -64,6 +65,7 @@ export class SearchScreen extends React.Component {
     const [isModalDates, setIsModalDates] = useState(false);                    // Flag to show/not show Modal to select dates
     const [selectedEndDate, setSelectedEndDate] = useState('');                 // Contains the value of the end date
     const [selectedStartDate, setSelectedStartDate] = useState('');             // Contains the value of the start date
+    const [warningMessage, setWarningMessage] = useState('');
     const months = [
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
@@ -187,6 +189,10 @@ export class SearchScreen extends React.Component {
         const dayDifference = (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24);
   
         if (dayDifference <= 6) {
+          
+          // Clean warning message
+          if(warningMessage!=null) setWarningMessage('');
+
           setSelectedEndDate(date);
           const range = {
             [selectedStartDate]: { startingDay: true, color: '#1FACC6', textColor: 'black', selected: true, dotColor: '#1FACC6' },
@@ -206,6 +212,7 @@ export class SearchScreen extends React.Component {
           }
           setMarkedDates(range);
         } else {
+          setWarningMessage(warningMessageText);
           setSelectedStartDate(date);
           setSelectedEndDate('');
           setMarkedDates({
@@ -274,9 +281,15 @@ export class SearchScreen extends React.Component {
           </View>
 
           <View style = {DatesScreenStyles.datesView}>
-            <Text style = {DatesScreenStyles.calendarDates}>{selectedStartDate != '' ? formatDate(selectedStartDate) : 'Earliest outbound date'}</Text>
+            <Text style = {DatesScreenStyles.calendarDates}>{selectedStartDate != '' ? formatDate(selectedStartDate) : 'Start date'}</Text>
             <Feather style= {{alignSelf:'center'}} name="arrow-right" size={20} color="#1B115C"/>
-            <Text style = {DatesScreenStyles.calendarDates}>{selectedEndDate != '' ? formatDate(selectedEndDate) : 'Latest return date'}</Text>
+            <Text style = {DatesScreenStyles.calendarDates}>{selectedEndDate != '' ? formatDate(selectedEndDate) : 'End date'}</Text>
+          </View>
+
+          <View style = {DatesScreenStyles.warningView}>
+          {warningMessage != null && 
+            <Text style = {{color:'red', fontSize:13}}>{warningMessage}</Text>
+          }
           </View>
 
           <View style = {DatesScreenStyles.calendarView}>
@@ -675,6 +688,11 @@ const DatesScreenStyles = StyleSheet.create({
     fontSize:scale(16),
     fontFamily:'Poppins-Medium',
   },
+  warningView:{
+    alignItems:'center',
+    justifyContent:'center',
+    marginTop:verticalScale(30),
+  },
   doneText:{
     color:'#fff',
     textAlign:'center',
@@ -703,7 +721,7 @@ const DatesScreenStyles = StyleSheet.create({
   },
   calendarView:{
     flex:1,
-    marginTop:verticalScale(50),
+    marginTop:verticalScale(10),
   },
  })
 
