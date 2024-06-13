@@ -59,7 +59,8 @@ export class SavedRoutesScreen extends React.Component{
     else{
       return ( 
         <View style = {SavedRoutesStyles.noRoutesContainer}>
-          <Text style = {SavedRoutesStyles.noRoutesText}>Click on the <Ionicons name="heart-outline" size={30} color="black"/> on the routes to save them here</Text>
+          <Text style = {SavedRoutesStyles.noRoutesText}>Click on the <Ionicons name="heart-outline" color="black" size={35} style={SavedRoutesStyles.icon}/> in routes page to save them here
+          </Text>
         </View>
       )
     }
@@ -139,15 +140,18 @@ const SavedRoutesStyles = StyleSheet.create({
     marginBottom:verticalScale(10), 
   },
   noRoutesContainer:{
-    flex:1,
-    alignItems:'center',
-    justifyContent:'center'
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   noRoutesText:{
-    fontSize:scale(13),
-    textAlign:'center',
+    fontSize:scale(20),
     marginHorizontal:scale(30),
     fontFamily:'Poppins-Medium',
+  },
+  icon:{
+    fontSize: 20, // Should match the text size to be aligned
+    textAlignVertical: 'center', // Align icon vertically in the text line
   },
   imageBackground: {
     width:'100%',
