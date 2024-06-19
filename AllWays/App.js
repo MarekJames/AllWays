@@ -3,8 +3,10 @@ import { useFonts } from 'expo-font';
 import { getAuth } from 'firebase/auth';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useRef, useCallback } from 'react';
+import * as Notifications from 'expo-notifications';
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 import { NetworkProvider } from './config/network-config.js';
+import * as RandomGenerator from './Random/RandomGenerator.js';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -29,6 +31,15 @@ import { NetworkConnectionScreen } from './Views/Error/NetworkConnection.js';
 import { TermsConditionsScreen } from './Views/Settings/Terms&Conditions.js';
 
 SplashScreen.preventAutoHideAsync();
+
+// Local Notification handler
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldSetBadge: false,
+    shouldPlaySound: false,
+  }),
+});
 
 const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
@@ -204,12 +215,30 @@ class HomeScreen extends React.Component {
   }  
 }
 
+// Schedule local notification to 1 day
+async function scheduleLocalNotification(){
+
+  const message = RandomGenerator.generateMessage();
+
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: message.title,
+      body: message.description,
+    },
+    trigger: { seconds: 2 },
+  });
+}
+
 export default function App() {
 
   const [user, setUser] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   
-  React.useEffect( () =>{
+  React.useEffect(() =>{
+    
+    scheduleLocalNotification();
+
+    // Handle auth state
     const unsubscribe = getAuth().onAuthStateChanged(userp => {
       setUser(userp);
       setLoading(false);
