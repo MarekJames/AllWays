@@ -114,7 +114,7 @@ const NetworkConnectionStyles = StyleSheet.create ({
     backButton:{
         borderRadius:30,
         alignItems:'center',
-        top:verticalScale(50),
+        top:verticalScale(10),
         backgroundColor:'#fff',
         width:moderateScale(40),
         justifyContent:'center',
